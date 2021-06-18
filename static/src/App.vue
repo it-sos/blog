@@ -5,7 +5,7 @@
         <el-row type="flex" class="row-bg" justify="space-between" align="top">
           <el-col :span="6">
             <router-link to="/">
-              <el-image style="width: 64px; height: 64px; border-radius: 4px;" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" fit="fill"></el-image>
+              <el-image style="width: 64px; height: 64px; border-radius: 4px;" src="/src/assets/logo.png" fit="fill"></el-image>
             </router-link>
           </el-col>
           <el-col :span="6" style="text-align: center;"><Search/></el-col>
