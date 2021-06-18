@@ -1,0 +1,40 @@
+<template>
+  <div class="common-layout">
+    <el-container>
+      <el-header>
+        <el-row type="flex" class="row-bg" justify="space-between" align="top">
+          <el-col :span="6">
+            <router-link to="/">
+              <el-image style="width: 64px; height: 64px; border-radius: 4px;" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" fit="fill"></el-image>
+            </router-link>
+          </el-col>
+          <el-col :span="6" style="text-align: center;"><Search/></el-col>
+          <el-col :span="6" style="text-align: right;"><LoginMenu/></el-col>
+        </el-row>
+      </el-header>
+      <el-container>
+        <el-container>
+          <el-main>Main</el-main>
+        </el-container>
+        <el-aside width="200px">Aside</el-aside>
+      </el-container>
+      <el-footer>Footer</el-footer>
+    </el-container>
+  </div>
+<!--  <p>-->
+<!--    <router-link to="/">首页</router-link>-->
+<!--    <router-link to="/about">关于</router-link>-->
+<!--  </p>-->
+<!--  <router-view></router-view>-->
+</template>
+
+<script>
+
+import Search from "./components/Search.vue"
+import LoginMenu from "./components/LoginMenu.vue"
+
+export default {
+  name: 'App',
+  components: {Search, LoginMenu}
+}
+</script>
