@@ -1,24 +1,21 @@
 <template>
   <div class="common-layout">
-    <el-container>
+    <el-container style="min-height:700px;">
       <el-header>
-        <el-row type="flex" class="row-bg" justify="space-between" align="top">
+        <el-row type="flex" class="row-bg" justify="space-between"  align="middle">
           <el-col :span="6">
             <router-link to="/">
-              <el-image style="width: 64px; height: 64px; border-radius: 4px;" src="/src/assets/logo.png" fit="fill"></el-image>
+              <el-image style="width: 104px; height: 23px; border-radius: 4px;" src="/src/assets/logo.png" fit="fill"></el-image>
             </router-link>
           </el-col>
-          <el-col :span="6" style="text-align: center;"><Search/></el-col>
-          <el-col :span="6" style="text-align: right;"><LoginMenu/></el-col>
+          <el-col :span="6" align="center"><Search/></el-col>
+          <el-col :span="6" align="right"><LoginMenu/></el-col>
         </el-row>
       </el-header>
       <el-container>
-        <el-container>
-          <el-main>Main</el-main>
-        </el-container>
-        <el-aside width="200px">Aside</el-aside>
+        <router-view></router-view>
       </el-container>
-      <el-footer>Footer</el-footer>
+      <el-footer style="text-align: center;font-size: 12px;">Copyright &copy; 鹏sir笔记</el-footer>
     </el-container>
   </div>
 <!--  <p>-->
