@@ -1,45 +1,30 @@
 <template>
   <el-container>
     <el-main>
-      <div class="box">
-        <div class="title">
-          <a href="#"><h2 style="display: inline;">java笔记</h2></a>
-          <span style="vertical-align: bottom;">3天前</span>
+      <div>
+        <div class="box" v-infinite-scroll="load" infinite-scroll-disabled="disabled" v-for="i in count">
+          <div class="title">
+            <el-link href="/a/java笔记"><h2>java笔记</h2></el-link>
+            <span style="vertical-align: bottom;">3天前</span>
+          </div>
+          <div class="description">xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文</div>
+          <el-row class="link">
+            <el-col :span="12">
+              <p>来自：xxoo 专题</p>
+            </el-col>
+            <el-col :span="12" align="right" class="tag">
+              <el-tag>标签一</el-tag>
+              <el-tag>标签二</el-tag>
+            </el-col>
+          </el-row>
+          <el-divider></el-divider>
         </div>
-        <div class="description">
-          xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文
-        </div>
-        <el-row class="link">
-          <el-col :span="12">
-            <p><el-link href="#" target="_blank">来自：xxoo 专题</el-link></p>
-          </el-col>
-          <el-col :span="12" align="right" class="tag">
-            <el-link href="#" type="primary" target="_blank"><el-tag>标签一</el-tag></el-link>
-            <el-link href="#" type="primary" target="_blank"><el-tag>标签二</el-tag></el-link>
-          </el-col>
-        </el-row>
       </div>
-      <div class="box">
-        <div class="title">
-          <a href="#"><h2 style="display: inline;">golang笔记 - 通道论据</h2></a>
-          <span style="vertical-align: bottom;">3天前</span>
-        </div>
-        <div class="description">
-          xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文
-          xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文
-        </div>
-        <el-row class="link">
-          <el-col :span="12">
-            <p><el-link href="#" target="_blank">来自：xxoo 专题</el-link></p>
-          </el-col>
-          <el-col :span="12" align="right" class="tag">
-            <el-link href="#" type="primary" target="_blank"><el-tag>标签一</el-tag></el-link>
-          </el-col>
-        </el-row>
-      </div>
+      <p class="load" v-if="loading">加载中...</p>
+      <el-empty v-if="noMore" description="没有更多了"></el-empty>
     </el-main>
   </el-container>
-  <el-aside width="200px">
+  <el-aside class="hidden-xs-only">
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
@@ -47,7 +32,7 @@
         </div>
       </template>
       <div v-for="o in 4" :key="o" class="text item">
-        {{'列表内容 ' + o }}
+        <el-link href="/a/列表">{{'列表内容这篇文章，内容很多，非常多，躲到爆炸 ' + o }}</el-link>
       </div>
     </el-card>
   </el-aside>
@@ -55,14 +40,45 @@
 
 <script>
 export default {
-  name: "Home"
+  name: "Home",
+  data () {
+    return {
+      count: 10,
+      loading: false
+    }
+  },
+  computed: {
+    noMore () {
+      return this.count >= 20
+    },
+    disabled () {
+      return this.loading || this.noMore
+    }
+  },
+  methods: {
+    load () {
+      this.loading = true
+      setTimeout(() => {
+        this.count += 5
+        this.loading = false
+      }, 2000)
+    }
+  }
 }
 </script>
 
 <style scoped>
+.load {
+  padding:0px;
+  margin:0px;
+  text-align: center;
+}
 .title a {
   text-decoration: none;
   color: #303133;
+}
+.title h2 {
+  display: inline;
 }
 .title span {
   margin-left: 30px;
@@ -77,7 +93,7 @@ export default {
 .link p {
   margin:0;
 }
-.tag a {
+.tag span {
   margin-left: 6px;
 
 }
