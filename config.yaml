@@ -14,7 +14,7 @@ mysql:
     password: mysql123
     host: 127.0.0.1
     port: 3306
-    database: kn
+    database: study_notes
     charset: utf8mb4
     timezone: Asia/Shanghai
 sqlite:
@@ -32,4 +32,4 @@ qrcode:
   width: 200
   height: 200
   buffer: 4096
-  url: https://futurama.ink/kn/web?id=%s
+  url: https://demo.com?id=%s

@@ -13,4 +13,5 @@
 // @version 1.0
 // @description 鹏sir笔记接口
 // @host 生产：https://yupengsir.com 开发：http://qjfu.cn:8090
-package study-notes
+
+package studynotes

@@ -8,12 +8,10 @@
    See the Mulan PSL v2 for more details.
 */
 
-package main
+package datamodels
 
-import (
-	"gitee.com/itsos/study-notes"
-)
-
-func main() {
-	kn.Listen()
+// ArticleContent 文章内容表
+type ArticleContent struct {
+	Aid  uint   `json:"aid" xorm:"notnull pk id"`                     // 文章id
+	Data string `json:"data" xorm:"longtext notnull comment('文章内容')"` // 文章内容
 }

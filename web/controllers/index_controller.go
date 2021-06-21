@@ -13,9 +13,9 @@ package controllers
 import (
 	"gitee.com/itsos/golibs/global/variable"
 	"gitee.com/itsos/golibs/utils"
-	"gitee.com/itsos/study-notes/errors"
-	"gitee.com/itsos/study-notes/models/vo"
-	"gitee.com/itsos/study-notes/services"
+	"gitee.com/itsos/studynotes/errors"
+	"gitee.com/itsos/studynotes/models/vo"
+	"gitee.com/itsos/studynotes/services"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
 	"mime/multipart"

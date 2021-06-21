@@ -16,10 +16,9 @@ import (
 )
 
 func TestConfig(t *testing.T) {
-	t.Log(C.GetUrl())
-	t.Log(C.GetSwaggerUrl())
 	t.Log(C.GetQBuffer())
 	t.Log(C.GetQHeight())
 	t.Log(C.GetQWidth())
 	t.Log(C.GetQUrl())
+	t.Log(C.GetSwaggerUrl())
 }

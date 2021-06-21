@@ -8,16 +8,12 @@
    See the Mulan PSL v2 for more details.
 */
 
-package routes
+package main
 
 import (
-	"gitee.com/itsos/studynotes/services"
-	"gitee.com/itsos/studynotes/web/controllers"
-	"github.com/kataras/iris/v12/mvc"
+	"gitee.com/itsos/studynotes"
 )
 
-func indexRoute(app *mvc.Application) {
-	s := services.NewPhotoService()
-	app.Register(s)
-	app.Handle(new(controllers.IndexController))
+func main() {
+	studynotes.Listen()
 }

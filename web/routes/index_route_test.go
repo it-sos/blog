@@ -11,7 +11,7 @@
 package routes
 
 import (
-	"gitee.com/itsos/study-notes/tests"
+	"gitee.com/itsos/studynotes/tests"
 	"github.com/kataras/iris/v12/httptest"
 	"os"
 	"testing"

@@ -13,7 +13,7 @@ package main
 import (
 	"gitee.com/itsos/golibs/db"
 	_ "gitee.com/itsos/golibs/tests/testsdb"
-	"gitee.com/itsos/study-notes/datamodels"
+	"gitee.com/itsos/studynotes/datamodels"
 	"github.com/spf13/viper"
 	"log"
 	"os"
@@ -26,12 +26,18 @@ func main() {
 			os.Remove("sqlite3.db")
 		}
 	}
-	err := db.Conn.DropTables(new(datamodels.User))
+	tables := []interface{}{
+		new(datamodels.Article),
+		new(datamodels.ArticleContent),
+		new(datamodels.Category),
+		new(datamodels.CategoryRel),
+	}
+	err := db.Conn.DropTables(tables...)
 	if err != nil {
 		panic(err)
 		return
 	}
-	err = db.Conn.Sync2(new(datamodels.User))
+	err = db.Conn.Sync2(tables...)
 	if err != nil {
 		panic(err)
 		return

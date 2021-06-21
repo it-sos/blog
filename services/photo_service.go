@@ -12,7 +12,7 @@ package services
 
 import (
 	"fmt"
-	"gitee.com/itsos/study-notes/config"
+	"gitee.com/itsos/studynotes/config"
 	"github.com/armon/circbuf"
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"

@@ -8,17 +8,17 @@
    See the Mulan PSL v2 for more details.
 */
 
-package study-notes
+package studynotes
 
 import (
-	"gitee.com/itsos/study-notes/config"
-	"gitee.com/itsos/study-notes/web/bootstrap"
-	"gitee.com/itsos/study-notes/web/routes"
+	"gitee.com/itsos/studynotes/config"
+	"gitee.com/itsos/studynotes/web/bootstrap"
+	"gitee.com/itsos/studynotes/web/routes"
 	"github.com/kataras/iris/v12"
 )
 
 func newApp() *bootstrap.Bootstrapper {
-	app := bootstrap.New("kn", "peng.yu@qjfu.cn")
+	app := bootstrap.New("study-notes", "peng.yu@qjfu.cn")
 	app.Bootstrap()
 	app.Configure(routes.Configure)
 	return app

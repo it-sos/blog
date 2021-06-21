@@ -12,7 +12,7 @@ package repositories
 
 import (
 	"gitee.com/itsos/golibs/db"
-	"gitee.com/itsos/study-notes/datamodels"
+	"gitee.com/itsos/studynotes/datamodels"
 )
 
 type UserRepository interface {

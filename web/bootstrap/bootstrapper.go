@@ -16,7 +16,7 @@ import (
 	"gitee.com/itsos/golibs/errors"
 	"gitee.com/itsos/golibs/global/consts"
 	"gitee.com/itsos/golibs/global/variable"
-	config2 "gitee.com/itsos/study-notes/config"
+	config2 "gitee.com/itsos/studynotes/config"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
 	"github.com/kataras/iris/v12/core/router"

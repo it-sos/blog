@@ -12,7 +12,7 @@ package repositories
 
 import (
 	_ "gitee.com/itsos/golibs/tests/testsdb"
-	"gitee.com/itsos/study-notes/datamodels"
+	"gitee.com/itsos/studynotes/datamodels"
 	"testing"
 )
 

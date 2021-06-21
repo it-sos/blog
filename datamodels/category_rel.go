@@ -12,12 +12,11 @@ package datamodels
 
 import "time"
 
-// User 用户表
-type User struct {
-	Id         uint      `json:"id" readonly:"true" example:"1" xorm:"notnull autoincr pk id"`                              // 用户表ID
-	Openid     string    `json:"openid" example:"5bbc4ala3dja1djs0aja" xorm:"varchar(64) notnull unique comment('openid')"` // 用户openid
-	Name       string    `json:"Name" xorm:"varchar(32) notnull comment('姓名')"`                                             // 姓名
-	Phone      string    `json:"phone" xorm:"varchar(16) notnull default ''"`
-	UpdateTime time.Time `json:"update_time" readonly:"true" xorm:"notnull updated"`
+// CategoryRel 分类与文章关联表
+type CategoryRel struct {
+	Id         uint      `json:"id" readonly:"true" example:"1" xorm:"notnull autoincr pk id"` // 关联表自增ID
+	Type       uint8     `json:"type" xorm:"tinyint notnull comment('1标签；2专题')"`               // 类型1标签；2专题
+	Aid        uint      `json:"aid" xorm:"notnull unique('aid_cid') comment('文章id')"`         // 文章id
+	Cid        uint      `json:"cid" xorm:"notnull unique('aid_cid') comment('分类id')"`         // 分类id
 	CreateTime time.Time `json:"create_time" readonly:"true" xorm:"notnull created"`
 }

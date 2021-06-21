@@ -1,9 +1,9 @@
-module gitee.com/itsos/study-notes
+module gitee.com/itsos/studynotes
 
 go 1.15
 
 require (
-	gitee.com/itsos/golibs v0.0.3
+	gitee.com/itsos/golibs v0.0.4
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/andybalholm/brotli v1.0.2 // indirect
 	github.com/armon/circbuf v0.0.0-20190214190532-5111143e8da2
@@ -30,5 +30,4 @@ require (
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
 	golang.org/x/net v0.0.0-20210520170846-37e1c6afe023
 	golang.org/x/sys v0.0.0-20210514084401-e8d321eab015 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
 )
