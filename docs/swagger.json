@@ -1,0 +1,114 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "鹏sir笔记接口",
+        "title": "kn api",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "生产：https://yupengsir.com 开发：http://qjfu.cn:8090",
+    "paths": {
+        "/photos": {
+            "post": {
+                "description": "上传照片文件",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "图库管理"
+                ],
+                "summary": "上传照片",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "request file data",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/vo.QrcodeVO"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/qrcode": {
+            "get": {
+                "description": "通过Qrcode ID返回二维码图片流",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "图库管理"
+                ],
+                "summary": "展示二维码",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Qrcode Id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "图片流",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "errors.Errors": {
+            "type": "object",
+            "properties": {
+                "errCode": {
+                    "type": "integer",
+                    "example": 4000000
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.QrcodeVO": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "description": "Qrcode Id",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

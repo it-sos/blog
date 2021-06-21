@@ -1,0 +1,75 @@
+definitions:
+  errors.Errors:
+    properties:
+      errCode:
+        example: 4000000
+        type: integer
+      message:
+        type: string
+    type: object
+  vo.QrcodeVO:
+    properties:
+      id:
+        description: Qrcode Id
+        type: string
+    required:
+    - id
+    type: object
+host: 生产：https://yupengsir.com 开发：http://qjfu.cn:8090
+info:
+  contact: {}
+  description: 鹏sir笔记接口
+  title: kn api
+  version: "1.0"
+paths:
+  /photos:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 上传照片文件
+      parameters:
+      - description: request file data
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.QrcodeVO'
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 上传照片
+      tags:
+      - 图库管理
+  /qrcode:
+    get:
+      consumes:
+      - application/json
+      description: 通过Qrcode ID返回二维码图片流
+      parameters:
+      - description: Qrcode Id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 图片流
+          schema:
+            type: string
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 展示二维码
+      tags:
+      - 图库管理
+swagger: "2.0"

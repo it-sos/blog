@@ -8,7 +8,7 @@
       <div class="box">
         <div class="title">
           <el-link href="/a/java笔记"><h2>java笔记</h2></el-link>
-          <span style="vertical-align: bottom;">3天前</span>
+          <span>3天前</span>
         </div>
         <div class="description">xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文</div>
         <el-row class="link">
@@ -67,6 +67,7 @@ export default {
   display: inline;
 }
 .title span {
+  vertical-align: bottom;
   margin-left: 30px;
 }
 .description {
@@ -89,5 +90,8 @@ export default {
 }
 .box-card {
   margin-bottom: 30px;
+}
+.hidden-xs-only {
+  padding-top:20px;
 }
 </style>
