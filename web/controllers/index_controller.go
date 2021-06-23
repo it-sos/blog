@@ -65,6 +65,7 @@ func beforeSave(ctx iris.Context, file *multipart.FileHeader) bool {
 // @Router /qrcode [get]
 func (c *IndexController) GetQrcode() (mvc.Result, error) {
 	id := c.Ctx.FormValue("id")
+
 	if id == "" {
 		return nil, errors.Error("id_param_err")
 	}

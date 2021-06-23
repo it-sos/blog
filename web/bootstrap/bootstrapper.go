@@ -13,16 +13,22 @@ package bootstrap
 import (
 	"gitee.com/itsos/golibs/config"
 	"gitee.com/itsos/golibs/db"
+	common2 "gitee.com/itsos/golibs/db/common"
 	"gitee.com/itsos/golibs/errors"
 	"gitee.com/itsos/golibs/global/consts"
 	"gitee.com/itsos/golibs/global/variable"
 	config2 "gitee.com/itsos/studynotes/config"
+	"github.com/gorilla/securecookie"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
 	"github.com/kataras/iris/v12/core/router"
 	"github.com/kataras/iris/v12/hero"
 	"github.com/kataras/iris/v12/middleware/logger"
 	"github.com/kataras/iris/v12/middleware/recover"
+	"github.com/kataras/iris/v12/sessions"
+	"github.com/kataras/iris/v12/sessions/sessiondb/redis"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -35,6 +41,7 @@ type Bootstrapper struct {
 	AppName      string
 	AppOwner     string
 	AppSpawnDate time.Time
+	Sessions     *sessions.Sessions
 }
 
 // New returns a new Bootstrapper.
@@ -58,6 +65,20 @@ func (b *Bootstrapper) SetupViews(viewsDir string) {
 	b.RegisterView(iris.HTML(viewsDir, ".html").
 		Layout("shared/layout.html").
 		Reload(c.GetActive() != consts.EnvProduct))
+}
+
+func (b *Bootstrapper) SetupSessions(expires time.Duration, cookieHashKey, cookieBlockKey []byte) {
+	b.Sessions = sessions.New(sessions.Config{
+		Cookie:   "SECRET_SESS_COOKIE_" + strings.ToUpper(b.AppName),
+		Expires:  expires,
+		Encoding: securecookie.New(cookieHashKey, cookieBlockKey),
+	})
+	common2.Config.UseRedis()
+	common2.Config.SetMode(common2.Master)
+	b.Sessions.UseDatabase(redis.New(redis.Config{
+		Addr:     common2.Config.GetHost() + ":" + strconv.Itoa(common2.Config.GetPort()),
+		Database: strconv.Itoa(common2.Config.GetDb()),
+	}))
 }
 
 // SetupErrorHandlers `(context.StatusCodeNotSuccessful`,  which defaults to >=400 (but you can change it).
@@ -120,7 +141,10 @@ func (b *Bootstrapper) Configure(cs ...Configurator) {
 
 // 初始化配置和存储连接等
 func (b *Bootstrapper) initialization() {
+	println(variable.BasePath)
+	println(config.C.GetPath())
 	config.C.Init()
+	println(variable.BasePath)
 	db.Init()
 }
 
@@ -128,6 +152,10 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 	b.initialization()
 
 	b.SetupViews(variable.BasePath + "/web/views")
+
+	hashKey := securecookie.GenerateRandomKey(64)
+	blockKey := securecookie.GenerateRandomKey(32)
+	b.SetupSessions(24*time.Hour, hashKey, blockKey)
 	b.SetupErrorHandlers()
 
 	b.Use(func(ctx *context.Context) {
@@ -142,6 +170,7 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 
 	b.Use(recover.New())
 	b.Use(logger.New())
+	b.Use(b.Sessions.Handler())
 
 	return b
 }

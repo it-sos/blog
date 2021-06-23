@@ -11,16 +11,19 @@
 package studynotes
 
 import (
+	"gitee.com/itsos/golibs/global/variable"
 	"gitee.com/itsos/studynotes/config"
 	"gitee.com/itsos/studynotes/web/bootstrap"
+	"gitee.com/itsos/studynotes/web/middleware/identity"
 	"gitee.com/itsos/studynotes/web/routes"
 	"github.com/kataras/iris/v12"
 )
 
 func newApp() *bootstrap.Bootstrapper {
-	app := bootstrap.New("study-notes", "peng.yu@qjfu.cn")
+	println(variable.BasePath)
+	app := bootstrap.New("studynotes", "peng.yu@qjfu.cn")
 	app.Bootstrap()
-	app.Configure(routes.Configure)
+	app.Configure(identity.Configure, routes.Configure)
 	return app
 }
 

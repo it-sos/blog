@@ -15,15 +15,20 @@ import (
 	"gitee.com/itsos/studynotes/datamodels"
 )
 
+const (
+	IS_STATE_PRIVATE = 1
+	IS_STATE_PUBLIC  = 2
+)
+
 type UserRepository interface {
 	// Insert 新增
-	Insert(p *datamodels.User) (id uint)
+	Insert(p *datamodels.Article) (id uint)
 	// Update 更新
-	Update(p *datamodels.User) (id uint)
+	Update(p *datamodels.Article) (id uint)
 	// Select 查询用户详细
-	Select(p *datamodels.User) (datamodels.User, bool)
+	Select(p *datamodels.Article) (datamodels.Article, bool)
 	// SelectMany 查询用户列表
-	SelectMany(p *datamodels.User, offset int, limit int) (results []datamodels.User)
+	SelectMany(p *datamodels.Article, offset int, limit int) (results []datamodels.Article)
 }
 
 type userRepository struct {
@@ -35,7 +40,7 @@ func NewUserRepository() UserRepository {
 	return &userRepository{}
 }
 
-func (ur *userRepository) Select(p *datamodels.User) (datamodels.User, bool) {
+func (ur *userRepository) Select(p *datamodels.Article) (datamodels.Article, bool) {
 	has, err := db.Conn.Get(p)
 	if err != nil {
 		panic(err)
@@ -43,16 +48,17 @@ func (ur *userRepository) Select(p *datamodels.User) (datamodels.User, bool) {
 	return *p, has
 }
 
-func (ur *userRepository) SelectMany(p *datamodels.User, offset int, limit int) (results []datamodels.User) {
-	user := make([]datamodels.User, 0)
-	err := db.Conn.Limit(limit, offset).Find(&user)
+func (ur *userRepository) SelectMany(p *datamodels.Article, offset int, limit int) (results []datamodels.Article) {
+	article := make([]datamodels.Article, 0)
+	state := []int{IS_STATE_PUBLIC}
+	err := db.Conn.In("is_state", state).Desc("update_time").Limit(limit, offset).Find(&article)
 	if err != nil {
 		panic(err)
 	}
-	return user
+	return article
 }
 
-func (ur *userRepository) Insert(p *datamodels.User) (id uint) {
+func (ur *userRepository) Insert(p *datamodels.Article) (id uint) {
 	_, err = db.Conn.Insert(p)
 	if err != nil {
 		panic(err)
@@ -60,7 +66,7 @@ func (ur *userRepository) Insert(p *datamodels.User) (id uint) {
 	return p.Id
 }
 
-func (ur *userRepository) Update(p *datamodels.User) (id uint) {
+func (ur *userRepository) Update(p *datamodels.Article) (id uint) {
 	_, err = db.Conn.ID(p.Id).Update(p)
 	if err != nil {
 		panic(err)

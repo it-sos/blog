@@ -11,6 +11,7 @@ require (
 	github.com/flosch/pongo2/v4 v4.0.2 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.1.5 // indirect
+	github.com/gorilla/securecookie v1.1.1
 	github.com/iris-contrib/swagger/v12 v12.0.1
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect

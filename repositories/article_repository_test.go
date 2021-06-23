@@ -16,7 +16,7 @@ import (
 	"testing"
 )
 
-var user = &datamodels.User{Name: "peng.yu"}
+var user = &datamodels.Article{Intro: "info"}
 
 func connect() UserRepository {
 	return NewUserRepository()

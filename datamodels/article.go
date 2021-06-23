@@ -14,12 +14,12 @@ import "time"
 
 // Article 文章信息表
 type Article struct {
-	Id         uint      `json:"id" readonly:"true" example:"1" xorm:"notnull autoincr pk id"`    // 文章表ID
-	Title      string    `json:"title" xorm:"varchar(128) index notnull comment('标题')"`           // 标题
-	Intro      string    `json:"intro" xorm:"varchar(255) notnull default '' comment('简介')"`      // 简介
-	Uid        uint      `json:"uid" xorm:"notnull comment('编辑者id')"`                             // 编辑者id
-	IsState    uint8     `json:"is_state" xorm:"tinyint notnull defalt '1' comment('状态1私密；2公开')"` // 状态1私密；2公开
-	IsDel      uint8     `json:"is_del" xorm:"tinyint notnull default '0' comment('0未删除；1已删除')"`  // 0未删除；1已删除
+	Id         uint      `json:"id" readonly:"true" example:"1" xorm:"notnull autoincr pk id"`     // 文章表ID
+	Title      string    `json:"title" xorm:"varchar(128) index notnull comment('标题')"`            // 标题
+	Intro      string    `json:"intro" xorm:"varchar(255) notnull default '' comment('简介')"`       // 简介
+	Uid        uint      `json:"uid" xorm:"notnull comment('编辑者id')"`                              // 编辑者id
+	IsState    uint8     `json:"is_state" xorm:"tinyint notnull default '1' comment('状态1私密；2公开')"` // 状态1私密；2公开
+	IsDel      uint8     `json:"is_del" xorm:"tinyint notnull default '0' comment('0未删除；1已删除')"`   // 0未删除；1已删除
 	UpdateTime time.Time `json:"update_time" readonly:"true" xorm:"notnull updated"`
 	CreateTime time.Time `json:"create_time" readonly:"true" xorm:"notnull created"`
 }
