@@ -16,20 +16,21 @@ import (
 	"testing"
 )
 
-var user = &datamodels.Article{Intro: "info"}
+var article = &datamodels.Article{}
 
-func connect() UserRepository {
-	return NewUserRepository()
+func connect() ArticleRepository {
+	return NewArticleRepository()
 }
 
-func Test_userRepository_InsertOrUpdate(t *testing.T) {
-	t.Log(connect().Insert(user))
+func Test_articleRepository_InsertOrUpdate(t *testing.T) {
+	t.Log(connect().Insert(article))
 }
 
-func Test_userRepository_SelectMany(t *testing.T) {
-	t.Log(connect().SelectMany(user, 0, 3))
+func Test_articleRepository_SelectMany(t *testing.T) {
+	t.Log(connect().SelectMany([]int8{IS_STATE_PUBLIC, IS_STATE_PRIVATE}, 0, 3))
 }
 
-func Test_userRepository_Select(t *testing.T) {
-	t.Log(connect().Select(user))
+func Test_articleRepository_Select(t *testing.T) {
+	article.Id = 1
+	t.Log(connect().Select(article))
 }

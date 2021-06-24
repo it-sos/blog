@@ -20,27 +20,39 @@ const (
 	IS_STATE_PUBLIC  = 2
 )
 
-type UserRepository interface {
+type ArticleRepository interface {
 	// Insert 新增
 	Insert(p *datamodels.Article) (id uint)
 	// Update 更新
 	Update(p *datamodels.Article) (id uint)
-	// Select 查询用户详细
+	// Select 查询文章详细
 	Select(p *datamodels.Article) (datamodels.Article, bool)
-	// SelectMany 查询用户列表
-	SelectMany(p *datamodels.Article, offset int, limit int) (results []datamodels.Article)
+	// Content 文章内容
+	Content(id uint) datamodels.ArticleContent
+	// SelectMany 查询文章列表
+	SelectMany(state []int8, offset int, limit int) (results []datamodels.Article)
+	SelectManyByIds(ids []int) []datamodels.Article
 }
 
-type userRepository struct {
+type articleRepository struct {
 }
 
 var err error
 
-func NewUserRepository() UserRepository {
-	return &userRepository{}
+func NewArticleRepository() ArticleRepository {
+	return &articleRepository{}
 }
 
-func (ur *userRepository) Select(p *datamodels.Article) (datamodels.Article, bool) {
+func (ur *articleRepository) Content(id uint) datamodels.ArticleContent {
+	content := &datamodels.ArticleContent{Aid: id}
+	_, err = db.Conn.Get(content)
+	if err != nil {
+		panic(err)
+	}
+	return *content
+}
+
+func (ur *articleRepository) Select(p *datamodels.Article) (datamodels.Article, bool) {
 	has, err := db.Conn.Get(p)
 	if err != nil {
 		panic(err)
@@ -48,17 +60,25 @@ func (ur *userRepository) Select(p *datamodels.Article) (datamodels.Article, boo
 	return *p, has
 }
 
-func (ur *userRepository) SelectMany(p *datamodels.Article, offset int, limit int) (results []datamodels.Article) {
+func (ur *articleRepository) SelectMany(state []int8, offset int, limit int) (results []datamodels.Article) {
 	article := make([]datamodels.Article, 0)
-	state := []int{IS_STATE_PUBLIC}
-	err := db.Conn.In("is_state", state).Desc("update_time").Limit(limit, offset).Find(&article)
+	err = db.Conn.In("is_state", state).Desc("utime").Limit(limit, offset).Find(&article)
 	if err != nil {
 		panic(err)
 	}
 	return article
 }
 
-func (ur *userRepository) Insert(p *datamodels.Article) (id uint) {
+func (ur *articleRepository) SelectManyByIds(ids []int) []datamodels.Article {
+	article := make([]datamodels.Article, 0)
+	err := db.Conn.In("id", ids).Find(&article)
+	if err != nil {
+		panic(err)
+	}
+	return article
+}
+
+func (ur *articleRepository) Insert(p *datamodels.Article) (id uint) {
 	_, err = db.Conn.Insert(p)
 	if err != nil {
 		panic(err)
@@ -66,7 +86,7 @@ func (ur *userRepository) Insert(p *datamodels.Article) (id uint) {
 	return p.Id
 }
 
-func (ur *userRepository) Update(p *datamodels.Article) (id uint) {
+func (ur *articleRepository) Update(p *datamodels.Article) (id uint) {
 	_, err = db.Conn.ID(p.Id).Update(p)
 	if err != nil {
 		panic(err)
