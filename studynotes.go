@@ -11,7 +11,6 @@
 package studynotes
 
 import (
-	"gitee.com/itsos/golibs/global/variable"
 	"gitee.com/itsos/studynotes/config"
 	"gitee.com/itsos/studynotes/web/bootstrap"
 	"gitee.com/itsos/studynotes/web/middleware/identity"
@@ -20,7 +19,6 @@ import (
 )
 
 func newApp() *bootstrap.Bootstrapper {
-	println(variable.BasePath)
 	app := bootstrap.New("studynotes", "peng.yu@qjfu.cn")
 	app.Bootstrap()
 	app.Configure(identity.Configure, routes.Configure)

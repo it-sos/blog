@@ -23,7 +23,7 @@ import (
 var c = C.C
 
 func main() {
-	config.C.Init()
+	config.Init()
 	app := iris.New()
 	url := swagger.URL(c.GetSwaggerUrl() + "/swagger/doc.json")
 	app.Get("/swagger/{any:path}", swagger.WrapHandler(swaggerFiles.Handler, url))

@@ -141,24 +141,29 @@ func (b *Bootstrapper) Configure(cs ...Configurator) {
 
 // 初始化配置和存储连接等
 func (b *Bootstrapper) initialization() {
-	println(variable.BasePath)
-	println(config.C.GetPath())
-	config.C.Init()
-	println(variable.BasePath)
+	config.Init()
 	db.Init()
 }
 
 func (b *Bootstrapper) Bootstrap() *Bootstrapper {
+	// 初始配置、数据存储连接
 	b.initialization()
 
+	// 设置golang views目录
 	b.SetupViews(variable.BasePath + "/web/views")
 
+	// 设置session
 	hashKey := securecookie.GenerateRandomKey(64)
 	blockKey := securecookie.GenerateRandomKey(32)
-	b.SetupSessions(24*time.Hour, hashKey, blockKey)
+	b.SetupSessions(10*time.Minute, hashKey, blockKey)
+
+	// 设置错误捕获
 	b.SetupErrorHandlers()
 
 	b.Use(func(ctx *context.Context) {
+		// 设置操作时重置session时间
+		b.Sessions.ShiftExpiration(ctx)
+		// 设置允许跨域访问
 		ctx.Header("Access-Control-Allow-Origin", "*")
 		ctx.Next()
 	})

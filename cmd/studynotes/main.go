@@ -11,18 +11,9 @@
 package main
 
 import (
-	"flag"
-	"gitee.com/itsos/golibs/global/variable"
 	"gitee.com/itsos/studynotes"
 )
 
-var workdir = flag.String("w", "", "指定工作目录 -w /workdir")
-
 func main() {
-	flag.Parse()
-	if *workdir != "" {
-		variable.BasePath = *workdir
-	}
-	println(variable.BasePath)
 	studynotes.Listen()
 }

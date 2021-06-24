@@ -11,6 +11,7 @@
 package controllers
 
 import (
+	"fmt"
 	"gitee.com/itsos/golibs/global/variable"
 	"gitee.com/itsos/golibs/utils"
 	"gitee.com/itsos/studynotes/errors"
@@ -18,12 +19,16 @@ import (
 	"gitee.com/itsos/studynotes/services"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
+	"github.com/kataras/iris/v12/sessions"
 	"mime/multipart"
+	"time"
 )
 
 type IndexController struct {
-	S   services.PhotoService
-	Ctx iris.Context
+	S         services.PhotoService
+	Ctx       iris.Context
+	StartTime time.Time
+	Sess      *sessions.Session
 }
 
 var (
@@ -65,7 +70,6 @@ func beforeSave(ctx iris.Context, file *multipart.FileHeader) bool {
 // @Router /qrcode [get]
 func (c *IndexController) GetQrcode() (mvc.Result, error) {
 	id := c.Ctx.FormValue("id")
-
 	if id == "" {
 		return nil, errors.Error("id_param_err")
 	}
@@ -73,4 +77,23 @@ func (c *IndexController) GetQrcode() (mvc.Result, error) {
 		ContentType: "image/png",
 		Content:     c.S.GetQrcode(id),
 	}, nil
+}
+
+// GetCookie
+// @Tags 图库管理
+// @Summary 展示二维码
+// @Description 通过Qrcode ID返回二维码图片流
+// @Accept json
+// @Produce json
+// @Param id query string true "Qrcode Id"
+// @Success 200 {string} string "图片流"
+// @Failure 400 {object} errors.Errors "error"
+// @Router /cookie [get]
+func (c *IndexController) GetCookie() string {
+	//id := c.Ctx.FormValue("id")
+	visits := c.Sess.Increment("visits", 1)
+	// 写下当前的，更新的访问.
+	since := time.Now().Sub(c.StartTime).Seconds()
+	return fmt.Sprintf("%d visit(s) from my current session in %0.1f seconds of server's up-time",
+		visits, since)
 }
