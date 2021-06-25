@@ -16,11 +16,9 @@ import (
 )
 
 func TestTimesCache(t *testing.T) {
-	NAuthTimes.Key("peng.yu").Incr()
-	NAuthTimes.Key("peng.yu").Incr()
-	NAuthTimes.Key("peng.yu").Incr()
-	t.Log(NAuthTimes.Key("peng.yu").Incr())
-	t.Log(NAuthTimes.Key("peng.yu").Get())
-	NAuthTimes.Key("peng.yu").Clear()
-	t.Log(NAuthTimes.Key("peng.yu").Decr())
+	NAccessTimes.Id(1).Incr()
+	NAccessTimes.Id(1).Incr()
+	NAccessTimes.Id(2).Incr()
+	t.Log(NAccessTimes.Id(1).Get())
+	t.Log(NAccessTimes.Rank(1))
 }

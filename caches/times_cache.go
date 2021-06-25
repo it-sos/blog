@@ -14,74 +14,50 @@ import (
 	"fmt"
 	"gitee.com/itsos/golibs/db"
 	"golang.org/x/net/context"
-	"time"
 )
 
-type AuthTimes interface {
-	Key(k string) AuthTimesCmd
+type AccessTimes interface {
+	Id(k uint) AccessTimesCmd
+	Rank(num int) []string
 }
 
-type AuthTimesCmd interface {
-	Get() int64
-	Incr() int64
-	Decr() int64
-	Clear() bool
-	expire()
+type accessTimes struct{}
+
+type AccessTimesCmd interface {
+	Get() int
+	Incr()
 }
 
-type authTimes struct{}
-
-type authTimesCmd struct {
+type accessTimesCmd struct {
 	k string
 }
 
-func (a *authTimesCmd) Get() int64 {
-	times, _ := db.Rdb.Get(context.Background(), a.k).Int64()
-	return times
+func (a *accessTimesCmd) Get() int {
+	return int(db.Rdb.ZScore(ctx, root, a.k).Val())
 }
 
-var NAuthTimes = NewAuthTimes()
-
-func NewAuthTimes() AuthTimes {
-	return &authTimes{}
-}
-
-const prefixTimes = "auth_times_%s"
-
-func (a *authTimes) Key(k string) AuthTimesCmd {
-	return &authTimesCmd{fmt.Sprintf(prefixTimes, k)}
-}
-
-const ttlTimes = 3 * time.Hour
-
-func (a *authTimesCmd) expire() {
-	if err := db.Rdb.Expire(context.Background(), a.k, ttlTimes).Err(); err != nil {
-		panic(err)
-	}
-}
-
-func (a *authTimesCmd) Decr() int64 {
-	decr, err := db.Rdb.Decr(context.Background(), a.k).Result()
+func (a *accessTimesCmd) Incr() {
+	err := db.Rdb.ZIncrBy(ctx, root, 1, a.k).Err()
 	if err != nil {
 		panic(err)
 	}
-	a.expire()
-	return decr
 }
 
-func (a *authTimesCmd) Clear() bool {
-	err := db.Rdb.Del(context.Background(), a.k).Err()
-	if err != nil {
-		panic(err)
-	}
-	return true
+const prefixTimes = "%d"
+const root = "access_times_page"
+
+var ctx = context.Background()
+
+func (a *accessTimes) Id(k uint) AccessTimesCmd {
+	return &accessTimesCmd{fmt.Sprintf(prefixTimes, k)}
 }
 
-func (a *authTimesCmd) Incr() int64 {
-	incr, err := db.Rdb.Incr(context.Background(), a.k).Result()
-	if err != nil {
-		panic(err)
-	}
-	a.expire()
-	return incr
+func (a *accessTimes) Rank(num int) []string {
+	return db.Rdb.ZRevRange(ctx, root, 0, int64(num-1)).Val()
+}
+
+var NAccessTimes = NewAccessTimes()
+
+func NewAccessTimes() AccessTimes {
+	return &accessTimes{}
 }

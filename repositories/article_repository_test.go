@@ -27,10 +27,14 @@ func Test_articleRepository_InsertOrUpdate(t *testing.T) {
 }
 
 func Test_articleRepository_SelectMany(t *testing.T) {
-	t.Log(connect().SelectMany([]int8{IS_STATE_PUBLIC, IS_STATE_PRIVATE}, 0, 3))
+	t.Log(connect().SelectMany([]uint8{IsStatePublic, IsStatePrivate}, 0, 3))
 }
 
 func Test_articleRepository_Select(t *testing.T) {
 	article.Id = 1
 	t.Log(connect().Select(article))
+}
+
+func Test_SelectManyByIds(t *testing.T) {
+	t.Log(connect().SelectManyByIds([]string{"3", "1", "2"}))
 }

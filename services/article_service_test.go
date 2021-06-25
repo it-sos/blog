@@ -8,27 +8,17 @@
    See the Mulan PSL v2 for more details.
 */
 
-package vo
+package services
 
-import "gitee.com/itsos/studynotes/datamodels"
-
-type (
-	ArticlesVO struct {
-		datamodels.Article
-		Duration string `json:"duration"` // 持续时间
-	}
-
-	ArticleVO struct {
-		datamodels.Article
-		AccessTimes int `json:"accesss_times"` // 访问次数
-	}
-
-	TopicVO struct {
-		Title   string // 专题名
-		Article []ArticleVO
-	}
-
-	ArticleContentVO struct {
-		Topic []TopicVO
-	}
+import (
+	"testing"
 )
+import _ "gitee.com/itsos/golibs/tests/testsdb"
+
+func Test_GetRange(t *testing.T) {
+	t.Log(NewArticleService().GetRank())
+}
+
+func Test_GetListPage(t *testing.T) {
+	t.Log(NewArticleService().GetListPage(true, 5, 1))
+}

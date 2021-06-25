@@ -13,11 +13,12 @@ package repositories
 import (
 	"gitee.com/itsos/golibs/db"
 	"gitee.com/itsos/studynotes/datamodels"
+	"strings"
 )
 
 const (
-	IS_STATE_PRIVATE = 1
-	IS_STATE_PUBLIC  = 2
+	IsStatePrivate = 1
+	IsStatePublic  = 2
 )
 
 type ArticleRepository interface {
@@ -30,8 +31,8 @@ type ArticleRepository interface {
 	// Content 文章内容
 	Content(id uint) datamodels.ArticleContent
 	// SelectMany 查询文章列表
-	SelectMany(state []int8, offset int, limit int) (results []datamodels.Article)
-	SelectManyByIds(ids []int) []datamodels.Article
+	SelectMany(state []uint8, offset int, limit int) (results []datamodels.Article)
+	SelectManyByIds(ids []string) []datamodels.Article
 }
 
 type articleRepository struct {
@@ -43,6 +44,7 @@ func NewArticleRepository() ArticleRepository {
 	return &articleRepository{}
 }
 
+// Content 获取文件内容
 func (ur *articleRepository) Content(id uint) datamodels.ArticleContent {
 	content := &datamodels.ArticleContent{Aid: id}
 	_, err = db.Conn.Get(content)
@@ -52,6 +54,7 @@ func (ur *articleRepository) Content(id uint) datamodels.ArticleContent {
 	return *content
 }
 
+// Select 查询文章信息
 func (ur *articleRepository) Select(p *datamodels.Article) (datamodels.Article, bool) {
 	has, err := db.Conn.Get(p)
 	if err != nil {
@@ -60,7 +63,8 @@ func (ur *articleRepository) Select(p *datamodels.Article) (datamodels.Article, 
 	return *p, has
 }
 
-func (ur *articleRepository) SelectMany(state []int8, offset int, limit int) (results []datamodels.Article) {
+// SelectMany 查询文章列表
+func (ur *articleRepository) SelectMany(state []uint8, offset int, limit int) (results []datamodels.Article) {
 	article := make([]datamodels.Article, 0)
 	err = db.Conn.In("is_state", state).Desc("utime").Limit(limit, offset).Find(&article)
 	if err != nil {
@@ -69,9 +73,11 @@ func (ur *articleRepository) SelectMany(state []int8, offset int, limit int) (re
 	return article
 }
 
-func (ur *articleRepository) SelectManyByIds(ids []int) []datamodels.Article {
+// SelectManyByIds 通过文章id查询列表
+func (ur *articleRepository) SelectManyByIds(ids []string) []datamodels.Article {
 	article := make([]datamodels.Article, 0)
-	err := db.Conn.In("id", ids).Find(&article)
+	orderBy := strings.Join(ids, ",")
+	err := db.Conn.In("id", ids).OrderBy("field(id," + orderBy + ")").Find(&article)
 	if err != nil {
 		panic(err)
 	}
