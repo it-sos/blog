@@ -28,8 +28,6 @@ type ArticleRepository interface {
 	Update(p *datamodels.Article) (id uint)
 	// Select 查询文章详细
 	Select(p *datamodels.Article) (datamodels.Article, bool)
-	// Content 文章内容
-	Content(id uint) datamodels.ArticleContent
 	// SelectMany 查询文章列表
 	SelectMany(state []uint8, offset int, limit int) (results []datamodels.Article)
 	SelectManyByIds(ids []string) []datamodels.Article
@@ -38,8 +36,6 @@ type ArticleRepository interface {
 type articleRepository struct {
 }
 
-var err error
-
 func NewArticleRepository() ArticleRepository {
 	return &articleRepository{}
 }
@@ -47,7 +43,7 @@ func NewArticleRepository() ArticleRepository {
 // Content 获取文件内容
 func (ur *articleRepository) Content(id uint) datamodels.ArticleContent {
 	content := &datamodels.ArticleContent{Aid: id}
-	_, err = db.Conn.Get(content)
+	_, err := db.Conn.Get(content)
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +62,7 @@ func (ur *articleRepository) Select(p *datamodels.Article) (datamodels.Article, 
 // SelectMany 查询文章列表
 func (ur *articleRepository) SelectMany(state []uint8, offset int, limit int) (results []datamodels.Article) {
 	article := make([]datamodels.Article, 0)
-	err = db.Conn.In("is_state", state).Desc("utime").Limit(limit, offset).Find(&article)
+	err := db.Conn.In("is_state", state).Desc("utime").Limit(limit, offset).Find(&article)
 	if err != nil {
 		panic(err)
 	}
@@ -85,7 +81,7 @@ func (ur *articleRepository) SelectManyByIds(ids []string) []datamodels.Article 
 }
 
 func (ur *articleRepository) Insert(p *datamodels.Article) (id uint) {
-	_, err = db.Conn.Insert(p)
+	_, err := db.Conn.Insert(p)
 	if err != nil {
 		panic(err)
 	}
@@ -93,7 +89,7 @@ func (ur *articleRepository) Insert(p *datamodels.Article) (id uint) {
 }
 
 func (ur *articleRepository) Update(p *datamodels.Article) (id uint) {
-	_, err = db.Conn.ID(p.Id).Update(p)
+	_, err := db.Conn.ID(p.Id).Update(p)
 	if err != nil {
 		panic(err)
 	}
