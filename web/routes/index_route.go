@@ -11,13 +11,11 @@
 package routes
 
 import (
-	"gitee.com/itsos/studynotes/services"
 	"gitee.com/itsos/studynotes/web/controllers"
 	"github.com/kataras/iris/v12/mvc"
 )
 
 func indexRoute(app *mvc.Application) {
-	s := services.NewPhotoService()
-	app.Register(s)
+	//app.Register(s)
 	app.Handle(new(controllers.IndexController))
 }

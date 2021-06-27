@@ -36,9 +36,7 @@ type ArticleRepository interface {
 type articleRepository struct {
 }
 
-func NewArticleRepository() ArticleRepository {
-	return &articleRepository{}
-}
+var RArticle ArticleRepository = &articleRepository{}
 
 // Content 获取文件内容
 func (ur *articleRepository) Content(id uint) datamodels.ArticleContent {

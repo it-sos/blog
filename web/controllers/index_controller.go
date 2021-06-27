@@ -11,89 +11,33 @@
 package controllers
 
 import (
-	"fmt"
-	"gitee.com/itsos/golibs/global/variable"
-	"gitee.com/itsos/golibs/utils"
-	"gitee.com/itsos/studynotes/errors"
-	"gitee.com/itsos/studynotes/models/vo"
 	"gitee.com/itsos/studynotes/services"
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/mvc"
 	"github.com/kataras/iris/v12/sessions"
-	"mime/multipart"
 	"time"
 )
 
 type IndexController struct {
-	S         services.PhotoService
 	Ctx       iris.Context
 	StartTime time.Time
 	Sess      *sessions.Session
 }
 
-var (
-	uploadDir = variable.BasePath + "/web/public/photos"
-)
-
-// PostPhotos
-// @Tags 图库管理
-// @Summary 上传照片
-// @Description 上传照片文件
-// @Accept  multipart/form-data
-// @Produce json
-// @Param file formData file true "request file data"
-// @Success 200 {object} vo.QrcodeVO "success"
-// @Failure 400 {object} errors.Errors "error"
-// @Router /photos [post]
-func (c *IndexController) PostPhotos() (vo.QrcodeVO, error) {
-	file, _, err := c.Ctx.UploadFormFiles(uploadDir, beforeSave)
-	if err != nil {
-		return vo.QrcodeVO{}, errors.Error("upload_err")
-	}
-	return vo.QrcodeVO{Id: file[0].Filename}, nil
-}
-
-func beforeSave(ctx iris.Context, file *multipart.FileHeader) bool {
-	file.Filename = utils.Rand(32) + ".gif"
-	return true
-}
-
-// GetQrcode
-// @Tags 图库管理
-// @Summary 展示二维码
-// @Description 通过Qrcode ID返回二维码图片流
-// @Accept json
-// @Produce json
-// @Param id query string true "Qrcode Id"
-// @Success 200 {string} string "图片流"
-// @Failure 400 {object} errors.Errors "error"
-// @Router /qrcode [get]
-func (c *IndexController) GetQrcode() (mvc.Result, error) {
-	id := c.Ctx.FormValue("id")
-	if id == "" {
-		return nil, errors.Error("id_param_err")
-	}
-	return mvc.Response{
-		ContentType: "image/png",
-		Content:     c.S.GetQrcode(id),
-	}, nil
-}
-
 // GetCookie
-// @Tags 图库管理
-// @Summary 展示二维码
-// @Description 通过Qrcode ID返回二维码图片流
+// @Tags 测试方法
+// @Summary 临时用
+// @Description 临时用
 // @Accept json
 // @Produce json
-// @Param id query string true "Qrcode Id"
-// @Success 200 {string} string "图片流"
+// @Success 200 {string} string "测试结果"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /cookie [get]
-func (c *IndexController) GetCookie() string {
-	//id := c.Ctx.FormValue("id")
-	visits := c.Sess.Increment("visits", 1)
-	// 写下当前的，更新的访问.
-	since := time.Now().Sub(c.StartTime).Seconds()
-	return fmt.Sprintf("%d visit(s) from my current session in %0.1f seconds of server's up-time",
-		visits, since)
+func (c *IndexController) GetCookie() interface{} {
+	return services.SArticle.GetRank()
+	////id := c.Ctx.FormValue("id")
+	//visits := c.Sess.Increment("visits", 1)
+	//// 写下当前的，更新的访问.
+	//since := time.Now().Sub(c.StartTime).Seconds()
+	//return fmt.Sprintf("%d visit(s) from my current session in %0.1f seconds of server's up-time",
+	//	visits, since)
 }

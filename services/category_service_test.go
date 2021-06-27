@@ -13,11 +13,7 @@ package services
 import (
 	"testing"
 )
+import _ "gitee.com/itsos/golibs/tests/testsdb"
 
-func photoConnect() PhotoService {
-	return NewPhotoService()
-}
-
-func Test_Qrcode(t *testing.T) {
-	t.Log(photoConnect().GetQrcode("1"))
+func Test_Category(t *testing.T) {
 }

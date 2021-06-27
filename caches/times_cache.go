@@ -56,8 +56,4 @@ func (a *accessTimes) Rank(num int) []string {
 	return db.Rdb.ZRevRange(ctx, root, 0, int64(num-1)).Val()
 }
 
-var NAccessTimes = NewAccessTimes()
-
-func NewAccessTimes() AccessTimes {
-	return &accessTimes{}
-}
+var CAccessTimes AccessTimes = &accessTimes{}

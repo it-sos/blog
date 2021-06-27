@@ -11,22 +11,55 @@
 package repositories
 
 import (
+	"gitee.com/itsos/golibs/db"
 	"gitee.com/itsos/studynotes/datamodels"
 )
 
 type CategoryRepository interface {
 	// Insert 新增
-	Insert(p *datamodels.Article) (id uint)
+	Insert(p *datamodels.Category) (id uint)
 	// Update 更新
-	Update(p *datamodels.Article) (id uint)
-	// Select 查询文章详细
-	Select(p *datamodels.Article) (datamodels.Article, bool)
-	// Content 文章内容
-	Content(id uint) datamodels.ArticleContent
-	// SelectMany 查询文章列表
-	SelectMany(state []uint8, offset int, limit int) (results []datamodels.Article)
-	SelectManyByIds(ids []string) []datamodels.Article
+	Update(p *datamodels.Category) (id uint)
+	// Select 查询单条
+	Select(p *datamodels.Category) (datamodels.Category, bool)
+	// SelectMany 查询多条
+	SelectMany() []datamodels.Category
 }
 
 type categoryRepository struct {
 }
+
+func (c categoryRepository) Insert(p *datamodels.Category) uint {
+	_, err := db.Conn.Insert(p)
+	if err != nil {
+		panic(err)
+	}
+	return p.Id
+}
+
+func (c categoryRepository) Update(p *datamodels.Category) uint {
+	_, err := db.Conn.Update(p)
+	if err != nil {
+		panic(err)
+	}
+	return p.Id
+}
+
+func (c categoryRepository) Select(p *datamodels.Category) (datamodels.Category, bool) {
+	has, err := db.Conn.Get(p)
+	if err != nil {
+		panic(err)
+	}
+	return *p, has
+}
+
+func (c categoryRepository) SelectMany() (results []datamodels.Category) {
+	category := make([]datamodels.Category, 0)
+	err := db.Conn.Desc("id").Find(&category)
+	if err != nil {
+		panic(err)
+	}
+	return category
+}
+
+var RCategory CategoryRepository = &categoryRepository{}

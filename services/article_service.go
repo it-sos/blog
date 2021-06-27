@@ -28,23 +28,25 @@ type ArticleService interface {
 	GetContent(title string) vo.ArticleContentVO
 }
 
-func NewArticleService() ArticleService {
-	return &articleService{repositories.NewArticleRepository(), caches.NAccessTimes}
-}
+var SArticle ArticleService = &articleService{repositories.RArticle, caches.CAccessTimes, SCategory}
 
 type articleService struct {
-	repo  repositories.ArticleRepository
-	times caches.AccessTimes
+	article  repositories.ArticleRepository
+	times    caches.AccessTimes
+	category CategoryService
 }
 
 func (a articleService) GetRank() []vo.ArticleAccessTimesVO {
+	a.times.Rank(10)
+	articleVO := make([]vo.ArticleAccessTimesVO, 0)
 	// 获取访问量的前50条
 	rank := a.times.Rank(50)
-	article := a.repo.SelectManyByIds(rank)
-	articleVO := make([]vo.ArticleAccessTimesVO, 0)
-	if len(article) > 0 {
-		for _, v := range article {
-			articleVO = append(articleVO, vo.ArticleAccessTimesVO{Title: v.Title, AccessTimes: a.times.Id(v.Id).Get()})
+	if len(rank) > 0 {
+		article := a.article.SelectManyByIds(rank)
+		if len(article) > 0 {
+			for _, v := range article {
+				articleVO = append(articleVO, vo.ArticleAccessTimesVO{Title: v.Title, AccessTimes: a.times.Id(v.Id).Get()})
+			}
 		}
 	}
 	return articleVO
@@ -58,7 +60,7 @@ func (a articleService) GetListPage(isLogin bool, page int, size int) []vo.Artic
 		state = append(state, repositories.IsStatePrivate)
 	}
 	offset := (page - 1) * size
-	article := a.repo.SelectMany(state, offset, size)
+	article := a.article.SelectMany(state, offset, size)
 	return getArticles(article)
 }
 

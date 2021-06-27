@@ -13,28 +13,6 @@ package repositories
 import (
 	_ "gitee.com/itsos/golibs/tests/testsdb"
 	"gitee.com/itsos/studynotes/datamodels"
-	"testing"
 )
 
 var article = &datamodels.Article{}
-
-func connect() ArticleRepository {
-	return NewArticleRepository()
-}
-
-func Test_articleRepository_InsertOrUpdate(t *testing.T) {
-	t.Log(connect().Insert(article))
-}
-
-func Test_articleRepository_SelectMany(t *testing.T) {
-	t.Log(connect().SelectMany([]uint8{IsStatePublic, IsStatePrivate}, 0, 3))
-}
-
-func Test_articleRepository_Select(t *testing.T) {
-	article.Id = 1
-	t.Log(connect().Select(article))
-}
-
-func Test_SelectManyByIds(t *testing.T) {
-	t.Log(connect().SelectManyByIds([]string{"3", "1", "2"}))
-}
