@@ -57,6 +57,16 @@ export default {
   },
   methods: {
     load () {
+      // axios({
+      //   method: 'get',
+      //   url: '/article/list',
+      //   data: {
+      //     page: 1,
+      //     size: 10
+      //   }
+      // }).then(function (res) {
+      //   console.log(res.data)
+      // })
       this.loading = true
       setTimeout(() => {
         this.count += 5

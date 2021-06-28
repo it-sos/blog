@@ -19,7 +19,7 @@ import (
 
 const (
 	IsStatePrivate = 1
-	IsStatePublic  = 3
+	IsStatePublic  = 2
 )
 
 type ArticleRepository interface {
