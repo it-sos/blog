@@ -12,6 +12,6 @@ package datamodels
 
 // ArticleContent 文章内容表
 type ArticleContent struct {
-	Aid  uint   `json:"aid" xorm:"notnull pk id"`                     // 文章id
+	Aid  uint   `json:"aid" xorm:"notnull pk aid"`                    // 文章id
 	Data string `json:"data" xorm:"longtext notnull comment('文章内容')"` // 文章内容
 }

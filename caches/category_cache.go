@@ -54,4 +54,5 @@ func (a *category) Id(k uint) CategoryCmd {
 	return &categoryCmd{fmt.Sprintf(categoryPrefix, k)}
 }
 
+// CCategory cache分类id与分类名
 var CCategory Category = &category{}

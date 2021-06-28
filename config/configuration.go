@@ -50,7 +50,7 @@ func (c Configuration) GetQUrl() string {
 
 func covertConfiguration() *Configuration {
 	c := &Configuration{
-		Configuration: web.CovertConfiguration(),
+		Configuration: web.Config,
 	}
 	t := reflect.ValueOf(c).Elem()
 	for i := 0; i < t.NumField(); i++ {

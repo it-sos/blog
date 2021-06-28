@@ -16,4 +16,9 @@ import (
 import _ "gitee.com/itsos/golibs/tests/testsdb"
 
 func Test_Category(t *testing.T) {
+	t.Log(SCategory.GetTopicAndTag(17))
+}
+
+func Test_CategoryName(t *testing.T) {
+	t.Log(SCategory.GetTopicAndTagName(90))
 }

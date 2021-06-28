@@ -20,6 +20,6 @@ type Article struct {
 	Uid     uint      `json:"uid" xorm:"notnull comment('编辑者id')"`                              // 编辑者id
 	IsState uint8     `json:"is_state" xorm:"tinyint notnull default '1' comment('状态1私密；2公开')"` // 状态1私密；2公开
 	IsDel   uint8     `json:"is_del" xorm:"tinyint notnull default '0' comment('0未删除；1已删除')"`   // 0未删除；1已删除
-	Utime   time.Time `json:"utime" readonly:"true" xorm:"notnull updated"`
+	Utime   time.Time `json:"utime" readonly:"true" xorm:"index notnull updated"`
 	Ctime   time.Time `json:"ctime" readonly:"true" xorm:"notnull created"`
 }

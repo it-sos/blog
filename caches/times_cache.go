@@ -56,4 +56,5 @@ func (a *accessTimes) Rank(num int) []string {
 	return db.Rdb.ZRevRange(ctx, root, 0, int64(num-1)).Val()
 }
 
+// CAccessTimes cache文章访问次数
 var CAccessTimes AccessTimes = &accessTimes{}

@@ -22,6 +22,7 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.9 // indirect; indirec
 	github.com/nats-io/nats-server/v2 v2.2.5 // indirect
 	github.com/onsi/gomega v1.12.0 // indirect
+	github.com/prometheus/common v0.4.0
 	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/swaggo/swag v1.6.5

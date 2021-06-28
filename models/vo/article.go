@@ -15,7 +15,7 @@ import "gitee.com/itsos/studynotes/datamodels"
 type (
 	// ArticleVO 首页文章列表vo
 	ArticleVO struct {
-		datamodels.Article
+		Article  datamodels.Article
 		Duration string `json:"duration"` // 持续时间
 		Topics   []string
 		Tags     []string
@@ -33,9 +33,24 @@ type (
 		Article []ArticleAccessTimesVO // 文章列表
 	}
 
+	// TagVO 标签下文章列表及访问次数
+	TagVO struct {
+		Title   string                 // 专题名
+		Article []ArticleAccessTimesVO // 文章列表
+	}
+
+	// NavigationVO 导航
+	NavigationVO struct {
+		PrevTitle string // 上一文章title
+		NextTitle string // 下一文章title
+	}
+
 	// ArticleContentVO 文章内容及专题列表
 	ArticleContentVO struct {
-		Article ArticleVO
-		Topic   []TopicVO
+		Navigation     NavigationVO              // 导航
+		Article        ArticleVO                 // 文章信息
+		ArticleContent datamodels.ArticleContent // 文章内容
+		Topics         []TopicVO                 // 专题文章列表
+		Tags           []TagVO                   // 标签文章列表
 	}
 )

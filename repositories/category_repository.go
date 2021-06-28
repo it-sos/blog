@@ -15,6 +15,13 @@ import (
 	"gitee.com/itsos/studynotes/datamodels"
 )
 
+const (
+	// CategoryRelTypeTag 标签
+	CategoryRelTypeTag uint8 = 1
+	// CategoryRelTypeTopic 专题
+	CategoryRelTypeTopic uint8 = 2
+)
+
 type CategoryRepository interface {
 	// Insert 新增
 	Insert(p *datamodels.Category) (id uint)

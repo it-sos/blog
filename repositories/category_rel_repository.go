@@ -15,13 +15,6 @@ import (
 	"gitee.com/itsos/studynotes/datamodels"
 )
 
-const (
-	// CategoryRelTypeTag 标签
-	CategoryRelTypeTag uint8 = 1
-	// CategoryRelTypeTopic 专题
-	CategoryRelTypeTopic uint8 = 2
-)
-
 type CategoryRelRepository interface {
 	// Insert 新增
 	Insert(p *datamodels.CategoryRel) bool
@@ -29,8 +22,10 @@ type CategoryRelRepository interface {
 	Update(p *datamodels.CategoryRel) bool
 	// Select 查询单条
 	Select(p *datamodels.CategoryRel) (datamodels.CategoryRel, bool)
-	// SelectMany 查询多条
-	SelectMany(p *datamodels.CategoryRel) []datamodels.CategoryRel
+	// SelectManyByAid 通过文章id查询多条
+	SelectManyByAid(aid uint) []datamodels.CategoryRel
+	// SelectManyByCid 通过分类id查询多条
+	SelectManyByCid(cid uint) []datamodels.CategoryRel
 }
 
 type categoryRelRepository struct {
@@ -60,9 +55,18 @@ func (c categoryRelRepository) Select(p *datamodels.CategoryRel) (datamodels.Cat
 	return *p, has
 }
 
-func (c categoryRelRepository) SelectMany(p *datamodels.CategoryRel) (results []datamodels.CategoryRel) {
+func (c categoryRelRepository) SelectManyByAid(aid uint) (results []datamodels.CategoryRel) {
 	categoryRel := make([]datamodels.CategoryRel, 0)
-	err := db.Conn.Where("aid=?", p.Aid).Desc("id").Find(&categoryRel)
+	err := db.Conn.Where("aid=?", aid).Desc("id").Find(&categoryRel)
+	if err != nil {
+		panic(err)
+	}
+	return categoryRel
+}
+
+func (c categoryRelRepository) SelectManyByCid(cid uint) (results []datamodels.CategoryRel) {
+	categoryRel := make([]datamodels.CategoryRel, 0)
+	err := db.Conn.Where("cid=?", cid).Desc("id").Find(&categoryRel)
 	if err != nil {
 		panic(err)
 	}

@@ -14,11 +14,12 @@ import (
 	"gitee.com/itsos/golibs/db"
 	"gitee.com/itsos/studynotes/datamodels"
 	"strings"
+	"time"
 )
 
 const (
 	IsStatePrivate = 1
-	IsStatePublic  = 2
+	IsStatePublic  = 3
 )
 
 type ArticleRepository interface {
@@ -27,30 +28,45 @@ type ArticleRepository interface {
 	// Update 更新
 	Update(p *datamodels.Article) (id uint)
 	// Select 查询文章详细
-	Select(p *datamodels.Article) (datamodels.Article, bool)
+	Select(state []uint8, p *datamodels.Article) (datamodels.Article, bool)
+	// Navigation 按时间续查询上一页下一页导航
+	Navigation(state []uint8, utime time.Time) (prevTitle, nextTitle string)
 	// SelectMany 查询文章列表
 	SelectMany(state []uint8, offset int, limit int) (results []datamodels.Article)
-	SelectManyByIds(ids []string) []datamodels.Article
+	SelectManyByIds(state []uint8, ids []string) []datamodels.Article
 }
 
 type articleRepository struct {
 }
 
-var RArticle ArticleRepository = &articleRepository{}
-
-// Content 获取文件内容
-func (ur *articleRepository) Content(id uint) datamodels.ArticleContent {
-	content := &datamodels.ArticleContent{Aid: id}
-	_, err := db.Conn.Get(content)
+func (ur *articleRepository) Navigation(state []uint8, utime time.Time) (prevTitle, nextTitle string) {
+	prev := &datamodels.Article{}
+	var (
+		has bool
+		err error
+	)
+	has, err = db.Conn.In("is_state", state).Where("utime>?", utime).Asc("utime").Get(prev)
 	if err != nil {
 		panic(err)
 	}
-	return *content
+	if has {
+		prevTitle = prev.Title
+	}
+
+	next := &datamodels.Article{}
+	has, err = db.Conn.In("is_state", state).Where("utime<?", utime).Desc("utime").Get(next)
+	if err != nil {
+		panic(err)
+	}
+	if has {
+		nextTitle = next.Title
+	}
+	return
 }
 
 // Select 查询文章信息
-func (ur *articleRepository) Select(p *datamodels.Article) (datamodels.Article, bool) {
-	has, err := db.Conn.Get(p)
+func (ur *articleRepository) Select(state []uint8, p *datamodels.Article) (datamodels.Article, bool) {
+	has, err := db.Conn.In("is_state", state).Get(p)
 	if err != nil {
 		panic(err)
 	}
@@ -68,10 +84,10 @@ func (ur *articleRepository) SelectMany(state []uint8, offset int, limit int) (r
 }
 
 // SelectManyByIds 通过文章id查询列表
-func (ur *articleRepository) SelectManyByIds(ids []string) []datamodels.Article {
+func (ur *articleRepository) SelectManyByIds(state []uint8, ids []string) []datamodels.Article {
 	article := make([]datamodels.Article, 0)
 	orderBy := strings.Join(ids, ",")
-	err := db.Conn.In("id", ids).OrderBy("field(id," + orderBy + ")").Find(&article)
+	err := db.Conn.In("id", ids).In("is_state", state).OrderBy("field(id," + orderBy + ")").Find(&article)
 	if err != nil {
 		panic(err)
 	}
@@ -93,3 +109,5 @@ func (ur *articleRepository) Update(p *datamodels.Article) (id uint) {
 	}
 	return p.Id
 }
+
+var RArticle ArticleRepository = &articleRepository{}

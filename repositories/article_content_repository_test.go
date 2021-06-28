@@ -17,13 +17,13 @@ import (
 )
 
 func TestArticleContentRepository_Select(t *testing.T) {
-	t.Log(NewArticleContentRepository().Select(&datamodels.ArticleContent{
+	t.Log(RArticleContent.Select(&datamodels.ArticleContent{
 		Aid: 1,
 	}))
 }
 
 func TestArticleContentRepository_Update(t *testing.T) {
-	t.Log(NewArticleContentRepository().Update(&datamodels.ArticleContent{
+	t.Log(RArticleContent.Update(&datamodels.ArticleContent{
 		Aid: 1,
 	}))
 }
