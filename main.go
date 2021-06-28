@@ -8,10 +8,11 @@
    See the Mulan PSL v2 for more details.
 */
 
+// Install: go get -u github.com/swaggo/swag/cmd/swag
 // Usage: swag init
 // @title api
 // @version 1.0
 // @description 鹏sir笔记接口
-// @host 生产：https://yupengsir.com 开发：http://qjfu.cn:8090
+// @host 生产：https://product.com 测试：http://test.com:9090 开发：http://localhost:9090
 
 package studynotes

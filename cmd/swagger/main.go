@@ -13,6 +13,7 @@ package main
 import (
 	"fmt"
 	"gitee.com/itsos/golibs/config"
+	"gitee.com/itsos/golibs/global/consts"
 	C "gitee.com/itsos/studynotes/config"
 	_ "gitee.com/itsos/studynotes/docs"
 	"github.com/iris-contrib/swagger/v12"
@@ -25,9 +26,19 @@ var c = C.C
 func main() {
 	config.Init()
 	app := iris.New()
-	url := swagger.URL(c.GetSwaggerUrl() + "/swagger/doc.json")
-	app.Get("/swagger/{any:path}", swagger.WrapHandler(swaggerFiles.Handler, url))
+	var url string
+	if c.GetActive() == consts.EnvProduct {
+		return
+	}
+	if c.GetActive() == consts.EnvTest {
+		url = c.GetSwaggerUrl()
+	} else {
+		url = fmt.Sprintf("%s://localhost:%s", c.GetScheme(), c.GetSwaggerPort())
+	}
+	swaggerUrl := swagger.URL(url + "/swagger/doc.json")
+	app.Get("/swagger/{any:path}", swagger.WrapHandler(swaggerFiles.Handler, swaggerUrl))
 
 	fmt.Printf("Swagger on: %s/swagger/index.html\n", c.GetSwaggerUrl())
+	fmt.Printf("Swagger on: http://localhost:%s/swagger/index.html\n", c.GetSwaggerPort())
 	app.Listen(":" + c.GetSwaggerPort())
 }

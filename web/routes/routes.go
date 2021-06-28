@@ -12,11 +12,16 @@ package routes
 
 import (
 	"gitee.com/itsos/studynotes/web/bootstrap"
+	"gitee.com/itsos/studynotes/web/controllers"
 	"github.com/kataras/iris/v12/mvc"
 	"time"
 )
 
 func Configure(b *bootstrap.Bootstrapper) {
-	mvc.Configure(b.Party("/"), indexRoute).
-		Register(b.Sessions.Start, time.Now())
+	mvc.Configure(
+		b.Party("/"),
+		func(app *mvc.Application) {
+			app.Handle(new(controllers.IndexController))
+		},
+	).Register(b.Sessions.Start, time.Now())
 }

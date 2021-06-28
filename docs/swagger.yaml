@@ -1,4 +1,42 @@
 definitions:
+  datamodels.Article:
+    properties:
+      ctime:
+        readOnly: true
+        type: string
+      id:
+        description: 文章表ID
+        example: 1
+        readOnly: true
+        type: integer
+      intro:
+        description: 简介
+        type: string
+      is_del:
+        description: 0未删除；1已删除
+        type: integer
+      is_state:
+        description: 状态1私密；2公开
+        type: integer
+      title:
+        description: 标题
+        type: string
+      uid:
+        description: 编辑者id
+        type: integer
+      utime:
+        readOnly: true
+        type: string
+    type: object
+  datamodels.ArticleContent:
+    properties:
+      aid:
+        description: 文章id
+        type: integer
+      data:
+        description: 文章内容
+        type: string
+    type: object
   errors.Errors:
     properties:
       errCode:
@@ -7,69 +45,169 @@ definitions:
       message:
         type: string
     type: object
-  vo.QrcodeVO:
+  vo.ArticleAccessTimesVO:
     properties:
-      id:
-        description: Qrcode Id
+      access_times:
+        description: 访问次数
+        type: integer
+      title:
+        description: 文章标题
         type: string
-    required:
-    - id
     type: object
-host: 生产：https://yupengsir.com 开发：http://qjfu.cn:8090
+  vo.ArticleContentVO:
+    properties:
+      article:
+        $ref: '#/definitions/vo.ArticleVO'
+        description: 文章信息
+      articleContent:
+        $ref: '#/definitions/datamodels.ArticleContent'
+        description: 文章内容
+      navigation:
+        $ref: '#/definitions/vo.NavigationVO'
+        description: 导航
+      tags:
+        description: 标签文章列表
+        items:
+          $ref: '#/definitions/vo.TagVO'
+        type: array
+      topics:
+        description: 专题文章列表
+        items:
+          $ref: '#/definitions/vo.TopicVO'
+        type: array
+    type: object
+  vo.ArticleVO:
+    properties:
+      article:
+        $ref: '#/definitions/datamodels.Article'
+      duration:
+        description: 持续时间
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      topics:
+        items:
+          type: string
+        type: array
+    type: object
+  vo.NavigationVO:
+    properties:
+      nextTitle:
+        description: 下一文章title
+        type: string
+      prevTitle:
+        description: 上一文章title
+        type: string
+    type: object
+  vo.TagVO:
+    properties:
+      article:
+        description: 文章列表
+        items:
+          $ref: '#/definitions/vo.ArticleAccessTimesVO'
+        type: array
+      title:
+        description: 专题名
+        type: string
+    type: object
+  vo.TopicVO:
+    properties:
+      article:
+        description: 文章列表
+        items:
+          $ref: '#/definitions/vo.ArticleAccessTimesVO'
+        type: array
+      title:
+        description: 专题名
+        type: string
+    type: object
+host: 生产：https://product.com 测试：http://test.com:9090 开发：http://localhost:9090
 info:
   contact: {}
   description: 鹏sir笔记接口
-  title: kn api
+  title: api
   version: "1.0"
 paths:
-  /photos:
-    post:
-      consumes:
-      - multipart/form-data
-      description: 上传照片文件
-      parameters:
-      - description: request file data
-        in: formData
-        name: file
-        required: true
-        type: file
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success
-          schema:
-            $ref: '#/definitions/vo.QrcodeVO'
-        "400":
-          description: error
-          schema:
-            $ref: '#/definitions/errors.Errors'
-      summary: 上传照片
-      tags:
-      - 图库管理
-  /qrcode:
+  /article/content:
     get:
       consumes:
       - application/json
-      description: 通过Qrcode ID返回二维码图片流
+      description: 文章内容详情
       parameters:
-      - description: Qrcode Id
+      - description: 文章标题
         in: query
-        name: id
+        name: title
         required: true
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: 图片流
+          description: 详情数据
           schema:
-            type: string
+            items:
+              $ref: '#/definitions/vo.ArticleContentVO'
+            type: array
         "400":
           description: error
           schema:
             $ref: '#/definitions/errors.Errors'
-      summary: 展示二维码
+      summary: 文章内容详情
       tags:
-      - 图库管理
+      - 博客前台接口
+  /article/list:
+    get:
+      consumes:
+      - application/json
+      description: 分页接口通过page递增获取更多
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 每页条数
+        in: query
+        name: size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 列表数据
+          schema:
+            items:
+              $ref: '#/definitions/vo.ArticleVO'
+            type: array
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 首页文章列表
+      tags:
+      - 博客前台接口
+  /article/rank:
+    get:
+      consumes:
+      - application/json
+      description: 根据访问量排序
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 列表数据
+          schema:
+            items:
+              $ref: '#/definitions/vo.ArticleAccessTimesVO'
+            type: array
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 文章访问TOP50
+      tags:
+      - 博客前台接口
 swagger: "2.0"

@@ -24,33 +24,36 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/photos": {
-            "post": {
-                "description": "上传照片文件",
+        "/article/content": {
+            "get": {
+                "description": "文章内容详情",
                 "consumes": [
-                    "multipart/form-data"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "图库管理"
+                    "博客前台接口"
                 ],
-                "summary": "上传照片",
+                "summary": "文章内容详情",
                 "parameters": [
                     {
-                        "type": "file",
-                        "description": "request file data",
-                        "name": "file",
-                        "in": "formData",
+                        "type": "string",
+                        "description": "文章标题",
+                        "name": "title",
+                        "in": "query",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "success",
+                        "description": "详情数据",
                         "schema": {
-                            "$ref": "#/definitions/vo.QrcodeVO"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vo.ArticleContentVO"
+                            }
                         }
                     },
                     "400": {
@@ -62,9 +65,9 @@ var doc = `{
                 }
             }
         },
-        "/qrcode": {
+        "/article/list": {
             "get": {
-                "description": "通过Qrcode ID返回二维码图片流",
+                "description": "分页接口通过page递增获取更多",
                 "consumes": [
                     "application/json"
                 ],
@@ -72,23 +75,65 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "图库管理"
+                    "博客前台接口"
                 ],
-                "summary": "展示二维码",
+                "summary": "首页文章列表",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Qrcode Id",
-                        "name": "id",
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页条数",
+                        "name": "size",
                         "in": "query",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "图片流",
+                        "description": "列表数据",
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vo.ArticleVO"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/article/rank": {
+            "get": {
+                "description": "根据访问量排序",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客前台接口"
+                ],
+                "summary": "文章访问TOP50",
+                "responses": {
+                    "200": {
+                        "description": "列表数据",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vo.ArticleAccessTimesVO"
+                            }
                         }
                     },
                     "400": {
@@ -102,6 +147,58 @@ var doc = `{
         }
     },
     "definitions": {
+        "datamodels.Article": {
+            "type": "object",
+            "properties": {
+                "ctime": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "id": {
+                    "description": "文章表ID",
+                    "type": "integer",
+                    "readOnly": true,
+                    "example": 1
+                },
+                "intro": {
+                    "description": "简介",
+                    "type": "string"
+                },
+                "is_del": {
+                    "description": "0未删除；1已删除",
+                    "type": "integer"
+                },
+                "is_state": {
+                    "description": "状态1私密；2公开",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                },
+                "uid": {
+                    "description": "编辑者id",
+                    "type": "integer"
+                },
+                "utime": {
+                    "type": "string",
+                    "readOnly": true
+                }
+            }
+        },
+        "datamodels.ArticleContent": {
+            "type": "object",
+            "properties": {
+                "aid": {
+                    "description": "文章id",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "文章内容",
+                    "type": "string"
+                }
+            }
+        },
         "errors.Errors": {
             "type": "object",
             "properties": {
@@ -114,14 +211,115 @@ var doc = `{
                 }
             }
         },
-        "vo.QrcodeVO": {
+        "vo.ArticleAccessTimesVO": {
             "type": "object",
-            "required": [
-                "id"
-            ],
             "properties": {
-                "id": {
-                    "description": "Qrcode Id",
+                "access_times": {
+                    "description": "访问次数",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "文章标题",
+                    "type": "string"
+                }
+            }
+        },
+        "vo.ArticleContentVO": {
+            "type": "object",
+            "properties": {
+                "article": {
+                    "description": "文章信息",
+                    "$ref": "#/definitions/vo.ArticleVO"
+                },
+                "articleContent": {
+                    "description": "文章内容",
+                    "$ref": "#/definitions/datamodels.ArticleContent"
+                },
+                "navigation": {
+                    "description": "导航",
+                    "$ref": "#/definitions/vo.NavigationVO"
+                },
+                "tags": {
+                    "description": "标签文章列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.TagVO"
+                    }
+                },
+                "topics": {
+                    "description": "专题文章列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.TopicVO"
+                    }
+                }
+            }
+        },
+        "vo.ArticleVO": {
+            "type": "object",
+            "properties": {
+                "article": {
+                    "$ref": "#/definitions/datamodels.Article"
+                },
+                "duration": {
+                    "description": "持续时间",
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "topics": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "vo.NavigationVO": {
+            "type": "object",
+            "properties": {
+                "nextTitle": {
+                    "description": "下一文章title",
+                    "type": "string"
+                },
+                "prevTitle": {
+                    "description": "上一文章title",
+                    "type": "string"
+                }
+            }
+        },
+        "vo.TagVO": {
+            "type": "object",
+            "properties": {
+                "article": {
+                    "description": "文章列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.ArticleAccessTimesVO"
+                    }
+                },
+                "title": {
+                    "description": "专题名",
+                    "type": "string"
+                }
+            }
+        },
+        "vo.TopicVO": {
+            "type": "object",
+            "properties": {
+                "article": {
+                    "description": "文章列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.ArticleAccessTimesVO"
+                    }
+                },
+                "title": {
+                    "description": "专题名",
                     "type": "string"
                 }
             }
@@ -141,10 +339,10 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "生产：https://yupengsir.com 开发：http://qjfu.cn:8090",
+	Host:        "生产：https://product.com 测试：http://test.com:9090 开发：http://localhost:9090",
 	BasePath:    "",
 	Schemes:     []string{},
-	Title:       "kn api",
+	Title:       "api",
 	Description: "鹏sir笔记接口",
 }
 
