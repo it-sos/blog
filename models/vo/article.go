@@ -15,10 +15,10 @@ import "gitee.com/itsos/studynotes/datamodels"
 type (
 	// ArticleVO 首页文章列表vo
 	ArticleVO struct {
-		Article  datamodels.Article
-		Duration string `json:"duration"` // 持续时间
-		Topics   []string
-		Tags     []string
+		Article  datamodels.Article `json:"article"`
+		Duration string             `json:"duration"` // 持续时间
+		Topics   []string           `json:"topics"`
+		Tags     []string           `json:"tags"`
 	}
 
 	// ArticleAccessTimesVO  文章及访问次数
@@ -29,28 +29,28 @@ type (
 
 	// TopicVO 专题下文章列表及访问次数
 	TopicVO struct {
-		Title   string                 // 专题名
-		Article []ArticleAccessTimesVO // 文章列表
+		Title   string                 `json:"title"`   // 专题名
+		Article []ArticleAccessTimesVO `json:"article"` // 文章列表
 	}
 
 	// TagVO 标签下文章列表及访问次数
 	TagVO struct {
-		Title   string                 // 专题名
-		Article []ArticleAccessTimesVO // 文章列表
+		Title   string                 `json:"title"`   // 专题名
+		Article []ArticleAccessTimesVO `json:"article"` // 文章列表
 	}
 
 	// NavigationVO 导航
 	NavigationVO struct {
-		PrevTitle string // 上一文章title
-		NextTitle string // 下一文章title
+		PrevTitle string `json:"prev_title"` // 上一文章title
+		NextTitle string `json:"next_title"` // 下一文章title
 	}
 
 	// ArticleContentVO 文章内容及专题列表
 	ArticleContentVO struct {
-		Navigation     NavigationVO              // 导航
-		Article        ArticleVO                 // 文章信息
-		ArticleContent datamodels.ArticleContent // 文章内容
-		Topics         []TopicVO                 // 专题文章列表
-		Tags           []TagVO                   // 标签文章列表
+		Navigation     NavigationVO              `json:"navigations"`     // 导航
+		Article        ArticleVO                 `json:"article"`         // 文章信息
+		ArticleContent datamodels.ArticleContent `json:"article_content"` // 文章内容
+		Topics         []TopicVO                 `json:"topics"`          // 专题文章列表
+		Tags           []TagVO                   `json:"tags"`            // 标签文章列表
 	}
 )
