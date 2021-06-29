@@ -2,8 +2,8 @@
   <el-container>
     <el-main>
       <el-row class="nav">
-        <el-col :span="12"><el-link href="#">上一篇：{{ article.navigations.prev_title }}</el-link></el-col>
-        <el-col :span="12" align="right"><el-link href="#">下一篇：xxoo</el-link></el-col>
+        <el-col :span="12"><el-link :href="'/a/'+prev_title">上一篇：{{ prev_title }}</el-link></el-col>
+        <el-col :span="12" align="right"><el-link :href="'/a/'+next_title">下一篇：{{ next_title }}</el-link></el-col>
       </el-row>
       <div class="box">
         <div class="title">
@@ -53,7 +53,9 @@ export default {
   name: "Article",
   data() {
     return {
-      article: null
+      prev_title: "",
+      next_title: "",
+      article: {}
     }
   },
   mounted() {
@@ -63,6 +65,8 @@ export default {
     content() {
       this.$http.get('/article/content', {params:{title: this.$route.params.title}}).then((response) => {
         this.article = response.data
+        this.prev_title = this.article.navigations.prev_title ? this.article.navigations.prev_title : "已经是顶部了"
+        this.next_title = this.article.navigations.next_title ? this.article.navigations.next_title : "已经是尾部了"
       }).catch((error) => {
         console.log(error)
       })
