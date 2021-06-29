@@ -1,24 +1,23 @@
 <template>
-  <el-container>
+  <el-container v-infinite-scroll="load" class="infinite-list">
     <el-main>
-      <div>
-        <div class="box" v-infinite-scroll="load" infinite-scroll-disabled="disabled" v-for="i in count">
-          <div class="title">
-            <el-link href="/a/java笔记"><h2>java笔记</h2></el-link>
-            <span>3天前</span>
-          </div>
-          <div class="description">xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文</div>
-          <el-row class="link">
-            <el-col :span="12">
-              <p>来自：xxoo 专题</p>
-            </el-col>
-            <el-col :span="12" align="right" class="tag">
-              <el-tag>标签一</el-tag>
-              <el-tag>标签二</el-tag>
-            </el-col>
-          </el-row>
-          <el-divider></el-divider>
+      <div class="box" v-for="i in count">
+        <div class="title">
+          <el-link href="/a/java笔记"><h2>java笔记</h2></el-link>
+          <span>3天前</span>
         </div>
+        <div class="description">xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文</div>
+        <el-row class="link">
+          <el-col :span="12">
+            <p>来自：xxoo 专题</p>
+          </el-col>
+          <el-col :span="12" align="right" class="tag">
+            <el-tag>标签一</el-tag>
+            <el-tag>标签二</el-tag>
+          </el-col>
+        </el-row>
+        <!-- 分割线 -->
+        <el-divider></el-divider>
       </div>
       <p class="load" v-if="loading">加载中...</p>
       <el-empty v-if="noMore" description="没有更多了"></el-empty>
@@ -43,9 +42,13 @@ export default {
   name: "Home",
   data () {
     return {
-      count: 10,
+      count: 2,
+      data: [],
       loading: false
     }
+  },
+  mounted() {
+    console.log(1)
   },
   computed: {
     noMore () {
@@ -57,15 +60,8 @@ export default {
   },
   methods: {
     load () {
-      // axios({
-      //   method: 'get',
-      //   url: '/article/list',
-      //   data: {
-      //     page: 1,
-      //     size: 10
-      //   }
-      // }).then(function (res) {
-      //   console.log(res.data)
+      // this.$http.get('/article/list', {params:{"page":1, "size":10}}).then((response) => {
+      //   console.log(response.data)
       // })
       this.loading = true
       setTimeout(() => {

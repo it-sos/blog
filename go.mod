@@ -6,9 +6,6 @@ require (
 	gitee.com/itsos/golibs v0.0.4
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/andybalholm/brotli v1.0.2 // indirect
-	github.com/armon/circbuf v0.0.0-20190214190532-5111143e8da2
-	github.com/boombuler/barcode v1.0.1
-	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/flosch/pongo2/v4 v4.0.2 // indirect
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
 	github.com/go-openapi/spec v0.20.3 // indirect
@@ -26,7 +23,6 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.9 // indirect; indirec
 	github.com/nats-io/nats-server/v2 v2.2.5 // indirect
 	github.com/onsi/gomega v1.12.0 // indirect
-	github.com/prometheus/common v0.4.0
 	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/swaggo/swag v1.7.0
