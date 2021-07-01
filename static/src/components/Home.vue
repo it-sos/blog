@@ -9,10 +9,10 @@
         <div class="description">{{ art.article.intro }}</div>
         <el-row class="link">
           <el-col :span="12">
-            <p v-for="tag in art.tags">来自：{{ tag }} 专题</p>
+            <p v-for="topic in art.topics">来自：{{ topic }} 专题</p>
           </el-col>
           <el-col :span="12" align="right" class="tag">
-            <el-tag v-for="topic in art.topics">{{ topic }}</el-tag>
+            <el-tag v-for="tag in art.tags">{{ tag }}</el-tag>
           </el-col>
         </el-row>
         <!-- 分割线 -->

@@ -2,23 +2,22 @@
   <el-container>
     <el-main>
       <el-row class="nav">
-        <el-col :span="12"><el-link :href="'/a/'+prev_title">上一篇：{{ prev_title }}</el-link></el-col>
-        <el-col :span="12" align="right"><el-link :href="'/a/'+next_title">下一篇：{{ next_title }}</el-link></el-col>
+        <el-col :span="12"><el-link :href="prev_title_link">上一篇：{{ prev_title }}</el-link></el-col>
+        <el-col :span="12" align="right"><el-link :href="next_title_link">下一篇：{{ next_title }}</el-link></el-col>
       </el-row>
       <div class="box">
         <div class="title">
-          <el-link href="/a/java笔记"><h2>java笔记</h2></el-link>
-          <span>3天前</span>
+          <el-link :href="'/a/'+title"><h2>{{ title }}</h2></el-link>
+          <span>{{ duration }}</span>
         </div>
-        <div class="description">xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文 xxooxoxo中文</div>
+        <vue-ueditor-wrap v-model="article_content" :config="editorConfig" editor-id="editor-demo-01"></vue-ueditor-wrap>
+        <div class="description" id="showHtml">{{ article_content }}</div>
         <el-row class="link">
           <el-col :span="12">
-            <p>来自：xxoo 专题</p>
-            <p>来自：xxoo 专题</p>
+            <p v-for="topic in topics">来自：{{ topic }} 专题</p>
           </el-col>
           <el-col :span="12" align="right" class="tag">
-            <el-tag>标签一</el-tag>
-            <el-tag>标签二</el-tag>
+            <el-tag v-for="tag in tags">{{ tag }}</el-tag>
           </el-col>
         </el-row>
       </div>
@@ -49,13 +48,29 @@
 </template>
 
 <script>
+
+
 export default {
   name: "Article",
+  created() {
+    // 更多 UEditor 配置，参考 http://fex.baidu.com/ueditor/#start-config
+    this.editorConfig = {
+      UEDITOR_HOME_URL: '/ueditor/', // 访问 UEditor 静态资源的根路径，可参考常见问题1
+      serverUrl: '//demo.com/cos', // 服务端接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
+    };
+  },
   data() {
     return {
       prev_title: "",
       next_title: "",
-      article: {}
+      prev_title_link: "",
+      next_title_link: "",
+      title: "",
+      duration: "",
+      article_content: "",
+      topics: [],
+      tags: [],
+      article: {},
     }
   },
   mounted() {
@@ -63,14 +78,31 @@ export default {
   },
   methods: {
     content() {
-      this.$http.get('/article/content', {params:{title: this.$route.params.title}}).then((response) => {
+      this.$http.get('/article/content', {params: {title: this.$route.params.title}}).then((response) => {
         this.article = response.data
-        this.prev_title = this.article.navigations.prev_title ? this.article.navigations.prev_title : "已经是顶部了"
-        this.next_title = this.article.navigations.next_title ? this.article.navigations.next_title : "已经是尾部了"
+        console.log(this.article.article)
+        this.prev_title = "已经是顶部了"
+        this.next_title = "已经是底部了"
+        this.prev_title_link = "javascript:void(0);"
+        this.next_title_link = "javascript:void(0);"
+        if (this.article.navigations.prev_title) {
+          this.prev_title = this.article.navigations.prev_title
+          this.prev_title_link = '/a/' + this.prev_title
+        }
+        if (this.article.navigations.next_title) {
+          this.next_title = this.article.navigations.next_title
+          this.next_title_link = '/a/' + this.next_title
+        }
+        this.article_content = this.article.article_content.data
+        this.topics = this.article.article.topics
+        this.tags = this.article.article.tags
+        this.title = this.article.article.article.title
+        this.duration = this.article.article.duration
+        this.showHtml()
       }).catch((error) => {
         console.log(error)
       })
-    }
+    },
   }
 }
 </script>
