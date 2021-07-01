@@ -10,8 +10,7 @@
           <el-link :href="'/a/'+title"><h2>{{ title }}</h2></el-link>
           <span>{{ duration }}</span>
         </div>
-        <vue-ueditor-wrap v-model="article_content" :config="editorConfig" editor-id="editor-demo-01"></vue-ueditor-wrap>
-        <div class="description" id="showHtml">{{ article_content }}</div>
+        <div class="description" id="showHtml" v-html="article_content"></div>
         <el-row class="link">
           <el-col :span="12">
             <p v-for="topic in topics">来自：{{ topic }} 专题</p>
@@ -48,7 +47,6 @@
 </template>
 
 <script>
-
 
 export default {
   name: "Article",
@@ -98,7 +96,6 @@ export default {
         this.tags = this.article.article.tags
         this.title = this.article.article.article.title
         this.duration = this.article.article.duration
-        this.showHtml()
       }).catch((error) => {
         console.log(error)
       })
@@ -124,6 +121,8 @@ export default {
   margin-left: 30px;
 }
 .description {
+  word-break: break-all;
+  word-wrap: break-word;
   padding-top:30px;
   min-height:300px;
 }

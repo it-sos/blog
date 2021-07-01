@@ -17,6 +17,7 @@ import (
 	"gitee.com/itsos/studynotes/datamodels"
 	"gitee.com/itsos/studynotes/models/vo"
 	"gitee.com/itsos/studynotes/repositories"
+	"golang.org/x/net/html"
 	"strconv"
 )
 
@@ -69,6 +70,7 @@ func (a articleService) GetContent(isLogin bool, title string) vo.ArticleContent
 	content, _ := a.content.Select(&datamodels.ArticleContent{
 		Aid: article.Id,
 	})
+	content.Data = html.UnescapeString(content.Data)
 	prevTitle, nextTitle := a.article.Navigation(a.getAuthorize(isLogin), article.Utime)
 	topics, tags := a.getTopicAndTagArticle(isLogin, article.Id)
 	return vo.ArticleContentVO{
