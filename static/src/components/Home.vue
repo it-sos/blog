@@ -3,7 +3,7 @@
     <el-main>
       <div class="box" key="index" v-for="art in article">
         <div class="title">
-          <el-link :href="'/a/'+art.article.title"><h2>{{ art.article.title }}</h2></el-link>
+          <el-link :href="'/a/'+escape(art.article.title)"><h2>{{ art.article.title }}</h2></el-link>
           <span>{{ art.duration }}</span>
         </div>
         <div class="description">{{ art.article.intro }}</div>
@@ -30,7 +30,7 @@
         </div>
       </template>
       <div v-for="r in rank" class="text item">
-        <el-link :href="'/a/'+r.title">{{ r.title }}（{{ r.access_times }}）</el-link>
+        <el-link :href="'/a/'+escape(r.title)">{{ r.title }}（{{ r.access_times }}）</el-link>
       </div>
     </el-card>
   </el-aside>
@@ -59,6 +59,12 @@ export default {
     }
   },
   methods: {
+    escape(str) {
+      return encodeURIComponent(str)
+    },
+    unscape(str) {
+      return decodeURIComponent(str)
+    },
     ranks() {
       this.$http.get('/article/rank').then((response) => {
         this.rank = response.data

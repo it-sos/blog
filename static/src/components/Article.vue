@@ -7,7 +7,7 @@
       </el-row>
       <div class="box">
         <div class="title">
-          <el-link :href="'/a/'+title"><h2>{{ title }}</h2></el-link>
+          <el-link :href="'/a/'+escape(title)"><h2>{{ title }}</h2></el-link>
           <span>{{ duration }}</span>
         </div>
         <div class="description" id="showHtml" v-html="article_content"></div>
@@ -23,24 +23,24 @@
     </el-main>
   </el-container>
   <el-aside class="hidden-xs-only">
-    <el-card class="box-card">
+    <el-card class="box-card" v-for="topic in topicList">
       <template #header>
         <div class="card-header">
-          <span>xxoo 专题</span>
+          <span>{{ topic.title }} 专题</span>
         </div>
       </template>
-      <div v-for="o in 4" :key="o" class="text item">
-        <el-link href="/a/列表">{{'列表内容这篇文章，内容很多，非常多，躲到爆炸 （' + o + '）' }}</el-link>
+      <div v-for="art in topic.article" class="text item">
+        <el-link :href="'/a/'+escape(art.title)">{{ art.title + ' （' + art.access_times + '）' }}</el-link>
       </div>
     </el-card>
-    <el-card class="box-card">
+    <el-card class="box-card" v-for="tag in tagList">
       <template #header>
         <div class="card-header">
-          <span>xxoo 专题</span>
+          <span>{{ tag.title }} 标签</span>
         </div>
       </template>
-      <div v-for="o in 4" :key="o" class="text item">
-        <el-link href="/a/列表">{{'列表内容这篇文章，内容很多，非常多，躲到爆炸 （' + o + '）' }}</el-link>
+      <div v-for="art in tag.article" class="text item">
+        <el-link :href="'/a/'+escape(art.title)">{{ art.title + ' （' + art.access_times + '）' }}</el-link>
       </div>
     </el-card>
   </el-aside>
@@ -69,33 +69,44 @@ export default {
       topics: [],
       tags: [],
       article: {},
+      tagList: [],
+      topicList: [],
     }
   },
   mounted() {
     this.content()
   },
   methods: {
+    escape(str) {
+      return encodeURIComponent(str)
+    },
+    unscape(str) {
+      return decodeURIComponent(str)
+    },
     content() {
-      this.$http.get('/article/content', {params: {title: this.$route.params.title}}).then((response) => {
+      console.log(this.$route.params);
+      this.$http.get('/article/content', {params: {title: this.unscape(this.$route.params.title)}}).then((response) => {
         this.article = response.data
-        console.log(this.article.article)
         this.prev_title = "已经是顶部了"
         this.next_title = "已经是底部了"
         this.prev_title_link = "javascript:void(0);"
         this.next_title_link = "javascript:void(0);"
         if (this.article.navigations.prev_title) {
           this.prev_title = this.article.navigations.prev_title
-          this.prev_title_link = '/a/' + this.prev_title
+          this.prev_title_link = '/a/' + this.escape(this.prev_title)
         }
         if (this.article.navigations.next_title) {
           this.next_title = this.article.navigations.next_title
-          this.next_title_link = '/a/' + this.next_title
+          this.next_title_link = '/a/' + this.escape(this.next_title)
         }
         this.article_content = this.article.article_content.data
         this.topics = this.article.article.topics
         this.tags = this.article.article.tags
         this.title = this.article.article.article.title
         this.duration = this.article.article.duration
+        this.topicList = this.article.topics;
+        this.tagList = this.article.tags;
+        console.log(this.topicList[0].title)
       }).catch((error) => {
         console.log(error)
       })

@@ -24,7 +24,7 @@ func Test_GetListPage(t *testing.T) {
 }
 
 func TestArticleService_GetContent(t *testing.T) {
-	s := SArticle.GetContent(false, "技术趋势")
+	s := SArticle.GetContent(false, "@Valid 参数验证之自定义注解实现复杂验证逻辑")
 	t.Log(s.Article)
 	t.Log(s.Navigation)
 	t.Log(s.ArticleContent.Data)
@@ -34,6 +34,6 @@ func TestArticleService_GetContent(t *testing.T) {
 
 func BenchmarkArticleService_GetContent(b *testing.B) {
 	for i := 0; i < b.N; i++ { //use b.N for looping
-		SArticle.GetContent(false, "技术趋势")
+		SArticle.GetContent(false, "@Valid 参数验证之自定义注解实现复杂验证逻辑")
 	}
 }

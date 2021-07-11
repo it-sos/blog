@@ -20,6 +20,10 @@ import (
 const (
 	IsStatePrivate = 1
 	IsStatePublic  = 2
+
+	// NotDeleted 删除状态
+	NotDeleted = 0
+	IsDeleted  = 1
 )
 
 type ArticleRepository interface {
@@ -40,12 +44,13 @@ type articleRepository struct {
 }
 
 func (ur *articleRepository) Navigation(state []uint8, utime time.Time) (prevTitle, nextTitle string) {
+	uptime := utime.Format("2006-01-02 15:04:05")
 	prev := &datamodels.Article{}
 	var (
 		has bool
 		err error
 	)
-	has, err = db.Conn.In("is_state", state).Where("utime>?", utime).Asc("utime").Get(prev)
+	has, err = db.Conn.In("is_state", state).Where("utime>? and is_del=?", uptime, NotDeleted).Asc("utime").Get(prev)
 	if err != nil {
 		panic(err)
 	}
@@ -54,7 +59,7 @@ func (ur *articleRepository) Navigation(state []uint8, utime time.Time) (prevTit
 	}
 
 	next := &datamodels.Article{}
-	has, err = db.Conn.In("is_state", state).Where("utime<?", utime).Desc("utime").Get(next)
+	has, err = db.Conn.In("is_state", state).Where("utime<? and is_del=?", uptime, NotDeleted).Desc("utime").Get(next)
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +71,7 @@ func (ur *articleRepository) Navigation(state []uint8, utime time.Time) (prevTit
 
 // Select 查询文章信息
 func (ur *articleRepository) Select(state []uint8, p *datamodels.Article) (datamodels.Article, bool) {
-	has, err := db.Conn.In("is_state", state).Get(p)
+	has, err := db.Conn.In("is_state", state).Where("is_del=?", NotDeleted).Get(p)
 	if err != nil {
 		panic(err)
 	}
@@ -76,7 +81,7 @@ func (ur *articleRepository) Select(state []uint8, p *datamodels.Article) (datam
 // SelectMany 查询文章列表
 func (ur *articleRepository) SelectMany(state []uint8, offset int, limit int) (results []datamodels.Article) {
 	article := make([]datamodels.Article, 0)
-	err := db.Conn.In("is_state", state).Desc("utime").Limit(limit, offset).Find(&article)
+	err := db.Conn.In("is_state", state).Where("is_del=?", NotDeleted).Desc("utime").Limit(limit, offset).Find(&article)
 	if err != nil {
 		panic(err)
 	}
@@ -87,7 +92,7 @@ func (ur *articleRepository) SelectMany(state []uint8, offset int, limit int) (r
 func (ur *articleRepository) SelectManyByIds(state []uint8, ids []string) []datamodels.Article {
 	article := make([]datamodels.Article, 0)
 	orderBy := strings.Join(ids, ",")
-	err := db.Conn.In("id", ids).In("is_state", state).OrderBy("field(id," + orderBy + ")").Find(&article)
+	err := db.Conn.In("id", ids).In("is_state", state).Where("is_del=?", NotDeleted).OrderBy("field(id," + orderBy + ")").Find(&article)
 	if err != nil {
 		panic(err)
 	}

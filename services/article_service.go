@@ -55,6 +55,7 @@ func (a articleService) GetListPage(isLogin bool, page int, size int) []vo.Artic
 	articleVO := make([]vo.ArticleVO, 0)
 	if len(article) > 0 {
 		for _, v := range article {
+			v.Intro = html.UnescapeString(v.Intro)
 			articleVO = append(articleVO, a.getArticle(v))
 		}
 	}
@@ -70,6 +71,7 @@ func (a articleService) GetContent(isLogin bool, title string) vo.ArticleContent
 	content, _ := a.content.Select(&datamodels.ArticleContent{
 		Aid: article.Id,
 	})
+	a.accessTimes.Id(article.Id).Incr()
 	content.Data = html.UnescapeString(content.Data)
 	prevTitle, nextTitle := a.article.Navigation(a.getAuthorize(isLogin), article.Utime)
 	topics, tags := a.getTopicAndTagArticle(isLogin, article.Id)

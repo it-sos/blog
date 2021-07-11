@@ -16,9 +16,9 @@ import (
 )
 
 func TestTimesCache(t *testing.T) {
-	CachesAccessTimes.Id(1).Incr()
-	CachesAccessTimes.Id(1).Incr()
-	CachesAccessTimes.Id(2).Incr()
-	t.Log(CachesAccessTimes.Id(1).Get())
-	t.Log(CachesAccessTimes.Rank(1))
+	CAccessTimes.Id(1).Incr()
+	CAccessTimes.Id(1).Incr()
+	CAccessTimes.Id(2).Incr()
+	t.Log(CAccessTimes.Id(1).Get())
+	t.Log(CAccessTimes.Rank(1))
 }
