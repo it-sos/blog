@@ -107,4 +107,17 @@ cd /usr/local/kafka/kafka_2.13-2.8.0/ && \
 mkdir -p /usr/local/canal && cd /usr/local/canal/ && \
     wget https://github.com/alibaba/canal/releases/download/canal-1.1.5/canal.deployer-1.1.5.tar.gz && \
     tar zxvf canal.deployer-1.1.5.tar.gz
+
+# 配置
+# conf/canal.properties
+
+# conf/example/instance.properties
+```
+> 解释zookeeper实现canal HA机制的好文：https://segmentfault.com/a/1190000023297973
+
+授权 canal 连接mysql账号具备作为mysql slave的权限
+```mysql
+CREATE USER canal IDENTIFIED BY ')(*cdgasf,23';
+GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
+FLUSH PRIVILEGES;
 ```
