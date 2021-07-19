@@ -110,8 +110,16 @@ mkdir -p /usr/local/canal && cd /usr/local/canal/ && \
 
 # 配置
 # conf/canal.properties
+...
 
 # conf/example/instance.properties
+# 不能与从库的其他id重复
+canal.instance.mysql.slaveId = 1234
+# mysql 地址/slave账号/密码
+canal.instance.master.address=127.0.0.1:3306
+canal.instance.dbUsername=canal
+canal.instance.dbPassword=)(*cdgasf,23
+canal.instance.connectionCharset = UTF-8
 ```
 > 解释zookeeper实现canal HA机制的好文：https://segmentfault.com/a/1190000023297973
 
@@ -121,3 +129,4 @@ CREATE USER canal IDENTIFIED BY ')(*cdgasf,23';
 GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
 FLUSH PRIVILEGES;
 ```
+
