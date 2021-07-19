@@ -102,6 +102,24 @@ cd /usr/local/kafka/kafka_2.13-2.8.0/ && \
     bin/kafka-topics.sh --list --zookeeper 192.168.1.110:2181
 ```
 
+开启mysql binlog
+```shell
+# 修改mysql配置文件/etc/mysql/my.cnf，后重启mysqld
+[mysqld]
+log-bin=mysql-bin
+binlog-format=ROW
+server-id=1
+
+# 验证
+mysql> show variables like 'log_bin%'
+mysql> show variables like 'binlog_format%'
+
+# 授权 canal 连接mysql账号具备作为mysql slave的权限
+CREATE USER canal IDENTIFIED BY ')(*cdgasf,23';
+GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
+FLUSH PRIVILEGES;
+```
+
 安装canal
 ```shell
 mkdir -p /usr/local/canal && cd /usr/local/canal/ && \
@@ -110,7 +128,6 @@ mkdir -p /usr/local/canal && cd /usr/local/canal/ && \
 
 # 配置
 # conf/canal.properties
-...
 
 # conf/example/instance.properties
 # 不能与从库的其他id重复
@@ -120,13 +137,17 @@ canal.instance.master.address=127.0.0.1:3306
 canal.instance.dbUsername=canal
 canal.instance.dbPassword=)(*cdgasf,23
 canal.instance.connectionCharset = UTF-8
+canal.instance.filter.regex=study_notes.* # 过滤的表名
 ```
+
 > 解释zookeeper实现canal HA机制的好文：https://segmentfault.com/a/1190000023297973
 
-授权 canal 连接mysql账号具备作为mysql slave的权限
-```mysql
-CREATE USER canal IDENTIFIED BY ')(*cdgasf,23';
-GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
-FLUSH PRIVILEGES;
-```
+安装 canal.adapter
+```shell
+mkdir -p /usr/local/canal-adapter && cd /usr/local/canal-adapter && \
+    wget https://github.com/alibaba/canal/releases/download/canal-1.1.5/canal.adapter-1.1.5.tar.gz && \
+    tar zxvf canal.adapter-1.1.5.tar.gz
 
+# 配置
+# conf/local/canal-adapter/application.yml
+```
