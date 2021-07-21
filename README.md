@@ -14,6 +14,24 @@ sudo apt-get install apt-transport-https
 echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
 sudo apt-get update && sudo apt-get install elasticsearch kibana
 ```
+
+启动 elasticsearch
+```shell
+# 因为 elasticsearch 的运行不能是root，因此可以设置一下用户再来运行
+sudo chown -R guest /usr/share/elasticsearch/ /etc/elasticsearch/ /etc/default/elasticsearch /var/log/elasticsearch/
+
+# 运行
+/usr/share/elasticsearch/bin/elasticsearch -d # -d 作为守护进程后台运行
+
+# port: 9200 ：是http访问端口返回json格式服务的基本信息
+# port: 9300 ：是提供服务的端口，譬如canal-adapter 可以直连实现数据同步
+```
+
+启动 kibana
+```shell
+nohup /usr/share/kibana/bin/kibana serve > /tmp/kibana.log 2>&1 &
+```
+
 访问
 > kibana: http://localhost:5601
 >
