@@ -20,7 +20,7 @@ func Test_GetRange(t *testing.T) {
 }
 
 func Test_GetListPage(t *testing.T) {
-	t.Log(SArticle.GetListPage(true, 0, 10, "linux curl"))
+	t.Log(SArticle.GetListPage(true, 1, 10, "linux curl"))
 }
 
 func TestArticleService_GetContent(t *testing.T) {

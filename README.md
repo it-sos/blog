@@ -20,6 +20,9 @@ sudo apt-get update && sudo apt-get install elasticsearch kibana
 # 因为 elasticsearch 的运行不能是root，因此可以设置一下用户再来运行
 sudo chown -R guest /usr/share/elasticsearch/ /etc/elasticsearch/ /etc/default/elasticsearch /var/log/elasticsearch/
 
+# 安装中文分词器
+sudo ./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.13.3/elasticsearch-analysis-ik-7.13.3.zip
+
 # 运行
 /usr/share/elasticsearch/bin/elasticsearch -d # -d 作为守护进程后台运行
 
@@ -135,6 +138,8 @@ mysql> show variables like 'binlog_format%'
 # 授权 canal 连接mysql账号具备作为mysql slave的权限
 CREATE USER canal IDENTIFIED BY ')(*cdgasf,23';
 GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
+# 如果是 mysql 8.0 改变一下默认的认证方式
+ALTER USER 'canal'@'%' IDENTIFIED WITH mysql_native_password BY ')(*cdgasf,23'; #更新一下用户密码
 FLUSH PRIVILEGES;
 ```
 
@@ -169,3 +174,5 @@ mkdir -p /usr/local/canal-adapter && cd /usr/local/canal-adapter && \
 # 配置
 # conf/local/canal-adapter/application.yml
 ```
+# 数据全量同步
+> curl -XPOST http://127.0.0.1:8081/etl/es7/canal.yml

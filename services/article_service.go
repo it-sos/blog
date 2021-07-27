@@ -26,6 +26,7 @@ import (
 	"io/ioutil"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type ArticleService interface {
@@ -48,46 +49,14 @@ type articleService struct {
 	accessTimes caches.AccessTimes
 }
 
-//{
-//  "took" : 4,
-//  "timed_out" : false,
-//  "_shards" : {
-//    "total" : 1,
-//    "successful" : 1,
-//    "skipped" : 0,
-//    "failed" : 0
-//  },
-//  "hits" : {
-//    "total" : {
-//      "value" : 3,
-//      "relation" : "eq"
-//    },
-//    "max_score" : 9.455517,
-//    "hits" : [
-//      {
-//        "_index" : "canal",
-//        "_type" : "_doc",
-//        "_id" : "160",
-//        "_score" : 9.455517,
-//        "_source" : {
-//          "is_state" : 2,
-//          "data" : "&lt;h3&gt;一、简介&lt;/h3&gt;&lt;p&gt;PHP 用来管理依赖（dependency）关系的工具。你可以在自己的项目中声明所依赖的外部工具库（libraries），Composer 会帮你安装 这些依赖的库文件。&lt;br/&gt;&lt;/p&gt;&lt;h3&gt;二、安装&lt;/h3&gt;&lt;p&gt;1、php方式安装&lt;br/&gt;&lt;/p&gt;&lt;pre class=&quot;brush:bash;toolbar:false&quot;&gt;$&amp;nbsp;php&amp;nbsp;-r&amp;nbsp;&amp;quot;copy(&amp;#39;https://install.phpcomposer.com/installer&amp;#39;,&amp;nbsp;&amp;#39;composer-setup.php&amp;#39;);&amp;quot;\n$&amp;nbsp;php&amp;nbsp;composer-setup.php\n$&amp;nbsp;php&amp;nbsp;-r&amp;nbsp;&amp;quot;unlink(&amp;#39;composer-setup.php&amp;#39;);&amp;quot;\n#&amp;nbsp;升级最近版本\n$&amp;nbsp;composer&amp;nbsp;selfupdate&lt;/pre&gt;&lt;p&gt;2、linux方式安装&lt;/p&gt;&lt;pre&gt;curl&amp;nbsp;-sS&amp;nbsp;https://getcomposer.org/installer&amp;nbsp;|&amp;nbsp;php&lt;/pre&gt;&lt;h3&gt;三、使用&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;http://docs.phpcomposer.com/01-basic-usage.html&quot; target=&quot;_blank&quot; title=&quot;基本使用&quot;&gt;基本使用&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;四、镜像&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;https://pkg.phpcomposer.com/&quot; target=&quot;_blank&quot; title=&quot;中国镜像&quot;&gt;中国镜像&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;&lt;pre class=&quot;brush:bash;toolbar:false&quot;&gt;$&amp;nbsp;composer&amp;nbsp;config&amp;nbsp;repo.packagist&amp;nbsp;composer&amp;nbsp;https://packagist.phpcomposer.com&lt;/pre&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;",
-//          "intro" : "一、简介PHP 用来管理依赖（dependency）关系的工具。你可以在自己的项目中声明所依赖的外部工具库（libraries），Composer 会帮你安装 这些依赖的库文件。二、安装1、php方式安装$&nbsp;php&nbsp;-r&nbsp;&quot;copy(&#39;https://install.phpcomposer.com/installer&#39;,&nbsp;&#39;",
-//          "title" : "composer php项目依赖管理工具"
-//        },
-//        "highlight" : {
-//          "data" : [
-//            "amp;#39;);&amp;quot;\n#&amp;nbsp;升级最近版本\n$&amp;nbsp;composer&amp;nbsp;selfupdate&lt;/pre&gt;&lt;p&gt;2、<font-size='red'>linux</font>",
-//            "方式安装&lt;/p&gt;&lt;pre&gt;<font-size='red'>curl</font>&amp;nbsp;-sS&amp;nbsp;https://getcomposer.org/installer&amp;nbsp;|&amp;"
-//          ]
-//        }
-//      },
 // es 搜索返回数据结构
 type (
 	EsSource struct {
-		IsState int    `json:"is_state"`
-		Intro   string `json:"intro"`
-		Title   string `json:"title"`
+		IsState uint8     `json:"is_state"`
+		Intro   string    `json:"intro"`
+		Title   string    `json:"title"`
+		Utime   time.Time `json:"utime"`
+		Ctime   time.Time `json:"ctime"`
 	}
 	EsHighlight struct {
 		Title []string `json:"title"`
@@ -120,11 +89,27 @@ func (a articleService) GetListPage(isLogin bool, page int, size int, keyword st
 	page = validate.IntRange(page, 1, 100000)
 	size = validate.IntRange(size, 1, 100000)
 	offset := (page - 1) * size
+
+	var article []datamodels.Article
 	if keyword != "" {
-		a.search(isLogin, keyword, offset, size)
-		return nil
+		es := a.search(isLogin, keyword, offset, size)
+		for _, v := range es.Hits.SubHits {
+			id, _ := strconv.Atoi(v.Id)
+			article = append(article, datamodels.Article{
+				Id:    uint(id),
+				Title: v.Source.Title,
+				//TitleMatch: v.Highlight.Title[0],
+				Intro: v.Source.Intro,
+				//IntroMatch: v.Highlight.Intro[0],
+				IsState: v.Source.IsState,
+				Utime:   v.Source.Utime,
+				Ctime:   v.Source.Ctime,
+			})
+		}
+	} else {
+		article = a.article.SelectMany(a.getAuthorize(isLogin), offset, size)
 	}
-	article := a.article.SelectMany(a.getAuthorize(isLogin), offset, size)
+
 	articleVO := make([]vo.ArticleVO, 0)
 	if len(article) > 0 {
 		for _, v := range article {
@@ -253,7 +238,7 @@ func (a articleService) search(isLogin bool, keyword string, offset, size int) *
 		newEs.Search.WithQuery(fmt.Sprintf("%s AND is_del:0 AND is_state:(%s)", keyword, isState)),
 		newEs.Search.WithDefaultOperator("and"),
 		newEs.Search.WithBody(&buf),
-		// newEs.Search.WithErrorTrace(),
+		newEs.Search.WithErrorTrace(),
 		newEs.Search.WithPretty(),
 	)
 
@@ -266,8 +251,9 @@ func (a articleService) search(isLogin bool, keyword string, offset, size int) *
 		panic("read body fail." + err.Error())
 	}
 	esResultDTO := &EsResultDTO{}
+
 	if err = json.Unmarshal(body, esResultDTO); err != nil {
-		panic(err)
+		print(err.Error() + res.String())
 	}
 	return esResultDTO
 }
