@@ -27,9 +27,6 @@ redis:
     port: 6379
     password:
     db: 0
-# 二维码信息设置
-qrcode:
-  width: 200
-  height: 200
-  buffer: 4096
-  url: https://demo.com?id=%s
+
+es:
+  - https://qjfu.cn:8/es

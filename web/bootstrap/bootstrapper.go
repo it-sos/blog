@@ -170,7 +170,7 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 
 	// static files
 	//b.Favicon(StaticAssets + Favicon)
-	router.DefaultDirOptions.IndexName = "/default.html"
+	router.DefaultDirOptions.IndexName = "/index.html"
 	b.HandleDir("public", iris.Dir(StaticAssets), router.DefaultDirOptions)
 
 	b.Use(recover.New())

@@ -11,16 +11,16 @@
 package services
 
 import (
+	_ "gitee.com/itsos/golibs/tests/testsdb"
 	"testing"
 )
-import _ "gitee.com/itsos/golibs/tests/testsdb"
 
 func Test_GetRange(t *testing.T) {
 	t.Log(SArticle.GetRank(true))
 }
 
 func Test_GetListPage(t *testing.T) {
-	t.Log(SArticle.GetListPage(true, 5, 1))
+	t.Log(SArticle.GetListPage(true, 0, 10, "linux curl"))
 }
 
 func TestArticleService_GetContent(t *testing.T) {

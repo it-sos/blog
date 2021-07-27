@@ -30,6 +30,7 @@ type IndexController struct {
 // @Description 分页接口通过page递增获取更多
 // @Accept json
 // @Produce json
+// @Param keyword query string false "关键词"
 // @Param page query integer true "页码"
 // @Param size query integer true "每页条数"
 // @Success 200 {object} []vo.ArticleVO "列表数据"
@@ -39,7 +40,8 @@ func (c *IndexController) GetArticleList() interface{} {
 	isLogin, _ := c.Sess.GetBoolean("authenticated")
 	page, _ := strconv.Atoi(c.Ctx.FormValue("page"))
 	size, _ := strconv.Atoi(c.Ctx.FormValue("size"))
-	return services.SArticle.GetListPage(isLogin, page, size)
+	keyword := c.Ctx.FormValue("keyword")
+	return services.SArticle.GetListPage(isLogin, page, size, keyword)
 }
 
 // GetArticleRank
