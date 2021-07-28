@@ -5,6 +5,7 @@ const Article = () => import(/* webpackChunkName: "group-front" */ './components
 
 const routes = [
     { path: '/', component: Home },
+    { path: '/:keyword', component: Home },
     { path: '/a/:title', component: Article },
 ]
 

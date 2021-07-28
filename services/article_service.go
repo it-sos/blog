@@ -219,8 +219,8 @@ func (a articleService) search(isLogin bool, keyword string, offset, size int) *
 	var buf bytes.Buffer
 	query := map[string]interface{}{
 		"highlight": map[string]interface{}{
-			"pre_tags":  []string{"<font-size='red'>"},
-			"post_tags": []string{"</font>"},
+			"pre_tags":  []string{"<font color='#F56C6C'><i><b>"},
+			"post_tags": []string{"</b></i></font>"},
 			"fields": map[string]interface{}{
 				"title": map[string]interface{}{},
 				"intro": map[string]interface{}{},

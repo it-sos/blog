@@ -8,7 +8,7 @@
       <div class="box">
         <div class="title">
           <el-link :href="'/a/'+escape(title)"><h2>{{ title }}</h2></el-link>
-          <span>{{ duration }}</span>
+          <el-tag effect="plain" type="danger" size="small">{{ duration }}</el-tag>
         </div>
         <div class="description" id="showHtml" v-html="article_content"></div>
         <el-row class="link">
@@ -50,13 +50,6 @@
 
 export default {
   name: "Article",
-  created() {
-    // 更多 UEditor 配置，参考 http://fex.baidu.com/ueditor/#start-config
-    this.editorConfig = {
-      UEDITOR_HOME_URL: '/ueditor/', // 访问 UEditor 静态资源的根路径，可参考常见问题1
-      serverUrl: '//demo.com/cos', // 服务端接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
-    };
-  },
   data() {
     return {
       prev_title: "",
@@ -74,6 +67,7 @@ export default {
     }
   },
   mounted() {
+    document.title = "详情：" + this.unscape(this.$route.params.title)
     this.content()
   },
   methods: {
@@ -84,7 +78,6 @@ export default {
       return decodeURIComponent(str)
     },
     content() {
-      console.log(this.$route.params);
       this.$http.get('/article/content', {params: {title: this.unscape(this.$route.params.title)}}).then((response) => {
         this.article = response.data
         this.prev_title = "已经是顶部了"
@@ -106,7 +99,6 @@ export default {
         this.duration = this.article.article.duration
         this.topicList = this.article.topics;
         this.tagList = this.article.tags;
-        console.log(this.topicList[0].title)
       }).catch((error) => {
         console.log(error)
       })
@@ -123,13 +115,15 @@ export default {
 .title a {
   text-decoration: none;
   color: #303133;
+  margin-right: 30px;
 }
 .title h2 {
   display: inline;
+  font-size: larger;
+  font-size: 24px;
 }
 .title span {
   vertical-align: bottom;
-  margin-left: 30px;
 }
 .description {
   word-break: break-all;

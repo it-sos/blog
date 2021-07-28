@@ -3,10 +3,10 @@
     <el-main>
       <div class="box" key="index" v-for="art in article">
         <div class="title">
-          <el-link :href="'/a/'+escape(art.article.title)"><h2>{{ art.article.title_match ? art.article.title_match : art.article.title }}</h2></el-link>
-          <span>{{ art.duration }}</span>
+          <el-link :href="'/a/'+escape(art.article.title)"><h2 v-html="art.article.title_match ? art.article.title_match : art.article.title"></h2></el-link>
+          <el-tag effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
         </div>
-        <div class="description">{{ art.article.intro_match ? art.article.intro_match : art.article.intro }}</div>
+        <div class="description" v-html="art.article.intro_match ? art.article.intro_match : art.article.intro"></div>
         <el-row class="link">
           <el-col :span="12">
             <p v-for="topic in art.topics">来自：{{ topic }} 专题</p>
@@ -19,7 +19,7 @@
         <el-divider></el-divider>
       </div>
       <p class="load" v-if="loading">加载中...</p>
-      <el-empty v-if="noMore" description="没有更多了"></el-empty>
+      <el-empty v-if="noMore" description="木有了"></el-empty>
     </el-main>
   </el-container>
   <el-aside class="hidden-xs-only">
@@ -43,14 +43,27 @@ export default {
     return {
       page: 0,
       size: 10,
-      keyword: "",
       article: [],
       rank: [],
       noMore: false,
       loading: false
     }
   },
+  created() {
+    this.$watch(
+        () => this.$route.params.keyword,
+        () => {
+          this.defaults()
+          this.load()
+          console.log("load")
+        },
+        // 组件创建完后获取数据，
+        // 此时 data 已经被 observed 了
+        { immediate: true }
+    )
+  },
   mounted() {
+    document.title = "YuPengSir Blog"
     this.load()
     this.ranks()
   },
@@ -60,6 +73,11 @@ export default {
     }
   },
   methods: {
+    defaults() {
+      this.noMore = false
+      this.page = 0
+      this.article = []
+    },
     escape(str) {
       return encodeURIComponent(str)
     },
@@ -80,7 +98,13 @@ export default {
       }
       this.loading = true
       this.page++
-      this.$http.get('/article/list', {params: {"page": this.page, "size": this.size, "keyword": this.keyword}}).then((response) => {
+
+      var keyword = this.$route.params.keyword
+      if (keyword) {
+        keyword = this.unscape(keyword)
+      }
+
+      this.$http.get('/article/list', {params: {"page": this.page, "size": this.size, "keyword": keyword}}).then((response) => {
         this.loading = false
         if (response.data.length === 0) {
           this.noMore = true
@@ -108,6 +132,7 @@ export default {
 .title a {
   text-decoration: none;
   color: #303133;
+  margin-right: 30px;
 }
 
 .title h2 {
@@ -116,7 +141,6 @@ export default {
 
 .title span {
   vertical-align: bottom;
-  margin-left: 30px;
 }
 
 .description {
