@@ -94,16 +94,23 @@ func (a articleService) GetListPage(isLogin bool, page int, size int, keyword st
 	if keyword != "" {
 		es := a.search(isLogin, keyword, offset, size)
 		for _, v := range es.Hits.SubHits {
+			var titleMatch, introMatch string
+			if len(v.Highlight.Title) > 0 {
+				titleMatch = v.Highlight.Title[0]
+			}
+			if len(v.Highlight.Intro) > 0 {
+				introMatch = v.Highlight.Intro[0]
+			}
 			id, _ := strconv.Atoi(v.Id)
 			article = append(article, datamodels.Article{
-				Id:    uint(id),
-				Title: v.Source.Title,
-				//TitleMatch: v.Highlight.Title[0],
-				Intro: v.Source.Intro,
-				//IntroMatch: v.Highlight.Intro[0],
-				IsState: v.Source.IsState,
-				Utime:   v.Source.Utime,
-				Ctime:   v.Source.Ctime,
+				Id:         uint(id),
+				Title:      v.Source.Title,
+				TitleMatch: titleMatch,
+				Intro:      v.Source.Intro,
+				IntroMatch: introMatch,
+				IsState:    v.Source.IsState,
+				Utime:      v.Source.Utime,
+				Ctime:      v.Source.Ctime,
 			})
 		}
 	} else {

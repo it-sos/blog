@@ -3,10 +3,10 @@
     <el-main>
       <div class="box" key="index" v-for="art in article">
         <div class="title">
-          <el-link :href="'/a/'+escape(art.article.title)"><h2>{{ art.article.title }}</h2></el-link>
+          <el-link :href="'/a/'+escape(art.article.title)"><h2>{{ art.article.title_match ? art.article.title_match : art.article.title }}</h2></el-link>
           <span>{{ art.duration }}</span>
         </div>
-        <div class="description">{{ art.article.intro }}</div>
+        <div class="description">{{ art.article.intro_match ? art.article.intro_match : art.article.intro }}</div>
         <el-row class="link">
           <el-col :span="12">
             <p v-for="topic in art.topics">来自：{{ topic }} 专题</p>
@@ -43,6 +43,7 @@ export default {
     return {
       page: 0,
       size: 10,
+      keyword: "",
       article: [],
       rank: [],
       noMore: false,
@@ -79,7 +80,7 @@ export default {
       }
       this.loading = true
       this.page++
-      this.$http.get('/article/list', {params: {"page": this.page, "size": this.size}}).then((response) => {
+      this.$http.get('/article/list', {params: {"page": this.page, "size": this.size, "keyword": this.keyword}}).then((response) => {
         this.loading = false
         if (response.data.length === 0) {
           this.noMore = true

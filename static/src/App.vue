@@ -8,7 +8,7 @@
               <el-image style="width: 104px; height: 24px; border-radius: 4px;" src="/logo.png" fit="fill"></el-image>
             </router-link>
           </el-col>
-          <el-col :span="6" align="center"><Search/></el-col>
+          <el-col :span="6" align="center"><Search @search="search" /></el-col>
           <el-col :span="6" align="right"><LoginMenu/></el-col>
         </el-row>
       </el-header>
@@ -32,6 +32,11 @@ import LoginMenu from "./components/LoginMenu.vue"
 
 export default {
   name: 'App',
-  components: {Search, LoginMenu}
+  components: {Search, LoginMenu},
+  methods: {
+    search(txt) {
+      console.log(txt)
+    }
+  }
 }
 </script>
