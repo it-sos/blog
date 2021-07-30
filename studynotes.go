@@ -16,7 +16,6 @@ import (
 	"gitee.com/itsos/studynotes/web/middleware/identity"
 	"gitee.com/itsos/studynotes/web/routes"
 	"github.com/kataras/iris/v12"
-	"io/fs"
 	"net"
 	"os"
 )
@@ -32,23 +31,21 @@ func Listen() {
 	newApp().Listen(":"+config.C.GetPort(), iris.WithOptimizations)
 }
 
-// ListenUnix socket 方式
-func ListenUnix() {
+// ListenSock socket 方式
+// socat -d -d TCP-LISTEN:8080,fork,bind=127.0.0.1 UNIX:/tmp/studynote.sock
+// curl http://localhost:8080
+func ListenSock() {
 	app := newApp()
-	socketFile := config.C.GetUnix()
+	socketFile := config.C.GetSock()
 	if errOs := os.Remove(socketFile); errOs != nil && !os.IsNotExist(errOs) {
 		app.Logger().Fatal(errOs)
 	}
-
 	l, err := net.Listen("unix", socketFile)
-
 	if err != nil {
 		app.Logger().Fatal(err)
 	}
-
-	if err = os.Chmod(socketFile, fs.ModeSocket); err != nil {
+	if err = os.Chmod(socketFile, 0666|os.ModeSocket); err != nil {
 		app.Logger().Fatal(err)
 	}
-
-	app.ListenUnix(l, iris.WithOptimizations)
+	app.ListenSock(l, iris.WithOptimizations)
 }

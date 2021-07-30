@@ -185,6 +185,6 @@ func (b *Bootstrapper) Listen(addr string, cfgs ...iris.Configurator) {
 	b.Run(iris.Addr(addr), cfgs...)
 }
 
-func (b *Bootstrapper) ListenUnix(l net.Listener, cfgs ...iris.Configurator) {
+func (b *Bootstrapper) ListenSock(l net.Listener, cfgs ...iris.Configurator) {
 	b.Run(iris.Listener(l), cfgs...)
 }

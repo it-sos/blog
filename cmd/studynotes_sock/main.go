@@ -15,5 +15,5 @@ import (
 )
 
 func main() {
-	studynotes.ListenUnix()
+	studynotes.ListenSock()
 }
