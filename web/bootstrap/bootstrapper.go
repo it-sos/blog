@@ -27,6 +27,7 @@ import (
 	"github.com/kataras/iris/v12/middleware/recover"
 	"github.com/kataras/iris/v12/sessions"
 	"github.com/kataras/iris/v12/sessions/sessiondb/redis"
+	"net"
 	"strconv"
 	"strings"
 	"time"
@@ -182,4 +183,8 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 
 func (b *Bootstrapper) Listen(addr string, cfgs ...iris.Configurator) {
 	b.Run(iris.Addr(addr), cfgs...)
+}
+
+func (b *Bootstrapper) ListenUnix(l net.Listener, cfgs ...iris.Configurator) {
+	b.Run(iris.Listener(l), cfgs...)
 }

@@ -2,6 +2,7 @@ active: dev
 domain: qjfu.cn
 scheme: http
 port: 8080
+unix: /tmp/studynote.sock
 
 swagger:
   port: 9090

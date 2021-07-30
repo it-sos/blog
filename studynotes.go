@@ -16,6 +16,9 @@ import (
 	"gitee.com/itsos/studynotes/web/middleware/identity"
 	"gitee.com/itsos/studynotes/web/routes"
 	"github.com/kataras/iris/v12"
+	"io/fs"
+	"net"
+	"os"
 )
 
 func newApp() *bootstrap.Bootstrapper {
@@ -27,4 +30,25 @@ func newApp() *bootstrap.Bootstrapper {
 
 func Listen() {
 	newApp().Listen(":"+config.C.GetPort(), iris.WithOptimizations)
+}
+
+// ListenUnix socket 方式
+func ListenUnix() {
+	app := newApp()
+	socketFile := config.C.GetUnix()
+	if errOs := os.Remove(socketFile); errOs != nil && !os.IsNotExist(errOs) {
+		app.Logger().Fatal(errOs)
+	}
+
+	l, err := net.Listen("unix", socketFile)
+
+	if err != nil {
+		app.Logger().Fatal(err)
+	}
+
+	if err = os.Chmod(socketFile, fs.ModeSocket); err != nil {
+		app.Logger().Fatal(err)
+	}
+
+	app.ListenUnix(l, iris.WithOptimizations)
 }
