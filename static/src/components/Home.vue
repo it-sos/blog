@@ -12,7 +12,7 @@
             <p v-for="topic in art.topics">来自：{{ topic }} 专题</p>
           </el-col>
           <el-col :span="12" align="right" class="tag">
-            <el-tag v-for="tag in art.tags">{{ tag }}</el-tag>
+            <el-tag effect="plain" v-for="tag in art.tags">{{ tag }}</el-tag>
           </el-col>
         </el-row>
         <!-- 分割线 -->

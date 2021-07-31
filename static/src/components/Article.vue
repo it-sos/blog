@@ -16,7 +16,7 @@
             <p v-for="topic in topics">来自：{{ topic }} 专题</p>
           </el-col>
           <el-col :span="12" align="right" class="tag">
-            <el-tag v-for="tag in tags">{{ tag }}</el-tag>
+            <el-tag effect="plain" v-for="tag in tags">{{ tag }}</el-tag>
           </el-col>
         </el-row>
       </div>

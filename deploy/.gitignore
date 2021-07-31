@@ -1,4 +1,2 @@
-configrc
-run/config.yaml
-run/studynotes
-supervisor/supervisord.conf
+/config
+/run

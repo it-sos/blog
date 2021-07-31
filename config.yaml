@@ -1,14 +1,21 @@
+# 环境 dev / test / product
 active: dev
-domain: qjfu.cn
+
+# 域名端口方式，可单独提供服务
+domain: demo.com
 scheme: http
 port: 8080
-unix: /tmp/studynote.sock
 
+# socket 方式，结合nginx转发
+sock: /tmp/studynote.sock
+
+# swagger wiki 服务端口
 swagger:
   port: 9090
 
 # 存储方案二选一， mysql or sqlite
 storage-driver: mysql
+
 mysql:
   master:
     user: root
@@ -18,10 +25,14 @@ mysql:
     database: yupengsir_prod
     charset: utf8mb4
     timezone: Asia/Shanghai
+
+# sqlite
 sqlite:
   master:
     storage-file: sqlite3.db
     timezone: Asia/Shanghai
+
+# redis
 redis:
   master:
     host: 127.0.0.1
@@ -29,5 +40,6 @@ redis:
     password:
     db: 0
 
+# es配置
 es:
-  - https://qjfu.cn:8/es
+  - http://localhost:9200

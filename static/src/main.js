@@ -7,7 +7,11 @@ import VueAxios from 'vue-axios'
 import { router } from './routes'
 import App from './App.vue'
 
-axios.defaults.baseURL = 'http://localhost:8080';
+if (process.env.NODE_ENV === "production") {
+    axios.defaults.baseURL = '/api';
+} else {
+    axios.defaults.baseURL = 'http://localhost:8080';
+}
 
 const app = createApp(App)
 app.use(ElementPlus)
