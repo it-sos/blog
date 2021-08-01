@@ -20,6 +20,8 @@
       </div>
       <p class="load" v-if="loading">加载中...</p>
       <el-empty v-if="noMore" description="木有了"></el-empty>
+      <el-result v-if="errorMsg" icon="error" title="错误提示" subTitle="内部错误，稍后再试试">
+      </el-result>
     </el-main>
   </el-container>
   <el-aside class="hidden-xs-only">
@@ -46,7 +48,8 @@ export default {
       article: [],
       rank: [],
       noMore: false,
-      loading: false
+      loading: false,
+      errorMsg: false
     }
   },
   created() {
@@ -55,7 +58,6 @@ export default {
         () => {
           this.defaults()
           this.load()
-          console.log("load")
         },
         // 组件创建完后获取数据，
         // 此时 data 已经被 observed 了
@@ -64,16 +66,11 @@ export default {
   },
   mounted() {
     document.title = "YuPengSir Blog"
-    this.load()
     this.ranks()
-  },
-  computed: {
-    disabled() {
-      return this.loading || this.noMore
-    }
   },
   methods: {
     defaults() {
+      this.errorMsg = false
       this.noMore = false
       this.page = 0
       this.article = []
@@ -93,7 +90,7 @@ export default {
       })
     },
     load() {
-      if (this.noMore) {
+      if (this.noMore || this.errorMsg) {
         return
       }
       this.loading = true
@@ -115,7 +112,7 @@ export default {
         })
       }).catch((error) => {
         this.loading = false
-        console.log(error)
+        this.errorMsg = true
       })
     }
   }

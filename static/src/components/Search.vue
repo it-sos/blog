@@ -19,10 +19,7 @@ export default defineComponent({
     this.$watch(
         () => this.$route.params.keyword,
         () => {
-          var keyword = this.$route.params.keyword
-          if (keyword) {
-            this.input = keyword
-          }
+          this.input = this.$route.params.keyword == null ? '' : this.$route.params.keyword
         },
         // 组件创建完后获取数据，
         // 此时 data 已经被 observed 了
@@ -31,7 +28,7 @@ export default defineComponent({
   },
   methods: {
     deletes() {
-      if (this.input == "") {
+      if (this.input === '') {
         document.title = "yupengSir 首页"
         this.$router.push('/')
       }
@@ -45,5 +42,4 @@ export default defineComponent({
 </script>
 
 <style>
-
 </style>

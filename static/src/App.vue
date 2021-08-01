@@ -1,6 +1,6 @@
 <template>
   <div class="common-layout">
-    <el-container style="min-height:700px;">
+    <el-container style="min-height:600px;">
       <el-header>
         <el-row type="flex" class="row-bg" justify="space-between"  align="middle">
           <el-col :span="6">
@@ -35,3 +35,11 @@ export default {
   components: {Search, LoginMenu},
 }
 </script>
+<style>
+/* 屏幕小于768px */
+@media screen and (max-width: 768px) {
+  .el-input-group__append {
+    display: none;
+  }
+}
+</style>
