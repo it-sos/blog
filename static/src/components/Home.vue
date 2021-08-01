@@ -1,5 +1,5 @@
 <template>
-  <el-container v-infinite-scroll="load" class="infinite-list">
+  <el-container v-infinite-scroll="load" class="infinite-list" infinite-scroll-immediate="false">
     <el-main>
       <div class="box" key="index" v-for="art in article">
         <div class="title">
