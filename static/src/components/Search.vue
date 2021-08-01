@@ -29,7 +29,7 @@ export default defineComponent({
   methods: {
     deletes() {
       if (this.input === '') {
-        document.title = "yupengSir 首页"
+        document.title = "YuPengSir Blog"
         this.$router.push('/')
       }
     },
