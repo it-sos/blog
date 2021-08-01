@@ -174,5 +174,5 @@ mkdir -p /usr/local/canal-adapter && cd /usr/local/canal-adapter && \
 # 配置
 # conf/local/canal-adapter/application.yml
 ```
-# 数据全量同步
+数据全量同步
 > curl -XPOST http://127.0.0.1:8081/etl/es7/canal.yml
