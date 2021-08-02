@@ -11,7 +11,7 @@
 package repositories
 
 import (
-	"gitee.com/itsos/golibs/db"
+	"gitee.com/itsos/golibs/v2/db/mysql"
 	"gitee.com/itsos/studynotes/datamodels"
 )
 
@@ -25,11 +25,12 @@ type ArticleContentRepository interface {
 }
 
 type articleContentRepository struct {
+	db mysql.GoLibMysql
 }
 
 // Select 查询文章信息
 func (ur *articleContentRepository) Select(p *datamodels.ArticleContent) (datamodels.ArticleContent, bool) {
-	has, err := db.Conn.Get(p)
+	has, err := ur.db.Get(p)
 	if err != nil {
 		panic(err)
 	}
@@ -37,7 +38,7 @@ func (ur *articleContentRepository) Select(p *datamodels.ArticleContent) (datamo
 }
 
 func (ur *articleContentRepository) Insert(p *datamodels.ArticleContent) bool {
-	affected, err := db.Conn.Insert(p)
+	affected, err := ur.db.Insert(p)
 	if err != nil {
 		panic(err)
 	}
@@ -45,11 +46,11 @@ func (ur *articleContentRepository) Insert(p *datamodels.ArticleContent) bool {
 }
 
 func (ur *articleContentRepository) Update(p *datamodels.ArticleContent) bool {
-	affected, err := db.Conn.ID(p.Aid).Update(p)
+	affected, err := ur.db.ID(p.Aid).Update(p)
 	if err != nil {
 		panic(err)
 	}
 	return affected > 0
 }
 
-var RArticleContent ArticleContentRepository = &articleContentRepository{}
+var RArticleContent ArticleContentRepository = &articleContentRepository{mysql.NewMysql()}

@@ -11,8 +11,7 @@
 package main
 
 import (
-	"gitee.com/itsos/golibs/db"
-	_ "gitee.com/itsos/golibs/tests/testsdb"
+	"gitee.com/itsos/golibs/v2/db/mysql"
 	"gitee.com/itsos/studynotes/datamodels"
 	"github.com/spf13/viper"
 	"log"
@@ -32,12 +31,12 @@ func main() {
 		new(datamodels.Category),
 		new(datamodels.CategoryRel),
 	}
-	err := db.Conn.DropTables(tables...)
+	err := mysql.NewMysql().DropTables(tables...)
 	if err != nil {
 		panic(err)
 		return
 	}
-	err = db.Conn.Sync2(tables...)
+	err = mysql.NewMysql().Sync2(tables...)
 	if err != nil {
 		panic(err)
 		return

@@ -11,13 +11,13 @@
 package config
 
 import (
-	"gitee.com/itsos/golibs/config/web"
+	"gitee.com/itsos/golibs/v2/config"
 	"github.com/spf13/viper"
 	"reflect"
 )
 
 type ConfigurationReadOnly interface {
-	web.ConfigurationReadOnly
+	config.ConfigurationReadOnly
 	GetQWidth() int
 	GetQHeight() int
 	GetQBuffer() int64
@@ -25,7 +25,7 @@ type ConfigurationReadOnly interface {
 }
 
 type Configuration struct {
-	*web.Configuration
+	*config.Configuration
 	QWidth  string `yaml:"qrcode.width"`
 	QHeight string `yaml:"qrcode.height"`
 	QBuffer string `yaml:"qrcode.buffer"`
@@ -50,7 +50,7 @@ func (c Configuration) GetQUrl() string {
 
 func covertConfiguration() *Configuration {
 	c := &Configuration{
-		Configuration: web.Config,
+		Configuration: config.Config,
 	}
 	t := reflect.ValueOf(c).Elem()
 	for i := 0; i < t.NumField(); i++ {

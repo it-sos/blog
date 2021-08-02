@@ -11,7 +11,6 @@
 package caches
 
 import (
-	_ "gitee.com/itsos/golibs/tests/testsdb"
 	"testing"
 )
 

@@ -11,7 +11,6 @@
 package tests
 
 import (
-	_ "gitee.com/itsos/golibs/tests"
 	"gitee.com/itsos/studynotes/web/bootstrap"
 	"github.com/kataras/iris/v12"
 )

@@ -12,7 +12,7 @@ package caches
 
 import (
 	"fmt"
-	"gitee.com/itsos/golibs/db"
+	"gitee.com/itsos/golibs/v2/db/redis"
 	"golang.org/x/net/context"
 )
 
@@ -30,18 +30,19 @@ type CategoryRelCmd interface {
 
 type categoryRelCmd struct {
 	aidType string
+	db      redis.GoLibRedis
 }
 
 func (a *categoryRelCmd) Exists() bool {
-	return db.Rdb.Exists(context.Background(), a.aidType).Val() > 0
+	return a.db.Exists(context.Background(), a.aidType).Val() > 0
 }
 
 func (a *categoryRelCmd) Get() []string {
-	return db.Rdb.SMembers(context.Background(), a.aidType).Val()
+	return a.db.SMembers(context.Background(), a.aidType).Val()
 }
 
 func (a *categoryRelCmd) Add(v uint) {
-	_, err := db.Rdb.SAdd(context.Background(), a.aidType, v).Result()
+	_, err := a.db.SAdd(context.Background(), a.aidType, v).Result()
 	if err != nil {
 		panic(err)
 	}
@@ -50,7 +51,7 @@ func (a *categoryRelCmd) Add(v uint) {
 const categoryRelPrefix = "category:%d_%d"
 
 func (a *categoryRel) Id(aid uint, types uint8) CategoryRelCmd {
-	return &categoryRelCmd{fmt.Sprintf(categoryRelPrefix, aid, types)}
+	return &categoryRelCmd{fmt.Sprintf(categoryRelPrefix, aid, types), redis.NewRedis()}
 }
 
 // CCategoryRel cache文章的标题和标签

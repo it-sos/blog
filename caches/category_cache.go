@@ -12,7 +12,7 @@ package caches
 
 import (
 	"fmt"
-	"gitee.com/itsos/golibs/db"
+	"gitee.com/itsos/golibs/v2/db/redis"
 	"golang.org/x/net/context"
 )
 
@@ -29,19 +29,20 @@ type CategoryCmd interface {
 }
 
 type categoryCmd struct {
-	k string
+	k  string
+	db redis.GoLibRedis
 }
 
 func (a *categoryCmd) Exists() bool {
-	return db.Rdb.HExists(context.Background(), categoryRoot, a.k).Val()
+	return a.db.HExists(context.Background(), categoryRoot, a.k).Val()
 }
 
 func (a *categoryCmd) Get() string {
-	return db.Rdb.HGet(context.Background(), categoryRoot, a.k).Val()
+	return a.db.HGet(context.Background(), categoryRoot, a.k).Val()
 }
 
 func (a *categoryCmd) Set(v string) {
-	_, err := db.Rdb.HSet(context.Background(), categoryRoot, a.k, v).Result()
+	_, err := a.db.HSet(context.Background(), categoryRoot, a.k, v).Result()
 	if err != nil {
 		panic(err)
 	}
@@ -51,7 +52,7 @@ const categoryPrefix = "%d"
 const categoryRoot = "category"
 
 func (a *category) Id(k uint) CategoryCmd {
-	return &categoryCmd{fmt.Sprintf(categoryPrefix, k)}
+	return &categoryCmd{fmt.Sprintf(categoryPrefix, k), redis.NewRedis()}
 }
 
 // CCategory cache分类id与分类名

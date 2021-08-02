@@ -11,7 +11,7 @@
 package repositories
 
 import (
-	"gitee.com/itsos/golibs/db"
+	"gitee.com/itsos/golibs/v2/db/mysql"
 	"gitee.com/itsos/studynotes/datamodels"
 )
 
@@ -34,10 +34,11 @@ type CategoryRepository interface {
 }
 
 type categoryRepository struct {
+	db mysql.GoLibMysql
 }
 
 func (c categoryRepository) Insert(p *datamodels.Category) uint {
-	_, err := db.Conn.Insert(p)
+	_, err := c.db.Insert(p)
 	if err != nil {
 		panic(err)
 	}
@@ -45,7 +46,7 @@ func (c categoryRepository) Insert(p *datamodels.Category) uint {
 }
 
 func (c categoryRepository) Update(p *datamodels.Category) uint {
-	_, err := db.Conn.Update(p)
+	_, err := c.db.Update(p)
 	if err != nil {
 		panic(err)
 	}
@@ -53,7 +54,7 @@ func (c categoryRepository) Update(p *datamodels.Category) uint {
 }
 
 func (c categoryRepository) Select(p *datamodels.Category) (datamodels.Category, bool) {
-	has, err := db.Conn.Get(p)
+	has, err := c.db.Get(p)
 	if err != nil {
 		panic(err)
 	}
@@ -62,11 +63,11 @@ func (c categoryRepository) Select(p *datamodels.Category) (datamodels.Category,
 
 func (c categoryRepository) SelectMany() (results []datamodels.Category) {
 	category := make([]datamodels.Category, 0)
-	err := db.Conn.Desc("id").Find(&category)
+	err := c.db.Desc("id").Find(&category)
 	if err != nil {
 		panic(err)
 	}
 	return category
 }
 
-var RCategory CategoryRepository = &categoryRepository{}
+var RCategory CategoryRepository = &categoryRepository{mysql.NewMysql()}

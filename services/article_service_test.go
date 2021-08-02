@@ -11,7 +11,6 @@
 package services
 
 import (
-	_ "gitee.com/itsos/golibs/tests/testsdb"
 	"testing"
 )
 

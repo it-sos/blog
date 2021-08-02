@@ -1,8 +1,11 @@
 # 环境 dev / test / product
 active: dev
 
+# 时区
+timezone: Asia/Shanghai
+
 # 域名端口方式，可单独提供服务
-domain: demo.com
+domain: localhost
 scheme: http
 port: 8080
 
@@ -13,9 +16,6 @@ sock: /tmp/studynote.sock
 swagger:
   port: 9090
 
-# 存储方案二选一， mysql or sqlite
-storage-driver: mysql
-
 mysql:
   master:
     user: root
@@ -24,21 +24,12 @@ mysql:
     port: 3306
     database: yupengsir_prod
     charset: utf8mb4
-    timezone: Asia/Shanghai
 
-# sqlite
-sqlite:
-  master:
-    storage-file: sqlite3.db
-    timezone: Asia/Shanghai
-
-# redis
 redis:
-  master:
-    host: 127.0.0.1
-    port: 6379
-    password:
-    db: 0
+  host: 127.0.0.1
+  port: 6379
+  password:
+  db: 0
 
 # es配置
 es:

@@ -11,7 +11,6 @@
 package repositories
 
 import (
-	_ "gitee.com/itsos/golibs/tests/testsdb"
 	"gitee.com/itsos/studynotes/datamodels"
 	"testing"
 )

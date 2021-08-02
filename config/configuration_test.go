@@ -11,7 +11,6 @@
 package config
 
 import (
-	_ "gitee.com/itsos/golibs/tests"
 	"testing"
 )
 

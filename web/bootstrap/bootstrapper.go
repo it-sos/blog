@@ -11,13 +11,10 @@
 package bootstrap
 
 import (
-	"gitee.com/itsos/golibs/config"
-	"gitee.com/itsos/golibs/db"
-	common2 "gitee.com/itsos/golibs/db/common"
-	"gitee.com/itsos/golibs/errors"
-	"gitee.com/itsos/golibs/global/consts"
-	"gitee.com/itsos/golibs/global/variable"
-	config2 "gitee.com/itsos/studynotes/config"
+	"gitee.com/itsos/golibs/v2/errors"
+	"gitee.com/itsos/golibs/v2/global/consts"
+	"gitee.com/itsos/golibs/v2/global/variable"
+	"gitee.com/itsos/studynotes/config"
 	"github.com/gorilla/securecookie"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
@@ -33,7 +30,7 @@ import (
 	"time"
 )
 
-var c = config2.C
+var c = config.C
 
 type Configurator func(*Bootstrapper)
 
@@ -74,11 +71,9 @@ func (b *Bootstrapper) SetupSessions(expires time.Duration, cookieHashKey, cooki
 		Expires:  expires,
 		Encoding: securecookie.New(cookieHashKey, cookieBlockKey),
 	})
-	common2.Config.UseRedis()
-	common2.Config.SetMode(common2.Master)
 	b.Sessions.UseDatabase(redis.New(redis.Config{
-		Addr:     common2.Config.GetHost() + ":" + strconv.Itoa(common2.Config.GetPort()),
-		Database: strconv.Itoa(common2.Config.GetDb()),
+		Addr:     c.GetRedis().GetHost() + ":" + strconv.Itoa(c.GetRedis().GetPort()),
+		Database: strconv.Itoa(c.GetRedis().GetDb()),
 	}))
 }
 
@@ -140,16 +135,7 @@ func (b *Bootstrapper) Configure(cs ...Configurator) {
 	}
 }
 
-// 初始化配置和存储连接等
-func (b *Bootstrapper) initialization() {
-	config.Init()
-	db.Init()
-}
-
 func (b *Bootstrapper) Bootstrap() *Bootstrapper {
-	// 初始配置、数据存储连接
-	b.initialization()
-
 	// 设置golang views目录
 	b.SetupViews(variable.BasePath + "/web/views")
 

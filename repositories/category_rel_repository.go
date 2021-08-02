@@ -11,7 +11,7 @@
 package repositories
 
 import (
-	"gitee.com/itsos/golibs/db"
+	"gitee.com/itsos/golibs/v2/db/mysql"
 	"gitee.com/itsos/studynotes/datamodels"
 )
 
@@ -29,10 +29,11 @@ type CategoryRelRepository interface {
 }
 
 type categoryRelRepository struct {
+	db mysql.GoLibMysql
 }
 
 func (c categoryRelRepository) Insert(p *datamodels.CategoryRel) bool {
-	affected, err := db.Conn.Insert(p)
+	affected, err := c.db.Insert(p)
 	if err != nil {
 		panic(err)
 	}
@@ -40,7 +41,7 @@ func (c categoryRelRepository) Insert(p *datamodels.CategoryRel) bool {
 }
 
 func (c categoryRelRepository) Update(p *datamodels.CategoryRel) bool {
-	affected, err := db.Conn.Update(p)
+	affected, err := c.db.Update(p)
 	if err != nil {
 		panic(err)
 	}
@@ -48,7 +49,7 @@ func (c categoryRelRepository) Update(p *datamodels.CategoryRel) bool {
 }
 
 func (c categoryRelRepository) Select(p *datamodels.CategoryRel) (datamodels.CategoryRel, bool) {
-	has, err := db.Conn.Get(p)
+	has, err := c.db.Get(p)
 	if err != nil {
 		panic(err)
 	}
@@ -57,7 +58,7 @@ func (c categoryRelRepository) Select(p *datamodels.CategoryRel) (datamodels.Cat
 
 func (c categoryRelRepository) SelectManyByAid(aid uint) (results []datamodels.CategoryRel) {
 	categoryRel := make([]datamodels.CategoryRel, 0)
-	err := db.Conn.Where("aid=?", aid).Desc("id").Find(&categoryRel)
+	err := c.db.Where("aid=?", aid).Desc("id").Find(&categoryRel)
 	if err != nil {
 		panic(err)
 	}
@@ -66,11 +67,11 @@ func (c categoryRelRepository) SelectManyByAid(aid uint) (results []datamodels.C
 
 func (c categoryRelRepository) SelectManyByCid(cid uint) (results []datamodels.CategoryRel) {
 	categoryRel := make([]datamodels.CategoryRel, 0)
-	err := db.Conn.Where("cid=?", cid).Desc("id").Find(&categoryRel)
+	err := c.db.Where("cid=?", cid).Desc("id").Find(&categoryRel)
 	if err != nil {
 		panic(err)
 	}
 	return categoryRel
 }
 
-var RCategoryRel CategoryRelRepository = &categoryRelRepository{}
+var RCategoryRel CategoryRelRepository = &categoryRelRepository{mysql.NewMysql()}

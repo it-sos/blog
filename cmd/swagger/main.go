@@ -12,8 +12,7 @@ package main
 
 import (
 	"fmt"
-	"gitee.com/itsos/golibs/config"
-	"gitee.com/itsos/golibs/global/consts"
+	"gitee.com/itsos/golibs/v2/global/consts"
 	C "gitee.com/itsos/studynotes/config"
 	_ "gitee.com/itsos/studynotes/docs"
 	"github.com/iris-contrib/swagger/v12"
@@ -24,7 +23,6 @@ import (
 var c = C.C
 
 func main() {
-	config.Init()
 	app := iris.New()
 	var url string
 	if c.GetActive() == consts.EnvProduct {

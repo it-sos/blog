@@ -11,7 +11,7 @@
 package repositories
 
 import (
-	"gitee.com/itsos/golibs/db"
+	"gitee.com/itsos/golibs/v2/db/mysql"
 	"gitee.com/itsos/studynotes/datamodels"
 	"strings"
 	"time"
@@ -41,6 +41,7 @@ type ArticleRepository interface {
 }
 
 type articleRepository struct {
+	db mysql.GoLibMysql
 }
 
 func (ur *articleRepository) Navigation(state []uint8, utime time.Time) (prevTitle, nextTitle string) {
@@ -50,7 +51,7 @@ func (ur *articleRepository) Navigation(state []uint8, utime time.Time) (prevTit
 		has bool
 		err error
 	)
-	has, err = db.Conn.In("is_state", state).Where("utime>? and is_del=?", uptime, NotDeleted).Asc("utime").Get(prev)
+	has, err = ur.db.In("is_state", state).Where("utime>? and is_del=?", uptime, NotDeleted).Asc("utime").Get(prev)
 	if err != nil {
 		panic(err)
 	}
@@ -59,7 +60,7 @@ func (ur *articleRepository) Navigation(state []uint8, utime time.Time) (prevTit
 	}
 
 	next := &datamodels.Article{}
-	has, err = db.Conn.In("is_state", state).Where("utime<? and is_del=?", uptime, NotDeleted).Desc("utime").Get(next)
+	has, err = ur.db.In("is_state", state).Where("utime<? and is_del=?", uptime, NotDeleted).Desc("utime").Get(next)
 	if err != nil {
 		panic(err)
 	}
@@ -71,7 +72,7 @@ func (ur *articleRepository) Navigation(state []uint8, utime time.Time) (prevTit
 
 // Select 查询文章信息
 func (ur *articleRepository) Select(state []uint8, p *datamodels.Article) (datamodels.Article, bool) {
-	has, err := db.Conn.In("is_state", state).Where("is_del=?", NotDeleted).Get(p)
+	has, err := ur.db.In("is_state", state).Where("is_del=?", NotDeleted).Get(p)
 	if err != nil {
 		panic(err)
 	}
@@ -81,7 +82,7 @@ func (ur *articleRepository) Select(state []uint8, p *datamodels.Article) (datam
 // SelectMany 查询文章列表
 func (ur *articleRepository) SelectMany(state []uint8, offset int, limit int) (results []datamodels.Article) {
 	article := make([]datamodels.Article, 0)
-	err := db.Conn.In("is_state", state).Where("is_del=?", NotDeleted).Desc("utime").Limit(limit, offset).Find(&article)
+	err := ur.db.In("is_state", state).Where("is_del=?", NotDeleted).Desc("utime").Limit(limit, offset).Find(&article)
 	if err != nil {
 		panic(err)
 	}
@@ -92,7 +93,7 @@ func (ur *articleRepository) SelectMany(state []uint8, offset int, limit int) (r
 func (ur *articleRepository) SelectManyByIds(state []uint8, ids []string) []datamodels.Article {
 	article := make([]datamodels.Article, 0)
 	orderBy := strings.Join(ids, ",")
-	err := db.Conn.In("id", ids).In("is_state", state).Where("is_del=?", NotDeleted).OrderBy("field(id," + orderBy + ")").Find(&article)
+	err := ur.db.In("id", ids).In("is_state", state).Where("is_del=?", NotDeleted).OrderBy("field(id," + orderBy + ")").Find(&article)
 	if err != nil {
 		panic(err)
 	}
@@ -100,7 +101,7 @@ func (ur *articleRepository) SelectManyByIds(state []uint8, ids []string) []data
 }
 
 func (ur *articleRepository) Insert(p *datamodels.Article) (id uint) {
-	_, err := db.Conn.Insert(p)
+	_, err := ur.db.Insert(p)
 	if err != nil {
 		panic(err)
 	}
@@ -108,11 +109,11 @@ func (ur *articleRepository) Insert(p *datamodels.Article) (id uint) {
 }
 
 func (ur *articleRepository) Update(p *datamodels.Article) (id uint) {
-	_, err := db.Conn.ID(p.Id).Update(p)
+	_, err := ur.db.ID(p.Id).Update(p)
 	if err != nil {
 		panic(err)
 	}
 	return p.Id
 }
 
-var RArticle ArticleRepository = &articleRepository{}
+var RArticle ArticleRepository = &articleRepository{mysql.NewMysql()}

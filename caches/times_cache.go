@@ -12,7 +12,7 @@ package caches
 
 import (
 	"fmt"
-	"gitee.com/itsos/golibs/db"
+	"gitee.com/itsos/golibs/v2/db/redis"
 	"golang.org/x/net/context"
 )
 
@@ -21,7 +21,9 @@ type AccessTimes interface {
 	Rank(num int) []string
 }
 
-type accessTimes struct{}
+type accessTimes struct {
+	db redis.GoLibRedis
+}
 
 type AccessTimesCmd interface {
 	Get() int
@@ -29,15 +31,16 @@ type AccessTimesCmd interface {
 }
 
 type accessTimesCmd struct {
-	k string
+	k  string
+	db redis.GoLibRedis
 }
 
 func (a *accessTimesCmd) Get() int {
-	return int(db.Rdb.ZScore(ctx, root, a.k).Val())
+	return int(a.db.ZScore(ctx, root, a.k).Val())
 }
 
 func (a *accessTimesCmd) Incr() {
-	err := db.Rdb.ZIncrBy(ctx, root, 1, a.k).Err()
+	err := a.db.ZIncrBy(ctx, root, 1, a.k).Err()
 	if err != nil {
 		panic(err)
 	}
@@ -49,12 +52,12 @@ const root = "access_times_page"
 var ctx = context.Background()
 
 func (a *accessTimes) Id(k uint) AccessTimesCmd {
-	return &accessTimesCmd{fmt.Sprintf(prefixTimes, k)}
+	return &accessTimesCmd{fmt.Sprintf(prefixTimes, k), redis.NewRedis()}
 }
 
 func (a *accessTimes) Rank(num int) []string {
-	return db.Rdb.ZRevRange(ctx, root, 0, int64(num-1)).Val()
+	return a.db.ZRevRange(ctx, root, 0, int64(num-1)).Val()
 }
 
 // CAccessTimes cache文章访问次数
-var CAccessTimes AccessTimes = &accessTimes{}
+var CAccessTimes AccessTimes = &accessTimes{redis.NewRedis()}
