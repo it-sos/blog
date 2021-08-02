@@ -1,4 +1,4 @@
-# 环境 dev / test / product
+# 环境 dev / test / uat / pre / product
 active: dev
 
 # 时区
@@ -10,7 +10,7 @@ scheme: http
 port: 8080
 
 # socket 方式，结合nginx转发
-sock: /tmp/studynote.sock
+sock: /tmp/studynotes.sock
 
 # swagger wiki 服务端口
 swagger:

@@ -82,7 +82,9 @@ AskPassword=$(cat <<-EOF
 expect {
   "*请输入密码*" { send "$PASSWORD\r" }
   "*password*" { send "$PASSWORD\r" }
-  "#|$" { send "echo Hello.\r" }
+  "*#|*$" { send "\r" }
+  "sftp>" { send "\r" }
+  eof { send_tty "eof, will exit.\n"; exit }
 }
 EOF
 )
