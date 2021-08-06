@@ -163,14 +163,9 @@
     "estree-walker" "^2.0.1"
     "picomatch" "^2.2.2"
 
-"@swc/core-linux-x64-gnu@^1.2.64":
-  "integrity" "sha1-YfMHXByUcNlf8WNlCj8gik9QK9A="
-  "resolved" "https://registry.nlark.com/@swc/core-linux-x64-gnu/download/@swc/core-linux-x64-gnu-1.2.64.tgz?cache=0&sync_timestamp=1626273136787&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40swc%2Fcore-linux-x64-gnu%2Fdownload%2F%40swc%2Fcore-linux-x64-gnu-1.2.64.tgz"
-  "version" "1.2.64"
-
-"@swc/core-linux-x64-musl@^1.2.64":
-  "integrity" "sha1-pkyn0ks/U8jOj66D5x2h8+P8KnA="
-  "resolved" "https://registry.nlark.com/@swc/core-linux-x64-musl/download/@swc/core-linux-x64-musl-1.2.64.tgz?cache=0&sync_timestamp=1626273141513&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40swc%2Fcore-linux-x64-musl%2Fdownload%2F%40swc%2Fcore-linux-x64-musl-1.2.64.tgz"
+"@swc/core-darwin-x64@^1.2.64":
+  "integrity" "sha1-azlDA5+ovvIjrwvEwc1TpXuimlY="
+  "resolved" "https://registry.nlark.com/@swc/core-darwin-x64/download/@swc/core-darwin-x64-1.2.64.tgz?cache=0&sync_timestamp=1626273130458&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40swc%2Fcore-darwin-x64%2Fdownload%2F%40swc%2Fcore-darwin-x64-1.2.64.tgz"
   "version" "1.2.64"
 
 "@swc/core@>=1.2.50":
@@ -1869,6 +1864,11 @@
   "integrity" "sha1-FQStJSMVjKpA20onh8sBQRmU6k8="
   "resolved" "https://registry.npm.taobao.org/fs.realpath/download/fs.realpath-1.0.0.tgz"
   "version" "1.0.0"
+
+"fsevents@~2.3.2":
+  "integrity" "sha1-ilJveLj99GI7cJ4Ll1xSwkwC/Ro="
+  "resolved" "https://registry.nlark.com/fsevents/download/fsevents-2.3.2.tgz"
+  "version" "2.3.2"
 
 "function-bind@^1.1.1":
   "integrity" "sha1-pWiZ0+o8m6uHS7l3O3xe3pL0iV0="

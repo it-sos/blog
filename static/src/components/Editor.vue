@@ -1,49 +1,44 @@
 <template>
-  <editor-content :editor="editor" />
+  <div class="editor" v-if="editor">
+    <menu-bar class="editor__header" :editor="editor" />
+    <editor-content :editor="editor" />
+  </div>
 </template>
 
 <script>
-import { useEditor, EditorContent } from '@tiptap/vue-3'
+import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Highlight from '@tiptap/extension-highlight'
 import Typography from '@tiptap/extension-typography'
+import MenuBar from './editor/MenuBar.vue'
 
 export default {
   components: {
     EditorContent,
+    MenuBar,
   },
 
-  setup() {
-    const editor = useEditor({
-      content: `
-        ### aaa
-        <p>
-          Markdown shortcuts make it easy to format the text while typing.
-        </p>
-        <p>
-          To test that, start a new line and type <code>#</code> followed by a space to get a heading. Try <code>#</code>, <code>##</code>, <code>###</code>, <code>####</code>, <code>#####</code>, <code>######</code> for different levels.
-        </p>
-        <p>
-          Those conventions are called input rules in tiptap. Some of them are enabled by default. Try <code>></code> for blockquotes, <code>*</code>, <code>-</code> or <code>+</code> for bullet lists, or <code>
-      foobar to strike text, or <code>==equal signs==</code> to highlight text.
-        </p>
-        <p>
-          You can overwrite existing input rules or add your own to nodes, marks and extensions.
-        </p>
-        <p>
-          For example, we added the <code>Typography</code> extension here. Try typing <code>(c)</code> to see how it’s converted to a proper © character. You can also try <code>-></code>, <code>>></code>, <code>1/2</code>, <code>!=</code>, or <code>--</code>.
-        </p>
-        ->aaa
-      `,
+  data() {
+    return {
+      editor: null,
+    }
+  },
+
+  mounted() {
+    this.editor = new Editor({
+      content: '<p>I’m running tiptap with Vue.js. 🎉</p>',
       extensions: [
         StarterKit,
-        Typography,
-        Highlight
+        Highlight,
+        Typography
       ],
     })
-
-    return { editor }
   },
+
+  beforeUnmount() {
+    this.editor.destroy()
+  },
+
 }
 </script>
 <style lang="scss">
