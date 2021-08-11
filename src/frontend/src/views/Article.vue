@@ -13,33 +13,33 @@
         <div class="description" id="showHtml" v-html="article_content"></div>
         <el-row class="link">
           <el-col :span="12">
-            <p v-for="topic in topics">来自：{{ topic }} 专题</p>
+            <p v-bind:key="idx" v-for="(topic,idx) in topics">来自：{{ topic }} 专题</p>
           </el-col>
           <el-col :span="12" align="right" class="tag">
-            <el-tag effect="plain" v-for="tag in tags">{{ tag }}</el-tag>
+            <el-tag effect="plain" v-bind:key="idx" v-for="(tag, idx) in tags">{{ tag }}</el-tag>
           </el-col>
         </el-row>
       </div>
     </el-main>
   </el-container>
   <el-aside class="hidden-xs-only">
-    <el-card class="box-card" v-for="topic in topicList">
+    <el-card class="box-card" v-bind:key="idx" v-for="(topic,idx) in topicList">
       <template #header>
         <div class="card-header">
           <span>{{ topic.title }} 专题</span>
         </div>
       </template>
-      <div v-for="art in topic.article" class="text item">
+      <div v-bind:key="idx" v-for="(art, idx) in topic.article" class="text item">
         <el-link :href="'/a/'+escape(art.title)">{{ art.title + ' （' + art.access_times + '）' }}</el-link>
       </div>
     </el-card>
-    <el-card class="box-card" v-for="tag in tagList">
+    <el-card class="box-card" v-bind:key="idx" v-for="(tag, idx) in tagList">
       <template #header>
         <div class="card-header">
           <span>{{ tag.title }} 标签</span>
         </div>
       </template>
-      <div v-for="art in tag.article" class="text item">
+      <div v-bind:key="idx" v-for="(art, idx) in tag.article" class="text item">
         <el-link :href="'/a/'+escape(art.title)">{{ art.title + ' （' + art.access_times + '）' }}</el-link>
       </div>
     </el-card>

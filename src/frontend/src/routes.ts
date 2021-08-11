@@ -1,8 +1,8 @@
 import {createRouter, createWebHistory} from "vue-router";
 
-const Home = () => import(/* webpackChunkName: "group-front" */ './templates/Home.vue')
-const Article = () => import(/* webpackChunkName: "group-front" */ './templates/Article.vue')
-const Story = () => import(/* webpackChunkName: "group-front" */ './templates/Story.vue')
+const Home = () => import(/* webpackChunkName: "group-front" */ './views/Home.vue')
+const Article = () => import(/* webpackChunkName: "group-front" */ './views/Article.vue')
+const Story = () => import(/* webpackChunkName: "group-front" */ './views/Story.vue')
 
 const routes = [
     { path: '/', component: Home },

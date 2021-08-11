@@ -1,7 +1,7 @@
 <template>
   <el-container v-infinite-scroll="load" class="infinite-list" infinite-scroll-immediate="false">
     <el-main>
-      <div class="box" key="index" v-for="art in article">
+      <div class="box" v-bind:key="idx" v-for="(art, idx) in article">
         <div class="title">
           <el-link :href="'/a/'+escape(art.article.title)"><h2 v-html="art.article.title_match ? art.article.title_match : art.article.title"></h2></el-link>
           <el-tag effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
@@ -9,10 +9,10 @@
         <div class="description" v-html="art.article.intro_match ? art.article.intro_match : art.article.intro"></div>
         <el-row class="link">
           <el-col :span="12">
-            <p v-for="topic in art.topics">来自：{{ topic }} 专题</p>
+            <p v-bind:key="idx" v-for="(topic, idx) in art.topics">来自：{{ topic }} 专题</p>
           </el-col>
           <el-col :span="12" align="right" class="tag">
-            <el-tag effect="plain" v-for="tag in art.tags">{{ tag }}</el-tag>
+            <el-tag effect="plain" v-bind:key="idx" v-for="(tag, idx) in art.tags">{{ tag }}</el-tag>
           </el-col>
         </el-row>
         <!-- 分割线 -->
@@ -31,7 +31,7 @@
           <span>访问前50文章</span>
         </div>
       </template>
-      <div v-for="r in rank" class="text item">
+      <div v-bind:key="idx" v-for="(r, idx) in rank" class="text item">
         <el-link :href="'/a/'+escape(r.title)">{{ r.title }}（{{ r.access_times }}）</el-link>
       </div>
     </el-card>
@@ -111,6 +111,7 @@ export default {
           this.article.push(v)
         })
       }).catch((error) => {
+        console.log(error)
         this.loading = false
         this.errorMsg = true
       })

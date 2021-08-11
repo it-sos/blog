@@ -2,7 +2,7 @@
   <div>
     <template v-for="(item, index) in items">
       <div class="divider" v-if="item.type === 'divider'" :key="index" />
-      <menu-item v-else v-bind="item" />
+      <menu-item :key="item.title" v-else v-bind="item" />
     </template>
   </div>
 </template>
@@ -154,7 +154,7 @@ export default {
 .divider {
   width: 2px;
   height: 1.25rem;
-  background-color: rgba($colorBlack, 0.1);
+  /*background-color: rgba($colorBlack, 0.1);*/
   margin-left: 0.5rem;
   margin-right: 0.75rem;
 }

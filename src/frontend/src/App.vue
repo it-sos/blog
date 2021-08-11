@@ -25,15 +25,18 @@
 <!--  <router-view></router-view>-->
 </template>
 
-<script>
+<script lang="ts">
+
+import { Options, Vue } from 'vue-class-component';
 
 import Search from "./components/Search.vue"
 import LoginMenu from "./components/LoginMenu.vue"
 
-export default {
-  name: 'App',
+@Options({
   components: {Search, LoginMenu},
-}
+})
+export default class App extends Vue {}
+
 </script>
 <style>
 /* 屏幕小于768px */
