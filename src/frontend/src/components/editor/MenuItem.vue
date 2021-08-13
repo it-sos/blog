@@ -5,14 +5,16 @@
       @click="action"
       :title="title"
   >
-    <svg class="remix">
-<!--      <use :xlink:href="require('remixicon/fonts/remixicon.symbol.svg') + `#ri-${icon}`" />-->
-    </svg>
+    <i class="fas fa-camera"></i>
   </button>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: "MenuItem",
   props: {
     icon: {
       type: String,
@@ -34,7 +36,7 @@ export default {
       default: null,
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -42,11 +44,11 @@ export default {
   width: 1.75rem;
   height: 1.75rem;
   color: #0D0D0D;
-  border: none;
   background-color: transparent;
   border-radius: 0.4rem;
   padding: 0.25rem;
   margin-right: 0.25rem;
+  border:1px solid #eaeaea;
 
 svg {
   width: 100%;

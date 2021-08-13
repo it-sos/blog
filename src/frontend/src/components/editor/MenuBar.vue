@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
 
 export default {
@@ -26,7 +27,7 @@ export default {
     return {
       items: [
         {
-          icon: 'bold',
+          icon: 'fas fa-bold',
           title: 'Bold',
           action: () => this.editor.chain().focus().toggleBold().run(),
           isActive: () => this.editor.isActive('bold'),
@@ -104,7 +105,7 @@ export default {
           type: 'divider',
         },
         {
-          icon: 'double-quotes-l',
+          icon: 'fas fa-quote-right',
           title: 'Blockquote',
           action: () => this.editor.chain().focus().toggleBlockquote().run(),
           isActive: () => this.editor.isActive('blockquote'),
@@ -157,5 +158,6 @@ export default {
   /*background-color: rgba($colorBlack, 0.1);*/
   margin-left: 0.5rem;
   margin-right: 0.75rem;
+  display: inline-block;
 }
 </style>

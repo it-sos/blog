@@ -3,7 +3,7 @@
     "target": "es5",
     "module": "esnext",
     "baseUrl": "./",
-    "strict": true,
+    "strict": false,
     "jsx": "preserve",
     "moduleResolution": "node",
     "paths": {

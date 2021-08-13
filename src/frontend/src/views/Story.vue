@@ -1,16 +1,17 @@
 <template>
-  <Editor />
+  <tool-editor/>
 </template>
-<script>
+<script lang="ts">
 
-import Editor from '../components/Editor'
+import ToolEditor from '../components/ToolEditor.vue'
+import {Options, Vue} from "vue-class-component";
 
-export default {
-  name: "Story",
+@Options({
   components: {
-    Editor,
-  }
-}
+    ToolEditor
+  },
+})
+export default class Story extends Vue {}
 </script>
 
 <style scoped>

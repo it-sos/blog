@@ -3,7 +3,8 @@
     <el-main>
       <div class="box" v-bind:key="idx" v-for="(art, idx) in article">
         <div class="title">
-          <el-link :href="'/a/'+escape(art.article.title)"><h2 v-html="art.article.title_match ? art.article.title_match : art.article.title"></h2></el-link>
+          <el-link :href="'/a/'+escape(art.article.title)"><h2
+              v-html="art.article.title_match ? art.article.title_match : art.article.title"></h2></el-link>
           <el-tag effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
         </div>
         <div class="description" v-html="art.article.intro_match ? art.article.intro_match : art.article.intro"></div>
@@ -38,20 +39,19 @@
   </el-aside>
 </template>
 
-<script>
-export default {
-  name: "Home",
-  data() {
-    return {
-      page: 0,
-      size: 10,
-      article: [],
-      rank: [],
-      noMore: false,
-      loading: false,
-      errorMsg: false
-    }
-  },
+<script lang="ts">
+
+import {Vue} from "vue-class-component";
+
+export default class Home extends Vue {
+  page: number = 0
+  size: number = 10
+  article: any = []
+  rank: any = []
+  noMore: boolean = false
+  loading: boolean = false
+  errorMsg: boolean = false
+
   created() {
     this.$watch(
         () => this.$route.params.keyword,
@@ -61,61 +61,71 @@ export default {
         },
         // 组件创建完后获取数据，
         // 此时 data 已经被 observed 了
-        { immediate: true }
+        {immediate: true}
     )
-  },
-  mounted() {
+  }
+
+  mounted(): void {
     document.title = "YuPengSir Blog"
     this.ranks()
-  },
-  methods: {
-    defaults() {
-      this.errorMsg = false
-      this.noMore = false
-      this.page = 0
-      this.article = []
-    },
-    escape(str) {
-      return encodeURIComponent(str)
-    },
-    unscape(str) {
-      return decodeURIComponent(str)
-    },
-    ranks() {
-      this.$http.get('/article/rank').then((response) => {
-        this.rank = response.data
-      }).catch((error) => {
-        this.loading = false
-        console.log(error)
-      })
-    },
-    load() {
-      if (this.noMore || this.errorMsg) {
+  }
+
+  private defaults(): void {
+    this.errorMsg = false
+    this.noMore = false
+    this.page = 0
+    this.article = []
+  }
+
+  private escape(str: string): string {
+    return encodeURIComponent(str)
+  }
+
+  private unscape(str: string): string {
+    return decodeURIComponent(str)
+  }
+
+  private ranks(): void {
+    this.$http.get('/article/rank').then((response) => {
+      this.rank = response.data
+    }).catch((error) => {
+      this.loading = false
+      console.log(error)
+    })
+  }
+
+  load(): void {
+    if (this.noMore || this.errorMsg) {
+      return
+    }
+    this.loading = true
+    this.page++
+
+    var keyword = this.$route.params.keyword
+    if (keyword) {
+      keyword = this.unscape(keyword.toString())
+    }
+
+    this.$http.get('/article/list', {
+      params: {
+        "page": this.page,
+        "size": this.size,
+        "keyword": keyword
+      }
+    }).then((response) => {
+      this.loading = false
+      if (response.data.length === 0) {
+        this.noMore = true
         return
       }
-      this.loading = true
-      this.page++
-
-      var keyword = this.$route.params.keyword
-      if (keyword) {
-        keyword = this.unscape(keyword)
-      }
-
-      this.$http.get('/article/list', {params: {"page": this.page, "size": this.size, "keyword": keyword}}).then((response) => {
-        this.loading = false
-        if (response.data.length === 0) {
-          this.noMore = true
-          return
-        }
-        response.data.forEach(v => {
-          this.article.push(v)
-        })
-      }).catch((error) => {
-        console.log(error)
-        this.loading = false
-        this.errorMsg = true
+      response.data.forEach((v: any) => {
+        this.article.push(v)
       })
-    }
+    }).catch((error) => {
+      console.log(error)
+      this.loading = false
+      this.errorMsg = true
+    })
   }
 }
 </script>
