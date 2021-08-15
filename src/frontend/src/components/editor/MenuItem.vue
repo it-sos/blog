@@ -5,7 +5,7 @@
       @click="action"
       :title="title"
   >
-    <i class="fas fa-camera"></i>
+  <i :class="icon"></i>
   </button>
 </template>
 
@@ -49,12 +49,6 @@ export default defineComponent({
   padding: 0.25rem;
   margin-right: 0.25rem;
   border:1px solid #eaeaea;
-
-svg {
-  width: 100%;
-  height: 100%;
-  fill: currentColor;
-}
 
 &.is-active,
 &:hover {
