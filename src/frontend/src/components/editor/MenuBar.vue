@@ -10,8 +10,9 @@
 <script>
 import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   components: {
     MenuItem,
   },
@@ -117,7 +118,7 @@ export default {
           isActive: () => this.editor.isActive('taskList'),
         },
         {
-          icon: 'fas fa-code',
+          icon: 'fas fa-terminal',
           title: 'Code Block',
           action: () => this.editor.chain().focus().toggleCodeBlock().run(),
           isActive: () => this.editor.isActive('codeBlock'),
@@ -169,16 +170,13 @@ export default {
       ],
     }
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>
 .divider {
-  width: 2px;
-  height: 1.25rem;
-  /*background-color: rgba($colorBlack, 0.1);*/
-  margin-left: 0.5rem;
-  margin-right: 0.75rem;
+  width: 1px;
+  margin-left: 1rem;
   display: inline-block;
 }
 </style>

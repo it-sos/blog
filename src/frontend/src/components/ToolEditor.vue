@@ -23,52 +23,48 @@ import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import TextAlign from '@tiptap/extension-text-align'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import MenuBar from './editor/MenuBar.vue'
 import CodeBlockComponent from './editor/CodeBlockComponent.vue'
+import MenuBar from './editor/MenuBar.vue'
 
-// import lowlight from 'lowlight'
-import lowlight from 'lowlight/lib/core'
-// import javascript from 'highlight.js/lib/languages/javascript'
-// lowlight.registerLanguage('javascript', javascript)
+import lowlight from 'lowlight'
 
-import {Options, Vue} from 'vue-class-component';
+const CodeBlock = CodeBlockLowlight
+    .extend({
+      addNodeView() {
+        return VueNodeViewRenderer(CodeBlockComponent)
+      },
+    })
+    .configure({lowlight})
 
+import {defineComponent} from 'vue'
 
-@Options({
+export default defineComponent({
+
   components: {
     MenuBar,
     EditorContent,
   },
-  inject: []
-})
-export default class ToolEditor extends Vue {
 
-  editor: Editor | null = null;
-
-  mounted() {
-    this.editor = new Editor({
-      content: '<p>\n' +
-          '          That’s a boring paragraph followed by a fenced code block:\n' +
-          '        </p>\n' +
-          '        <pre><code class="language-javascript">for (var i=1; i <= 20; i++)\n' +
-          '{\n' +
-          '  if (i % 15 == 0)\n' +
-          '    console.log("FizzBuzz");\n' +
-          '  else if (i % 3 == 0)\n' +
-          '    console.log("Fizz");\n' +
-          '  else if (i % 5 == 0)\n' +
-          '    console.log("Buzz");\n' +
-          '  else\n' +
-          '    console.log(i);\n' +
-          '}</code></pre>\n' +
-          '        <p>\n' +
-          '          Press Command/Ctrl + Enter to leave the fenced code block and continue typing in boring paragraphs.\n' +
-          '        </p>\n' +
-          '      `',
+  setup() {
+    console.log("setup")
+    let editor: Editor = new Editor({
+      content: '<pre><code class="language-bash">console.log("hello");</code></pre>'+
+          `
+        <ul data-type="taskList">
+          <li data-type="taskItem" data-checked="true">flour</li>
+          <li data-type="taskItem" data-checked="true">baking powder</li>
+          <li data-type="taskItem" data-checked="true">salt</li>
+          <li data-type="taskItem" data-checked="false">sugar</li>
+          <li data-type="taskItem" data-checked="false">milk</li>
+          <li data-type="taskItem" data-checked="false">eggs</li>
+          <li data-type="taskItem" data-checked="false">butter</li>
+        </ul>
+      `,
       extensions: [
         Document,
         Paragraph,
         Text,
+        CodeBlock,
         TaskList,
         TaskItem,
         StarterKit,
@@ -77,97 +73,120 @@ export default class ToolEditor extends Vue {
         }),
         Highlight,
         Typography,
-        CodeBlockLowlight
-          .extend({
-            addNodeView() {
-              return VueNodeViewRenderer(CodeBlockComponent)
-            },
-          })
-          .configure({lowlight}),
       ],
     })
-  }
+    return {
+      editor: editor
+    }
+  },
 
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.editor) this.editor.destroy();
   }
-}
+})
 </script>
 <style lang="scss">
 /* Basic editor styles */
+
 .ProseMirror {
 
-> * + * {
-  margin-top: 0.75em;
-}
+  *, :after, :before {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    box-shadow: none;
+    outline: none;
+  }
 
-pre {
-  background: #0D0D0D;
-  color: #FFF;
-  font-family: 'JetBrainsMono', monospace;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
+  > * + * {
+    margin-top: 0.75em;
+  }
 
-code {
-  color: inherit;
-  padding: 0;
-  background: none;
-  font-size: 0.8rem;
-}
+  pre {
+    background: #0D0D0D;
+    color: #FFF;
+    font-family: 'JetBrainsMono', monospace;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
 
-.hljs-comment,
-.hljs-quote {
-  color: #616161;
-}
+    code {
+      color: inherit;
+      padding: 0;
+      background: none;
+      font-size: 0.8rem;
+    }
 
-.hljs-variable,
-.hljs-template-variable,
-.hljs-attribute,
-.hljs-tag,
-.hljs-name,
-.hljs-regexp,
-.hljs-link,
-.hljs-name,
-.hljs-selector-id,
-.hljs-selector-class {
-  color: #F98181;
-}
+    .hljs-comment,
+    .hljs-quote {
+      color: #616161;
+    }
 
-.hljs-number,
-.hljs-meta,
-.hljs-built_in,
-.hljs-builtin-name,
-.hljs-literal,
-.hljs-type,
-.hljs-params {
-  color: #FBBC88;
-}
+    .hljs-variable,
+    .hljs-template-variable,
+    .hljs-attribute,
+    .hljs-tag,
+    .hljs-name,
+    .hljs-regexp,
+    .hljs-link,
+    .hljs-name,
+    .hljs-selector-id,
+    .hljs-selector-class {
+      color: #F98181;
+    }
 
-.hljs-string,
-.hljs-symbol,
-.hljs-bullet {
-  color: #B9F18D;
-}
+    .hljs-number,
+    .hljs-meta,
+    .hljs-built_in,
+    .hljs-builtin-name,
+    .hljs-literal,
+    .hljs-type,
+    .hljs-params {
+      color: #FBBC88;
+    }
 
-.hljs-title,
-.hljs-section {
-  color: #FAF594;
-}
+    .hljs-string,
+    .hljs-symbol,
+    .hljs-bullet {
+      color: #B9F18D;
+    }
 
-.hljs-keyword,
-.hljs-selector-tag {
-  color: #70CFF8;
-}
+    .hljs-title,
+    .hljs-section {
+      color: #FAF594;
+    }
 
-.hljs-emphasis {
-  font-style: italic;
-}
+    .hljs-keyword,
+    .hljs-selector-tag {
+      color: #70CFF8;
+    }
 
-.hljs-strong {
-  font-weight: 700;
-}
+    .hljs-emphasis {
+      font-style: italic;
+    }
 
-}
+    .hljs-strong {
+      font-weight: 700;
+    }
+  }
+
+  ul[data-type="taskList"] {
+    list-style: none;
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+
+      > label {
+        flex: 0 0 auto;
+        margin-right: 0.5rem;
+      }
+    }
+
+    input[type="checkbox"] {
+      cursor: pointer;
+    }
+  }
 }
 </style>
 

@@ -6,7 +6,7 @@
           <div class="card-header">
             <el-input
                 placeholder="请输入内容"
-                v-model="input3"
+                v-model="search"
                 class="input-with-select"
             >
               <template #prefix>
@@ -30,18 +30,26 @@
 <script lang="ts">
 
 import ToolEditor from '../components/ToolEditor.vue'
-import {Options, Vue} from "vue-class-component";
 
-@Options({
+import {defineComponent, ref} from 'vue'
+
+export default defineComponent({
   components: {
     ToolEditor
   },
-})
-export default class Story extends Vue {
-  load() {
-    console.log("load")
+
+  setup() {
+    return {
+      search: ref(''),
+    }
+  },
+
+  methods: {
+    load(): void {
+      console.log("load")
+    }
   }
-}
+})
 </script>
 
 <style scoped>

@@ -18,5 +18,7 @@ app.use(ElementPlus)
     .use(router)
     .use(VueAxios, axios)
 
+app.config.unwrapInjectedRef = true
+
 app.mount('#app')
 

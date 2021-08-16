@@ -27,15 +27,14 @@
 
 <script lang="ts">
 
-import { Options, Vue } from 'vue-class-component';
+import {defineComponent} from 'vue'
 
 import Search from "./components/Search.vue"
 import LoginMenu from "./components/LoginMenu.vue"
 
-@Options({
-  components: {Search, LoginMenu},
+export default defineComponent({
+  components: {Search, LoginMenu}
 })
-export default class App extends Vue {}
 
 </script>
 <style>

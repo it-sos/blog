@@ -45,7 +45,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.ProseMirror {
+
 .code-block {
   position: relative;
 
@@ -54,5 +56,7 @@ select {
   top: 0.5rem;
   right: 0.5rem;
 }
+}
+
 }
 </style>

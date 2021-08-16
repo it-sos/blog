@@ -1342,13 +1342,6 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/hast@^2.0.0":
-  version "2.3.2"
-  resolved "https://registry.nlark.com/@types/hast/download/@types/hast-2.3.2.tgz#236201acca9e2695e42f713d7dd4f151dc2982e4"
-  integrity sha1-I2IBrMqeJpXkL3E9fdTxUdwpguQ=
-  dependencies:
-    "@types/unist" "*"
-
 "@types/html-minifier-terser@^5.0.0":
   version "5.1.2"
   resolved "https://registry.nlark.com/@types/html-minifier-terser/download/@types/html-minifier-terser-5.1.2.tgz#693b316ad323ea97eed6b38ed1a3cc02b1672b57"
@@ -1531,11 +1524,6 @@
   integrity sha1-XoienoHpQkXHW2RQYA4cXqKHiuo=
   dependencies:
     source-map "^0.6.1"
-
-"@types/unist@*":
-  version "2.0.6"
-  resolved "https://registry.nlark.com/@types/unist/download/@types/unist-2.0.6.tgz#250a7b16c3b91f672a24552ec64678eeb1d3a08d"
-  integrity sha1-JQp7FsO5H2cqJFUuxkZ47rHToI0=
 
 "@types/webpack-dev-server@^3.11.0":
   version "3.11.5"
@@ -1772,7 +1760,7 @@
 
 "@vue/cli-plugin-babel@~5.0.0":
   version "5.0.0-beta.3"
-  resolved "https://registry.nlark.com/@vue/cli-plugin-babel/download/@vue/cli-plugin-babel-5.0.0-beta.3.tgz?cache=0&sync_timestamp=1628579256313&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40vue%2Fcli-plugin-babel%2Fdownload%2F%40vue%2Fcli-plugin-babel-5.0.0-beta.3.tgz#7c75e747dd7beecf68ee94c2f8f433b676130b91"
+  resolved "https://registry.nlark.com/@vue/cli-plugin-babel/download/@vue/cli-plugin-babel-5.0.0-beta.3.tgz?cache=0&sync_timestamp=1628579326004&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40vue%2Fcli-plugin-babel%2Fdownload%2F%40vue%2Fcli-plugin-babel-5.0.0-beta.3.tgz#7c75e747dd7beecf68ee94c2f8f433b676130b91"
   integrity sha1-fHXnR9177s9o7pTC+PQztnYTC5E=
   dependencies:
     "@babel/core" "^7.12.16"
@@ -1784,7 +1772,7 @@
 
 "@vue/cli-plugin-eslint@~5.0.0":
   version "5.0.0-beta.3"
-  resolved "https://registry.nlark.com/@vue/cli-plugin-eslint/download/@vue/cli-plugin-eslint-5.0.0-beta.3.tgz?cache=0&sync_timestamp=1628579251271&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40vue%2Fcli-plugin-eslint%2Fdownload%2F%40vue%2Fcli-plugin-eslint-5.0.0-beta.3.tgz#ec48ace6b62443bbe92bf440865b33e15a634777"
+  resolved "https://registry.nlark.com/@vue/cli-plugin-eslint/download/@vue/cli-plugin-eslint-5.0.0-beta.3.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40vue%2Fcli-plugin-eslint%2Fdownload%2F%40vue%2Fcli-plugin-eslint-5.0.0-beta.3.tgz#ec48ace6b62443bbe92bf440865b33e15a634777"
   integrity sha1-7Eis5rYkQ7vpK/RAhlsz4VpjR3c=
   dependencies:
     "@vue/cli-shared-utils" "^5.0.0-beta.3"
@@ -1825,7 +1813,7 @@
 
 "@vue/cli-service@~5.0.0":
   version "5.0.0-beta.3"
-  resolved "https://registry.nlark.com/@vue/cli-service/download/@vue/cli-service-5.0.0-beta.3.tgz#67f79938e4b4da205f4480b87d59886724cf793b"
+  resolved "https://registry.nlark.com/@vue/cli-service/download/@vue/cli-service-5.0.0-beta.3.tgz?cache=0&sync_timestamp=1628579303103&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40vue%2Fcli-service%2Fdownload%2F%40vue%2Fcli-service-5.0.0-beta.3.tgz#67f79938e4b4da205f4480b87d59886724cf793b"
   integrity sha1-Z/eZOOS02iBfRIC4fVmIZyTPeTs=
   dependencies:
     "@babel/helper-compilation-targets" "^7.12.16"
@@ -4141,13 +4129,6 @@ fault@^1.0.0:
   dependencies:
     format "^0.2.0"
 
-fault@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npm.taobao.org/fault/download/fault-2.0.0.tgz?cache=0&sync_timestamp=1616840635435&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ffault%2Fdownload%2Ffault-2.0.0.tgz#ad2198a6e28e344dcda76a7b32406b1039f0b707"
-  integrity sha1-rSGYpuKONE3Np2p7MkBrEDnwtwc=
-  dependencies:
-    format "^0.2.0"
-
 faye-websocket@^0.11.3:
   version "0.11.4"
   resolved "https://registry.nlark.com/faye-websocket/download/faye-websocket-0.11.4.tgz?cache=0&sync_timestamp=1621894499766&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ffaye-websocket%2Fdownload%2Ffaye-websocket-0.11.4.tgz#7f0d9275cfdd86a1c963dc8b65fcc451edcbb1da"
@@ -4657,11 +4638,6 @@ highlight.js@^10.7.1, highlight.js@~10.7.0:
   version "10.7.3"
   resolved "https://registry.nlark.com/highlight.js/download/highlight.js-10.7.3.tgz#697272e3991356e40c3cac566a74eef681756531"
   integrity sha1-aXJy45kTVuQMPKxWanTu9oF1ZTE=
-
-highlight.js@~11.2.0:
-  version "11.2.0"
-  resolved "https://registry.nlark.com/highlight.js/download/highlight.js-11.2.0.tgz#a7e3b8c1fdc4f0538b93b2dc2ddd53a40c6ab0f0"
-  integrity sha1-p+O4wf3E8FOLk7LcLd1TpAxqsPA=
 
 hosted-git-info@^2.1.4:
   version "2.8.9"
@@ -5587,22 +5563,13 @@ lower-case@^2.0.2:
   dependencies:
     tslib "^2.0.3"
 
-lowlight@^1.20.0:
+lowlight@1.20.0, lowlight@^1.20.0:
   version "1.20.0"
   resolved "https://registry.nlark.com/lowlight/download/lowlight-1.20.0.tgz#ddb197d33462ad0d93bf19d17b6c301aa3941888"
   integrity sha1-3bGX0zRirQ2TvxnRe2wwGqOUGIg=
   dependencies:
     fault "^1.0.0"
     highlight.js "~10.7.0"
-
-lowlight@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.nlark.com/lowlight/download/lowlight-2.2.1.tgz#4cf69c29d7bd8450fb2d0e9e33858e38589cf956"
-  integrity sha1-TPacKde9hFD7LQ6eM4WOOFic+VY=
-  dependencies:
-    "@types/hast" "^2.0.0"
-    fault "^2.0.0"
-    highlight.js "~11.2.0"
 
 lru-cache@^4.0.1, lru-cache@^4.1.2:
   version "4.1.5"
