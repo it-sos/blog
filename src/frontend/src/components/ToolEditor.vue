@@ -46,20 +46,10 @@ export default defineComponent({
   },
 
   setup() {
-    console.log("setup")
+    let timer: any = null;
     let editor: Editor = new Editor({
-      content: '<pre><code class="language-bash">console.log("hello");</code></pre>'+
-          `
-        <ul data-type="taskList">
-          <li data-type="taskItem" data-checked="true">flour</li>
-          <li data-type="taskItem" data-checked="true">baking powder</li>
-          <li data-type="taskItem" data-checked="true">salt</li>
-          <li data-type="taskItem" data-checked="false">sugar</li>
-          <li data-type="taskItem" data-checked="false">milk</li>
-          <li data-type="taskItem" data-checked="false">eggs</li>
-          <li data-type="taskItem" data-checked="false">butter</li>
-        </ul>
-      `,
+      injectCSS: false,
+      content: '<h3>首行为标题</h3>',
       extensions: [
         Document,
         Paragraph,
@@ -74,6 +64,20 @@ export default defineComponent({
         Highlight,
         Typography,
       ],
+      onUpdate({ editor }) {
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+          // console.log("set time out.")
+        }, 5000)
+        let json :Record<string, any> = editor.getJSON()
+        if (json.content[0].type == 'heading') {
+          console.log(json.content[0].content[0].text)
+        }
+        // console.log(json.content[0].attrs.level)
+        // console.log(json.content[0].type)
+        // console.log(json.content[0].content[0].text)
+        // The content has changed.
+      },
     })
     return {
       editor: editor
@@ -89,6 +93,20 @@ export default defineComponent({
 /* Basic editor styles */
 
 .ProseMirror {
+  blockquote {
+    padding-left: 1rem;
+    border-left: 2px solid rgba(#0D0D0D, 0.1);
+  }
+
+  hr {
+    border: none;
+    border-top: 2px solid rgba(#0D0D0D, 0.1);
+    margin: 2rem 0;
+  }
+
+  min-height: 430px;
+
+  padding-left: 2px;
 
   *, :after, :before {
     padding: 0;

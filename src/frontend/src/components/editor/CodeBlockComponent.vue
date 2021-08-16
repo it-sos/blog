@@ -48,15 +48,15 @@ export default {
 <style lang="scss">
 .ProseMirror {
 
-.code-block {
-  position: relative;
+  .code-block {
+    position: relative;
 
-select {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-}
-}
+    select {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+  }
 
 }
 </style>

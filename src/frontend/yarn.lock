@@ -1760,7 +1760,7 @@
 
 "@vue/cli-plugin-babel@~5.0.0":
   version "5.0.0-beta.3"
-  resolved "https://registry.nlark.com/@vue/cli-plugin-babel/download/@vue/cli-plugin-babel-5.0.0-beta.3.tgz?cache=0&sync_timestamp=1628579326004&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40vue%2Fcli-plugin-babel%2Fdownload%2F%40vue%2Fcli-plugin-babel-5.0.0-beta.3.tgz#7c75e747dd7beecf68ee94c2f8f433b676130b91"
+  resolved "https://registry.nlark.com/@vue/cli-plugin-babel/download/@vue/cli-plugin-babel-5.0.0-beta.3.tgz?cache=0&sync_timestamp=1628579256313&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40vue%2Fcli-plugin-babel%2Fdownload%2F%40vue%2Fcli-plugin-babel-5.0.0-beta.3.tgz#7c75e747dd7beecf68ee94c2f8f433b676130b91"
   integrity sha1-fHXnR9177s9o7pTC+PQztnYTC5E=
   dependencies:
     "@babel/core" "^7.12.16"
@@ -1772,7 +1772,7 @@
 
 "@vue/cli-plugin-eslint@~5.0.0":
   version "5.0.0-beta.3"
-  resolved "https://registry.nlark.com/@vue/cli-plugin-eslint/download/@vue/cli-plugin-eslint-5.0.0-beta.3.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40vue%2Fcli-plugin-eslint%2Fdownload%2F%40vue%2Fcli-plugin-eslint-5.0.0-beta.3.tgz#ec48ace6b62443bbe92bf440865b33e15a634777"
+  resolved "https://registry.nlark.com/@vue/cli-plugin-eslint/download/@vue/cli-plugin-eslint-5.0.0-beta.3.tgz?cache=0&sync_timestamp=1628579251271&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40vue%2Fcli-plugin-eslint%2Fdownload%2F%40vue%2Fcli-plugin-eslint-5.0.0-beta.3.tgz#ec48ace6b62443bbe92bf440865b33e15a634777"
   integrity sha1-7Eis5rYkQ7vpK/RAhlsz4VpjR3c=
   dependencies:
     "@vue/cli-shared-utils" "^5.0.0-beta.3"
@@ -1813,7 +1813,7 @@
 
 "@vue/cli-service@~5.0.0":
   version "5.0.0-beta.3"
-  resolved "https://registry.nlark.com/@vue/cli-service/download/@vue/cli-service-5.0.0-beta.3.tgz?cache=0&sync_timestamp=1628579303103&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40vue%2Fcli-service%2Fdownload%2F%40vue%2Fcli-service-5.0.0-beta.3.tgz#67f79938e4b4da205f4480b87d59886724cf793b"
+  resolved "https://registry.nlark.com/@vue/cli-service/download/@vue/cli-service-5.0.0-beta.3.tgz#67f79938e4b4da205f4480b87d59886724cf793b"
   integrity sha1-Z/eZOOS02iBfRIC4fVmIZyTPeTs=
   dependencies:
     "@babel/helper-compilation-targets" "^7.12.16"

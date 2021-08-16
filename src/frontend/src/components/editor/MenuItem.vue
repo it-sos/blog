@@ -50,10 +50,10 @@ export default defineComponent({
   margin-right: 0.25rem;
   border:1px solid #eaeaea;
 
-&.is-active,
-&:hover {
-   color: #FFF;
-   background-color: #0D0D0D;
- }
+  &.is-active,
+  &:hover {
+     color: #FFF;
+     background-color: #0D0D0D;
+  }
 }
 </style>

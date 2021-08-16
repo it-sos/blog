@@ -89,9 +89,9 @@ export default defineComponent({
         },
         {
           icon: 'fas fa-heading',
-          title: 'Heading 1',
-          action: () => this.editor.chain().focus().toggleHeading({ level: 1 }).run(),
-          isActive: () => this.editor.isActive('heading', { level: 1 }),
+          title: 'Heading 3',
+          action: () => this.editor.chain().focus().toggleHeading({ level: 3 }).run(),
+          isActive: () => this.editor.isActive('heading', { level: 3 }),
         },
         {
           icon: 'fas fa-paragraph',
