@@ -87,12 +87,12 @@ export default defineComponent({
         {
           type: 'divider',
         },
-        {
-          icon: 'fas fa-heading',
-          title: 'Heading 3',
-          action: () => this.editor.chain().focus().toggleHeading({ level: 3 }).run(),
-          isActive: () => this.editor.isActive('heading', { level: 3 }),
-        },
+        // {
+        //   icon: 'fas fa-heading',
+        //   title: 'Heading 3',
+        //   action: () => this.editor.chain().focus().toggleHeading({ level: 3 }).run(),
+        //   isActive: () => this.editor.isActive('heading', { level: 3 }),
+        // },
         {
           icon: 'fas fa-paragraph',
           title: 'Paragraph',

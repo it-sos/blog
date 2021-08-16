@@ -48,7 +48,7 @@ export default defineComponent({
   setup() {
     let timer: any = null;
     let editor: Editor = new Editor({
-      injectCSS: false,
+      injectCSS: true,
       content: '<h3>首行为标题</h3>',
       extensions: [
         Document,
@@ -93,19 +93,8 @@ export default defineComponent({
 /* Basic editor styles */
 
 .ProseMirror {
-  blockquote {
-    padding-left: 1rem;
-    border-left: 2px solid rgba(#0D0D0D, 0.1);
-  }
-
-  hr {
-    border: none;
-    border-top: 2px solid rgba(#0D0D0D, 0.1);
-    margin: 2rem 0;
-  }
 
   min-height: 430px;
-
   padding-left: 2px;
 
   *, :after, :before {
@@ -118,6 +107,45 @@ export default defineComponent({
 
   > * + * {
     margin-top: 0.75em;
+  }
+
+  blockquote {
+    padding-left: 1rem;
+    border-left: 2px solid rgba(#0D0D0D, 0.1);
+  }
+
+  hr {
+    border: none;
+    border-top: 2px solid rgba(#0D0D0D, 0.1);
+    margin: 2rem 0;
+  }
+
+  ul,
+  ol {
+    padding: 0 1rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    line-height: 1.1;
+  }
+
+  code {
+    background-color: rgba(#616161, 0.1);
+    color: #616161;
+  }
+
+  mark {
+    background-color: #FAF594;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
   }
 
   pre {
@@ -205,6 +233,24 @@ export default defineComponent({
       cursor: pointer;
     }
   }
+}
+
+/* Color swatches */
+.color {
+  white-space: nowrap;
+
+&::before {
+   content: ' ';
+   display: inline-block;
+   width: 1em;
+   height: 1em;
+   border: 1px solid rgba(128, 128, 128, 0.3);
+   vertical-align: middle;
+   margin-right: 0.1em;
+   margin-bottom: 0.15em;
+   border-radius: 2px;
+   background-color: var(--color);
+ }
 }
 </style>
 
