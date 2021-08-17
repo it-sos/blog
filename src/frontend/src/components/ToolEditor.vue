@@ -6,13 +6,16 @@
           <menu-bar class="" :editor="editor"/>
         </div>
       </template>
-      <editor-content :editor="editor" style="min-height: 436px;"/>
+      <editor-content :editor="editor" />
+      <el-divider></el-divider>
+      <el-progress :percentage="percentage">
+      </el-progress>
     </el-card>
   </div>
 </template>
 
 <script lang="ts">
-import {Editor, EditorContent, VueNodeViewRenderer} from '@tiptap/vue-3'
+import {Editor, EditorContent, Extensions, VueNodeViewRenderer} from '@tiptap/vue-3'
 import Document from '@tiptap/extension-document'
 import StarterKit from '@tiptap/starter-kit'
 import Highlight from '@tiptap/extension-highlight'
@@ -23,6 +26,9 @@ import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import TextAlign from '@tiptap/extension-text-align'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
+import Underline from '@tiptap/extension-underline'
+import Subscript from '@tiptap/extension-subscript'
+import Superscript from '@tiptap/extension-superscript'
 import CodeBlockComponent from './editor/CodeBlockComponent.vue'
 import MenuBar from './editor/MenuBar.vue'
 
@@ -36,7 +42,9 @@ const CodeBlock = CodeBlockLowlight
     })
     .configure({lowlight})
 
-import {defineComponent} from 'vue'
+import { defineComponent, reactive, toRefs, onMounted } from 'vue'
+import { ElMessage, ElNotification } from 'element-plus'
+
 
 export default defineComponent({
 
@@ -46,45 +54,82 @@ export default defineComponent({
   },
 
   setup() {
-    let timer: any = null;
-    let editor: Editor = new Editor({
-      injectCSS: true,
-      content: '<h3>首行为标题</h3>',
-      extensions: [
-        Document,
-        Paragraph,
-        Text,
-        CodeBlock,
-        TaskList,
-        TaskItem,
-        StarterKit,
-        TextAlign.configure({
-          types: ['heading', 'paragraph'],
-        }),
-        Highlight,
-        Typography,
-      ],
-      onUpdate({ editor }) {
-        clearTimeout(timer)
-        timer = setTimeout(() => {
-          // console.log("set time out.")
-        }, 5000)
-        let json :Record<string, any> = editor.getJSON()
-        if (json.content[0].type == 'heading') {
-          console.log(json.content[0].content[0].text)
-        }
-        // console.log(json.content[0].attrs.level)
-        // console.log(json.content[0].type)
-        // console.log(json.content[0].content[0].text)
-        // The content has changed.
-      },
-    })
+    const state = reactive({
+      percentage: 10,
+    });
+
+    onMounted(() => {
+      setInterval(() => {
+        state.percentage = (state.percentage % 100) + 10
+      }, 100)
+    });
+
     return {
-      editor: editor
+      ...toRefs(state),
     }
   },
 
-  beforeUnmount() {
+  data() {
+    let extensions: Extensions = [
+      Document,
+      Paragraph,
+      Text,
+      Underline,
+      Subscript,
+      Superscript,
+      CodeBlock,
+      TaskList,
+      TaskItem,
+      StarterKit,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      Highlight,
+      Typography,
+    ];
+    let editor: any = null
+    return { editor, extensions }
+  },
+
+  mounted(): void {
+    let timer: any = null;
+    let _this: any = this;
+    this.editor = new Editor({
+      injectCSS: true,
+      content: '<h2>这是一个标题</h2>',
+      extensions: this.extensions,
+      onUpdate({ editor }) {
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+          let json = editor.getJSON()
+          if (json.content[0].type == 'heading' && json.content[0].attrs.level == 2) {
+            let title: string  = json.content[0].content[0].text
+            let content: string = editor.getHTML()
+            _this.save(title, content.substring(content.indexOf("</h2>")+5))
+          } else {
+            ElNotification({
+              title: '警告',
+              message: '请设置H2开头的标题名称，可通过点击H图标进行设置！',
+              type: 'warning',
+            });
+          }
+        }, 2000)
+      },
+    })
+  },
+
+  methods: {
+    save(title: string, content: string) {
+      console.log(title, content)
+      ElMessage({
+        showClose: true,
+        message: '已自动保存.',
+        type: 'success'
+      });
+    },
+  },
+
+  beforeUnmount(): void {
     if (this.editor) this.editor.destroy();
   }
 })
@@ -94,7 +139,7 @@ export default defineComponent({
 
 .ProseMirror {
 
-  min-height: 430px;
+  min-height: 300px;
   padding-left: 2px;
 
   *, :after, :before {
@@ -239,7 +284,7 @@ export default defineComponent({
 .color {
   white-space: nowrap;
 
-&::before {
+  &::before {
    content: ' ';
    display: inline-block;
    width: 1em;

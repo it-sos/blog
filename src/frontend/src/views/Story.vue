@@ -39,6 +39,7 @@ export default defineComponent({
   },
 
   setup() {
+    document.title = "editing"
     return {
       search: ref(''),
     }

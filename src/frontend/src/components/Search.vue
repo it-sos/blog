@@ -33,7 +33,7 @@ export default defineComponent({
   methods: {
     deletes() {
       if (this.inputSearch === '') {
-        document.title = "YuPengSir Blog"
+        document.title = "yupeng-sir-blog"
         this.$router.push('/')
       }
     },

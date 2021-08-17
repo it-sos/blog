@@ -46,10 +46,22 @@ export default defineComponent({
           isActive: () => this.editor.isActive('strike'),
         },
         {
-          icon: 'fas fa-code',
-          title: 'Code',
-          action: () => this.editor.chain().focus().toggleCode().run(),
-          isActive: () => this.editor.isActive('code'),
+          icon: 'fas fa-underline',
+          title: 'Underline',
+          action: () => this.editor.chain().focus().toggleUnderline().run(),
+          isActive: () => this.editor.isActive('underline'),
+        },
+        {
+          icon: 'fas fa-subscript',
+          title: 'Subscript',
+          action: () => this.editor.chain().focus().toggleSubscript().run(),
+          isActive: () => this.editor.isActive('subscript'),
+        },
+        {
+          icon: 'fas fa-superscript',
+          title: 'Superscript',
+          action: () => this.editor.chain().focus().toggleSuperscript().run(),
+          isActive: () => this.editor.isActive('superscript'),
         },
         {
           icon: 'fas fa-lightbulb',
@@ -87,12 +99,12 @@ export default defineComponent({
         {
           type: 'divider',
         },
-        // {
-        //   icon: 'fas fa-heading',
-        //   title: 'Heading 3',
-        //   action: () => this.editor.chain().focus().toggleHeading({ level: 3 }).run(),
-        //   isActive: () => this.editor.isActive('heading', { level: 3 }),
-        // },
+        {
+          icon: 'fas fa-heading',
+          title: 'Heading',
+          action: () => this.editor.chain().focus().toggleHeading({ level: 2 }).run(),
+          isActive: () => this.editor.isActive('heading', { level: 2 }),
+        },
         {
           icon: 'fas fa-paragraph',
           title: 'Paragraph',
