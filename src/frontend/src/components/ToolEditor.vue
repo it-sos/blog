@@ -8,7 +8,7 @@
       </template>
       <editor-content :editor="editor" />
       <el-divider></el-divider>
-      <el-progress :percentage="percentage">
+      <el-progress :percentage="percentage" :format="format">
       </el-progress>
     </el-card>
   </div>
@@ -42,8 +42,8 @@ const CodeBlock = CodeBlockLowlight
     })
     .configure({lowlight})
 
-import { defineComponent, reactive, toRefs, onMounted } from 'vue'
-import { ElMessage, ElNotification } from 'element-plus'
+import { defineComponent, reactive, toRefs } from 'vue'
+import { ElMessage } from 'element-plus'
 
 
 export default defineComponent({
@@ -55,15 +55,8 @@ export default defineComponent({
 
   setup() {
     const state = reactive({
-      percentage: 10,
+      percentage: 0,
     });
-
-    onMounted(() => {
-      setInterval(() => {
-        state.percentage = (state.percentage % 100) + 10
-      }, 100)
-    });
-
     return {
       ...toRefs(state),
     }
@@ -107,25 +100,39 @@ export default defineComponent({
             let content: string = editor.getHTML()
             _this.save(title, content.substring(content.indexOf("</h2>")+5))
           } else {
-            ElNotification({
-              title: '警告',
-              message: '请设置H2开头的标题名称，可通过点击H图标进行设置！',
-              type: 'warning',
+            ElMessage({
+              duration: 0,
+              showClose: true,
+              message: '请设置h2开头的标题名称，可通过点击【H】图标进行设置！',
+              type: 'warning'
             });
           }
-        }, 2000)
+        }, 5000)
       },
     })
   },
 
   methods: {
+    format(percentage: number) {
+      return percentage === 100 ? '已保存' : `${percentage}%`;
+    },
+
+    savedNotice() {
+      let timer = setInterval(()=>{
+        if (this.percentage >= 100) {
+          clearInterval(timer)
+          setTimeout(()=>{
+            this.percentage = 0
+          }, 2000)
+        } else {
+          this.percentage += 10
+        }
+      }, 50)
+    },
+
     save(title: string, content: string) {
       console.log(title, content)
-      ElMessage({
-        showClose: true,
-        message: '已自动保存.',
-        type: 'success'
-      });
+      this.savedNotice()
     },
   },
 
@@ -140,7 +147,7 @@ export default defineComponent({
 .ProseMirror {
 
   min-height: 300px;
-  padding-left: 2px;
+  padding: 5px;
 
   *, :after, :before {
     padding: 0;

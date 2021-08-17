@@ -41,6 +41,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .menu-item {
+  margin-top: 0.15rem;
+  margin-bottom: 0.15rem;
   width: 1.75rem;
   height: 1.75rem;
   color: #0D0D0D;
