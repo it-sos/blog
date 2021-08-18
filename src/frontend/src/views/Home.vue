@@ -3,7 +3,7 @@
     <el-main>
       <div class="box" v-bind:key="idx" v-for="(art, idx) in article">
         <div class="title">
-          <el-link :href="'/a/'+escape(art.article.title)"><h2
+          <el-link :href="'/a/'+encodeURIComponent(art.article.title)"><h2
               v-html="art.article.title_match ? art.article.title_match : art.article.title"></h2></el-link>
           <el-tag effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
         </div>
@@ -33,7 +33,7 @@
         </div>
       </template>
       <div v-bind:key="idx" v-for="(r, idx) in rank" class="text item">
-        <el-link :href="'/a/'+escape(r.title)">{{ r.title }}（{{ r.access_times }}）</el-link>
+        <el-link :href="'/a/'+encodeURIComponent(r.title)">{{ r.title }}（{{ r.access_times }}）</el-link>
       </div>
     </el-card>
   </el-aside>
@@ -90,14 +90,6 @@ export default defineComponent({
       this.article = []
     },
 
-    escape(str: string): string {
-      return encodeURIComponent(str)
-    },
-
-    unscape(str: string): string {
-      return decodeURIComponent(str)
-    },
-
     load(): void {
       if (this.noMore || this.errorMsg) {
         return
@@ -107,7 +99,7 @@ export default defineComponent({
 
       var keyword = this.$route.params.keyword
       if (keyword) {
-        keyword = this.unscape(keyword.toString())
+        keyword = decodeURIComponent(keyword.toString())
       }
 
       this.$http.get('/article/list', {

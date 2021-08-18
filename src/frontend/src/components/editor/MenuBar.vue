@@ -1,16 +1,63 @@
 <template>
   <div>
     <template v-for="(item, index) in items">
-      <div class="divider" v-if="item.type === 'divider'" :key="index" />
-      <menu-item :key="item.title" v-else v-bind="item" />
+      <div class="divider" v-if="item.type === 'divider'" :key="index"/>
+      <menu-item :key="item.title" v-else v-bind="item"/>
     </template>
+    <div class="menu-opt">
+      <el-switch
+          class="menu-opt-item"
+          v-model="publish"
+          active-text="公开"
+          :loading="publishLoading"
+          :beforeChange="publishBeforeChange"></el-switch>
+      <el-switch
+          class="menu-opt-item"
+          v-model="encrypt"
+          active-text="加密"
+          :loading="encryptLoading"
+          :beforeChange="encryptBeforeChange"></el-switch>
+      <el-select
+          class="menu-opt-item"
+          v-model="topicValue"
+          multiple
+          allow-create
+          filterable
+          default-first-option
+          size="mini"
+          placeholder="选择专题">
+        <el-option
+            v-for="item in topicOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+        </el-option>
+      </el-select>
+      <el-select
+          class="menu-opt-item"
+          v-model="tagValue"
+          multiple
+          allow-create
+          filterable
+          default-first-option
+          size="mini"
+          placeholder="选择标签">
+        <el-option
+            v-for="item in tagOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+        </el-option>
+      </el-select>
+    </div>
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
-import { defineComponent } from 'vue'
+import {defineComponent, reactive, toRefs} from 'vue'
+import {ElMessage} from 'element-plus'
 
 export default defineComponent({
   components: {
@@ -22,6 +69,71 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+  },
+
+  setup() {
+    const publishStatus = reactive({
+      publish: false,
+      publishLoading: false,
+    })
+
+    const encryptStatus = reactive({
+      encrypt: false,
+      encryptLoading: false,
+    })
+
+    const publishBeforeChange = () => {
+      publishStatus.publishLoading = true
+      return new Promise(resolve => {
+        setTimeout(() => {
+          publishStatus.publishLoading = false
+          ElMessage.success('切换成功')
+          return resolve(true)
+        }, 1000)
+      })
+    }
+
+    const encryptBeforeChange = () => {
+      encryptStatus.encryptLoading = true
+      return new Promise(resolve => {
+        setTimeout(() => {
+          encryptStatus.encryptLoading = false
+          ElMessage.success('切换成功')
+          return resolve(true)
+        }, 1000)
+      })
+    }
+
+    const selectStatus = reactive({
+      topicValue: ['选项1'],
+      topicOptions: [{
+        value: '选项1',
+        label: 'mac 下以 root 角色开机启动执行脚本或命令'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }, {
+        value: '选项4',
+        label: '龙须面'
+      }, {
+        value: '选项5',
+        label: '北京烤鸭'
+      }],
+      tagValue: false,
+      tagOptions: [{lable:"php", value:"php"}],
+    })
+
+    return {
+      ...toRefs(publishStatus),
+      ...toRefs(encryptStatus),
+      ...toRefs(selectStatus),
+      publishBeforeChange,
+      encryptBeforeChange,
+    }
+
   },
 
   data() {
@@ -76,25 +188,25 @@ export default defineComponent({
           icon: 'fas fa-align-left',
           title: 'left',
           action: () => this.editor.chain().focus().setTextAlign('left').run(),
-          isActive: () => this.editor.isActive({ textAlign: 'left' }),
+          isActive: () => this.editor.isActive({textAlign: 'left'}),
         },
         {
           icon: 'fas fa-align-center',
           title: 'left',
           action: () => this.editor.chain().focus().setTextAlign('center').run(),
-          isActive: () => this.editor.isActive({ textAlign: 'center' }),
+          isActive: () => this.editor.isActive({textAlign: 'center'}),
         },
         {
           icon: 'fas fa-align-right',
           title: 'right',
           action: () => this.editor.chain().focus().setTextAlign('right').run(),
-          isActive: () => this.editor.isActive({ textAlign: 'right' }),
+          isActive: () => this.editor.isActive({textAlign: 'right'}),
         },
         {
           icon: 'fas fa-align-justify',
           title: 'justify',
           action: () => this.editor.chain().focus().setTextAlign('justify').run(),
-          isActive: () => this.editor.isActive({ textAlign: 'justify' }),
+          isActive: () => this.editor.isActive({textAlign: 'justify'}),
         },
         {
           type: 'divider',
@@ -102,8 +214,8 @@ export default defineComponent({
         {
           icon: 'fas fa-heading',
           title: 'Heading',
-          action: () => this.editor.chain().focus().toggleHeading({ level: 2 }).run(),
-          isActive: () => this.editor.isActive('heading', { level: 2 }),
+          action: () => this.editor.chain().focus().toggleHeading({level: 2}).run(),
+          isActive: () => this.editor.isActive('heading', {level: 2}),
         },
         {
           icon: 'fas fa-paragraph',
@@ -190,5 +302,13 @@ export default defineComponent({
   width: 1px;
   margin-left: 1rem;
   display: inline-block;
+}
+
+.menu-opt {
+  padding-top: 0.5rem;
+  line-height: 2rem;
+  .menu-opt-item {
+    margin-right: 12px;
+  }
 }
 </style>

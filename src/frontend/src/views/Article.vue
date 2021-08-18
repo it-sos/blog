@@ -11,7 +11,7 @@
       </el-row>
       <div class="box">
         <div class="title">
-          <el-link :href="'/a/'+escape(title)"><h2>{{ title }}</h2></el-link>
+          <el-link :href="'/a/'+encodeURIComponent(title)"><h2>{{ title }}</h2></el-link>
           <el-tag effect="plain" type="danger" size="small">{{ duration }}</el-tag>
         </div>
         <div class="description" id="showHtml" v-html="article_content"></div>
@@ -34,7 +34,7 @@
         </div>
       </template>
       <div v-bind:key="idx" v-for="(art, idx) in topic.article" class="text item">
-        <el-link :href="'/a/'+escape(art.title)">{{ art.title + ' （' + art.access_times + '）' }}</el-link>
+        <el-link :href="'/a/'+encodeURIComponent(art.title)">{{ art.title + ' （' + art.access_times + '）' }}</el-link>
       </div>
     </el-card>
     <el-card class="box-card" v-bind:key="idx" v-for="(tag, idx) in tagList">
@@ -44,7 +44,7 @@
         </div>
       </template>
       <div v-bind:key="idx" v-for="(art, idx) in tag.article" class="text item">
-        <el-link :href="'/a/'+escape(art.title)">{{ art.title + ' （' + art.access_times + '）' }}</el-link>
+        <el-link :href="'/a/'+encodeURIComponent(art.title)">{{ art.title + ' （' + art.access_times + '）' }}</el-link>
       </div>
     </el-card>
   </el-aside>
@@ -70,20 +70,12 @@ export default class Article extends Vue {
 
   mounted() {
     let title: string = this.$route.params.title.toString();
-    document.title = "详情：" + this.unscape(title)
+    document.title = "详情：" + decodeURIComponent(title)
     this.content()
   }
 
-  escape(str: string) {
-    return encodeURIComponent(str)
-  }
-
-  unscape(str: string) {
-    return decodeURIComponent(str)
-  }
-
   content() {
-    this.$http.get('/article/content', {params: {title: this.unscape(this.$route.params.title.toString())}}).then((response) => {
+    this.$http.get('/article/content', {params: {title: decodeURIComponent(this.$route.params.title.toString())}}).then((response) => {
       this.article = response.data
       this.prev_title = "已经是顶部了"
       this.next_title = "已经是底部了"
@@ -91,11 +83,11 @@ export default class Article extends Vue {
       this.next_title_link = "javascript:void(0);"
       if (this.article.navigations.prev_title) {
         this.prev_title = this.article.navigations.prev_title
-        this.prev_title_link = '/a/' + this.escape(this.prev_title)
+        this.prev_title_link = '/a/' + encodeURIComponent(this.prev_title)
       }
       if (this.article.navigations.next_title) {
         this.next_title = this.article.navigations.next_title
-        this.next_title_link = '/a/' + this.escape(this.next_title)
+        this.next_title_link = '/a/' + encodeURIComponent(this.next_title)
       }
       this.article_content = this.article.article_content.data
       this.topics = this.article.article.topics

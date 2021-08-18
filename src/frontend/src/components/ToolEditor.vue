@@ -4,16 +4,15 @@
       <template #header>
         <div class="card-header menu-bar-user">
           <menu-bar class="" :editor="editor"/>
-          <el-icon :class="saveStatus.isloading" :color="saveStatus.color" size="26">
-            <loading v-if="saveStatus.unsaved" />
-            <circle-check-filled v-else />
-          </el-icon>
+          <el-tooltip class="item" effect="dark" :content="saveStatus.message" placement="left">
+            <el-icon :class="saveStatus.isLoading" :color="saveStatus.color" :size="26">
+              <loading v-if="saveStatus.unsaved" />
+              <circle-check-filled v-else />
+            </el-icon>
+          </el-tooltip>
         </div>
       </template>
       <editor-content :editor="editor" />
-      <el-divider></el-divider>
-      <el-progress :percentage="percentage" :format="format">
-      </el-progress>
     </el-card>
   </div>
 </template>
@@ -64,7 +63,8 @@ export default defineComponent({
     const state = reactive({
       percentage: 0,
       saveStatus: {
-          isloading: "",
+          isLoading: "",
+          message:"",
           color: "",
           unsaved: false,
       }
@@ -72,7 +72,8 @@ export default defineComponent({
 
     const stateUnsaved = () => {
       state.saveStatus = {
-        isloading: "is-loading",
+        isLoading: "is-loading",
+        message:"停止编辑 5s 后将自动保存",
         color: "#F56C6C",
         unsaved: true,
       }
@@ -80,7 +81,8 @@ export default defineComponent({
 
     const stateSaved = () => {
       state.saveStatus = {
-        isloading: "",
+        isLoading: "",
+        message:"已自动保存",
         color: "#67C23A",
         unsaved: false,
       }
@@ -150,32 +152,11 @@ export default defineComponent({
 
   methods: {
 
-    format(percentage: number) {
-      if (percentage === 100) {
-        this.stateSaved()
-        return '已保存';
-      } else {
-        return `${percentage}%`;
-      }
-    },
-
-    savedNotice() {
-      let timer = setInterval(()=>{
-        if (this.percentage >= 100) {
-          clearInterval(timer)
-          setTimeout(()=>{
-            this.percentage = 0
-          }, 2000)
-        } else {
-          this.percentage += 10
-        }
-      }, 50)
-    },
-
     save(title: string, content: string) {
+      this.stateSaved()
       console.log(title, content)
-      this.savedNotice()
     },
+
   },
 
   beforeUnmount(): void {
@@ -188,7 +169,7 @@ export default defineComponent({
 
 .ProseMirror {
 
-  min-height: 300px;
+  min-height: 335px;
   padding: 5px;
 
   *, :after, :before {
@@ -332,8 +313,6 @@ export default defineComponent({
 .menu-bar-user {
   display: flex;
   justify-content: space-between;
-
-
 }
 
 /* Color swatches */
