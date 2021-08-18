@@ -7,7 +7,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
 import { defineComponent } from 'vue'

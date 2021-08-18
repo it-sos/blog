@@ -2,8 +2,12 @@
   <div class="editor" v-if="editor">
     <el-card class="box-card">
       <template #header>
-        <div class="card-header">
+        <div class="card-header menu-bar-user">
           <menu-bar class="" :editor="editor"/>
+          <el-icon :class="saveStatus.isloading" :color="saveStatus.color" size="26">
+            <loading v-if="saveStatus.unsaved" />
+            <circle-check-filled v-else />
+          </el-icon>
         </div>
       </template>
       <editor-content :editor="editor" />
@@ -31,6 +35,7 @@ import Subscript from '@tiptap/extension-subscript'
 import Superscript from '@tiptap/extension-superscript'
 import CodeBlockComponent from './editor/CodeBlockComponent.vue'
 import MenuBar from './editor/MenuBar.vue'
+import { Loading, CircleCheckFilled } from '@element-plus/icons'
 
 import lowlight from 'lowlight'
 
@@ -42,7 +47,7 @@ const CodeBlock = CodeBlockLowlight
     })
     .configure({lowlight})
 
-import { defineComponent, reactive, toRefs } from 'vue'
+import {defineComponent, onMounted, reactive, toRefs} from 'vue'
 import { ElMessage } from 'element-plus'
 
 
@@ -51,14 +56,44 @@ export default defineComponent({
   components: {
     MenuBar,
     EditorContent,
+    Loading,
+    CircleCheckFilled,
   },
 
   setup() {
     const state = reactive({
       percentage: 0,
+      saveStatus: {
+          isloading: "",
+          color: "",
+          unsaved: false,
+      }
     });
+
+    const stateUnsaved = () => {
+      state.saveStatus = {
+        isloading: "is-loading",
+        color: "#F56C6C",
+        unsaved: true,
+      }
+    };
+
+    const stateSaved = () => {
+      state.saveStatus = {
+        isloading: "",
+        color: "#67C23A",
+        unsaved: false,
+      }
+    };
+
+    onMounted(() => {
+      stateSaved()
+    });
+
     return {
       ...toRefs(state),
+      stateSaved,
+      stateUnsaved
     }
   },
 
@@ -92,6 +127,7 @@ export default defineComponent({
       content: '<h2>这是一个标题</h2>',
       extensions: this.extensions,
       onUpdate({ editor }) {
+        _this.stateUnsaved()
         clearTimeout(timer)
         timer = setTimeout(() => {
           let json = editor.getJSON()
@@ -113,8 +149,14 @@ export default defineComponent({
   },
 
   methods: {
+
     format(percentage: number) {
-      return percentage === 100 ? '已保存' : `${percentage}%`;
+      if (percentage === 100) {
+        this.stateSaved()
+        return '已保存';
+      } else {
+        return `${percentage}%`;
+      }
     },
 
     savedNotice() {
@@ -285,6 +327,13 @@ export default defineComponent({
       cursor: pointer;
     }
   }
+}
+
+.menu-bar-user {
+  display: flex;
+  justify-content: space-between;
+
+
 }
 
 /* Color swatches */
