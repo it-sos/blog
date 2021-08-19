@@ -16,27 +16,17 @@
               </el-input>
             </div>
           </template>
-          <el-dropdown trigger="contextmenu" @command="handleCommand">
-            <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
-                 v-infinite-scroll="load">
-              <div v-bind:key="idx" v-for="(art, idx) in article" class="text item dirs">
-                <el-link href="javascript:void(0);"><span
-                    v-html="art.article.title_match ? art.article.title_match : art.article.title"></span></el-link>
-                <el-tag style="margin-left:0.3rem;" effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
-              </div>
+          <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
+               v-infinite-scroll="load">
+            <div v-bind:key="idx" v-for="(art, idx) in article" class="text item dirs">
+              <el-link v-right-click="rightMenu" href="javascript:void(0);"><span
+                  v-html="art.article.title_match ? art.article.title_match : art.article.title"></span></el-link>
+              <el-tag style="margin-left:0.3rem;" effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
             </div>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item icon="el-icon-plus">黄金糕</el-dropdown-item>
-                <el-dropdown-item icon="el-icon-circle-plus">狮子头</el-dropdown-item>
-                <el-dropdown-item icon="el-icon-circle-plus-outline">螺蛳粉</el-dropdown-item>
-                <el-dropdown-item icon="el-icon-check">双皮奶</el-dropdown-item>
-                <el-dropdown-item icon="el-icon-circle-check">蚵仔煎</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
+          </div>
         </el-tab-pane>
-        <el-tab-pane label="专题">配置管理</el-tab-pane>
+        <el-tab-pane label="专题">
+        </el-tab-pane>
         <el-tab-pane label="标签">角色管理</el-tab-pane>
       </el-tabs>
     </el-aside>
@@ -44,21 +34,42 @@
       <tool-editor/>
     </el-main>
   </el-container>
+  <right-menu :position="position" ref="childRef" />
 </template>
 <script lang="ts">
 
 import ToolEditor from '../components/ToolEditor.vue'
+import RightMenu from '../components/RightMenu.vue'
 
-import {defineComponent, reactive, toRefs, watch} from 'vue'
-import {ElMessage} from "element-plus";
+import {defineComponent, reactive, ref, toRefs, watch} from 'vue'
+import {Position} from "@/components/RightMenu.vue";
+// import {ElMessage} from "element-plus";
 
 export default defineComponent({
   components: {
-    ToolEditor
+    ToolEditor,
+    RightMenu,
+  },
+
+  directives: {
+    rightClick: {
+      mounted(el, binding) {
+        el.addEventListener("contextmenu", function (ev: any) {
+          ev.preventDefault();
+          binding.value()
+          return false;
+        }, false)
+      }
+    }
   },
 
   setup() {
     document.title = "editing"
+
+    const childRef = ref(null)
+    const rightMenu = () => {
+      childRef.value.showMenu()
+    }
 
     const article: any[] = []
     const state = reactive({
@@ -67,6 +78,12 @@ export default defineComponent({
       size: 10,
       noMore: false,
       article: article,
+      show: false,
+    });
+
+    const position :Position = reactive({
+      x: 0,
+      y: 0,
     });
 
     const defaults = () => {
@@ -74,13 +91,15 @@ export default defineComponent({
       state.noMore = false
     }
 
-    const handleCommand = (command: any) => {
-      ElMessage(`click on item ${command}`);
-    };
+    // const handleCommand = (command: any) => {
+    //   ElMessage(`click on item ${command}`);
+    // };
 
     return {
       ...toRefs(state),
-      handleCommand,
+      position,
+      childRef,
+      rightMenu,
       defaults,
     }
   },
@@ -100,31 +119,42 @@ export default defineComponent({
   },
 
   methods: {
-    rightMenu(): void {
-      alert("right click");
-    },
     load(): void {
       if (this.noMore) {
         return
       }
-      this.page++
-      this.$http.get('/article/list', {
-        params: {
-          "page": this.page,
-          "size": this.size,
-          // "keyword": this.keyword
-        }
-      }).then((response) => {
-        if (response.data.length === 0) {
-          this.noMore = true
-          return
-        }
-        response.data.forEach((v: any) => {
-          this.article.push(v)
-        })
-      }).catch((error) => {
-        console.log(error)
-      })
+      this.article = [
+        {
+          article: {
+            title: "标准标题1"
+          },
+          duration: "2秒"
+        },
+        {
+          article: {
+            title: "标准标题2"
+          },
+          duration: "2秒"
+        },
+      ]
+      // this.page++
+      // this.$http.get('/article/list', {
+      //   params: {
+      //     "page": this.page,
+      //     "size": this.size,
+      //     // "keyword": this.keyword
+      //   }
+      // }).then((response) => {
+      //   if (response.data.length === 0) {
+      //     this.noMore = true
+      //     return
+      //   }
+      //   response.data.forEach((v: any) => {
+      //     this.article.push(v)
+      //   })
+      // }).catch((error) => {
+      //   console.log(error)
+      // })
     }
   }
 })
@@ -140,9 +170,9 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
 
-span {
-  font-size: 12px;
-}
+  span {
+    font-size: 12px;
+  }
 
 }
 </style>
