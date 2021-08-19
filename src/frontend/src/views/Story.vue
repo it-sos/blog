@@ -3,27 +3,29 @@
     <el-aside width="200px" class="hidden-xs-only">
       <el-tabs type="border-card">
         <el-tab-pane label="文章">
-          <template #header>
-            <div class="card-header">
-              <el-input
-                  placeholder="请输入内容"
-                  v-model="keyword"
-                  class="input-with-select"
-              >
-                <template #prefix>
-                  <i class="el-input__icon el-icon-search"></i>
-                </template>
-              </el-input>
+          <el-card class="box-card">
+            <template #header>
+              <div class="card-header">
+                <el-input
+                    placeholder="请输入内容"
+                    v-model="keyword"
+                    class="input-with-select"
+                >
+                  <template #prefix>
+                    <i class="el-input__icon el-icon-search"></i>
+                  </template>
+                </el-input>
+              </div>
+            </template>
+            <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
+                 v-infinite-scroll="load">
+              <div v-bind:key="idx" v-for="(art, idx) in article" class="text item dirs">
+                <el-link v-right-click="rightMenu" href="javascript:void(0);"><span
+                    v-html="art.article.title_match ? art.article.title_match : art.article.title"></span></el-link>
+                <el-tag style="margin-left:0.3rem;" effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
+              </div>
             </div>
-          </template>
-          <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
-               v-infinite-scroll="load">
-            <div v-bind:key="idx" v-for="(art, idx) in article" class="text item dirs">
-              <el-link v-right-click="rightMenu" href="javascript:void(0);"><span
-                  v-html="art.article.title_match ? art.article.title_match : art.article.title"></span></el-link>
-              <el-tag style="margin-left:0.3rem;" effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
-            </div>
-          </div>
+          </el-card>
         </el-tab-pane>
         <el-tab-pane label="专题">
         </el-tab-pane>
@@ -34,7 +36,7 @@
       <tool-editor/>
     </el-main>
   </el-container>
-  <right-menu :position="position" ref="childRef" />
+  <right-menu ref="rightMenuRef"/>
 </template>
 <script lang="ts">
 
@@ -56,7 +58,11 @@ export default defineComponent({
       mounted(el, binding) {
         el.addEventListener("contextmenu", function (ev: any) {
           ev.preventDefault();
-          binding.value()
+          const position: Position = {
+            x: ev.x,
+            y: ev.y,
+          }
+          binding.value(position)
           return false;
         }, false)
       }
@@ -66,9 +72,13 @@ export default defineComponent({
   setup() {
     document.title = "editing"
 
-    const childRef = ref(null)
-    const rightMenu = () => {
-      childRef.value.showMenu()
+    const rightMenuRef = ref()
+    const rightMenu = (position: Position) => {
+      rightMenuRef.value.showMenu()
+      rightMenuRef.value.positionMenu(position)
+      document.onclick = () => {
+        rightMenuRef.value.hideMenu()
+      }
     }
 
     const article: any[] = []
@@ -78,12 +88,6 @@ export default defineComponent({
       size: 10,
       noMore: false,
       article: article,
-      show: false,
-    });
-
-    const position :Position = reactive({
-      x: 0,
-      y: 0,
     });
 
     const defaults = () => {
@@ -97,8 +101,7 @@ export default defineComponent({
 
     return {
       ...toRefs(state),
-      position,
-      childRef,
+      rightMenuRef,
       rightMenu,
       defaults,
     }
@@ -173,6 +176,11 @@ export default defineComponent({
   span {
     font-size: 12px;
   }
+}
 
+.el-tabs--border-card {
+  .el-tabs__content {
+    padding: 0;
+  }
 }
 </style>

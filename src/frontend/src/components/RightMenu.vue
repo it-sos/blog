@@ -1,10 +1,11 @@
 <template>
   <transition name="slide-fade">
-    <div v-if="state.show" class="contextMenu" @mouseleave="hide" :style="positionCss">
+    <div v-if="state.show" class="contextMenu" @mouseleave="hideMenu" @mouseenter="showMenu" :style="positionCss">
       <el-dropdown @command="handleCommand">
         <el-dropdown-menu>
-          <el-dropdown-item>黄金糕</el-dropdown-item>
-          <el-dropdown-item>狮子头</el-dropdown-item>
+          <el-dropdown-item icon="el-icon-document-add">新建</el-dropdown-item>
+          <el-dropdown-item icon="el-icon-edit">编辑</el-dropdown-item>
+          <el-dropdown-item icon="el-icon-delete">删除</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -13,7 +14,7 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType, reactive} from 'vue'
+import {defineComponent, reactive} from 'vue'
 
 export interface Position {
   x: number
@@ -22,50 +23,47 @@ export interface Position {
 
 export default defineComponent({
   name: "RightMenu",
-  props: {
-    position: {
-      type: Object as PropType<Position>,
-      required: true,
-    },
-  },
 
   setup() {
     const state = reactive({
-      show: true
+      show: false,
+      position : {x: 0, y: 0},
     })
 
+    const positionMenu = (position: Position) => {
+      state.position = position
+    }
+
+    let timer: any = null;
+    const hideMenu = () => {
+      timer = setTimeout(()=>{
+        state.show = false
+      }, 500)
+    }
+
     const showMenu = () => {
+      clearTimeout(timer)
       state.show = true
     }
 
-    const hideMenu = () => {
-      state.show = false
+    const handleCommand = (command: any) => {
+      console.log('click on item ' + command);
     }
 
     return {
       state,
       showMenu,
       hideMenu,
+      positionMenu,
+      handleCommand,
     }
   },
 
   computed: {
     positionCss: function(): string {
-      return `left: ${this.position.x}px; top: ${this.position.y}px`
+      return `left: ${this.state.position.x}px; top: ${this.state.position.y}px`
     },
   },
-
-  methods: {
-    handleCommand(command: any) {
-      console.log('click on item ' + command);
-    },
-
-    hide() {
-      this.state.show = false
-      // this.showCss = false
-      console.log("hidden.")
-    }
-  }
 })
 </script>
 
