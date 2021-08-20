@@ -3,9 +3,9 @@
     <div v-if="state.show" class="contextMenu" @mouseleave="hideMenu" @mouseenter="showMenu" :style="positionCss">
       <el-dropdown @command="handleCommand">
         <el-dropdown-menu>
-          <el-dropdown-item icon="el-icon-document-add">新建</el-dropdown-item>
-          <el-dropdown-item icon="el-icon-edit">编辑</el-dropdown-item>
-          <el-dropdown-item icon="el-icon-delete">删除</el-dropdown-item>
+          <el-dropdown-item command="add" icon="el-icon-document-add">新建</el-dropdown-item>
+          <el-dropdown-item command="edit" icon="el-icon-edit">编辑</el-dropdown-item>
+          <el-dropdown-item command="delete" icon="el-icon-delete">删除</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -24,7 +24,7 @@ export interface Position {
 export default defineComponent({
   name: "RightMenu",
 
-  setup() {
+  setup(props, context) {
     const state = reactive({
       show: false,
       position : {x: 0, y: 0},
@@ -47,7 +47,7 @@ export default defineComponent({
     }
 
     const handleCommand = (command: any) => {
-      console.log('click on item ' + command);
+      context.emit('trigger', command)
     }
 
     return {

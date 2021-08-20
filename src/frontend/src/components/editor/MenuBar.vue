@@ -46,22 +46,26 @@
             v-for="item in tagOptions"
             :key="item.value"
             :label="item.label"
-            :value="item.value">
+            :value="item.value"
+            v-right-click="rightMenu(1, 'tag')">
         </el-option>
       </el-select>
     </div>
   </div>
+  <right-menu ref="rightMenuRefs" @trigger="trigger" />
 </template>
 
-<script>
+<script lang="ts">
 import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
-import {defineComponent, reactive, toRefs} from 'vue'
+import {defineComponent, reactive, ref, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
+import {Position, default as RightMenu} from "@/components/RightMenu.vue";
 
 export default defineComponent({
   components: {
     MenuItem,
+    RightMenu,
   },
 
   props: {
@@ -71,7 +75,46 @@ export default defineComponent({
     },
   },
 
+  directives: {
+    rightClick: {
+      mounted(el, binding) {
+        el.addEventListener("contextmenu", function (ev: any) {
+          ev.preventDefault();
+          const position: Position = {
+            x: ev.x,
+            y: ev.y,
+          }
+          binding.value(position)
+          return false;
+        }, false)
+      }
+    }
+  },
+
   setup() {
+
+    let triggerState = {
+      id: 0,
+      type: ""
+    }
+    const rightMenuRefs = ref()
+    const rightMenu = (id: number, type: string) => {
+      return (position: Position) => {
+        triggerState = {id, type}
+        rightMenuRefs.value.showMenu()
+        rightMenuRefs.value.positionMenu(position)
+        document.onclick = () => {
+          rightMenuRefs.value.hideMenu()
+        }
+      }
+    }
+    const trigger = (type: string) => {
+      if (type == "delete") {
+        open()
+      }
+      console.log(type, triggerState)
+    }
+
     const publishStatus = reactive({
       publish: false,
       publishLoading: false,
@@ -132,6 +175,10 @@ export default defineComponent({
       ...toRefs(selectStatus),
       publishBeforeChange,
       encryptBeforeChange,
+      rightMenu,
+      triggerState,
+      trigger,
+      rightMenuRefs,
     }
 
   },

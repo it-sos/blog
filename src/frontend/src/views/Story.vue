@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-aside width="200px" class="hidden-xs-only">
-      <el-tabs type="border-card">
+      <el-tabs type="border-card" class="user-pane">
         <el-tab-pane label="文章">
           <el-card class="box-card">
             <template #header>
@@ -20,7 +20,7 @@
             <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
                  v-infinite-scroll="load">
               <div v-bind:key="idx" v-for="(art, idx) in article" class="text item dirs">
-                <el-link v-right-click="rightMenu" href="javascript:void(0);"><span
+                <el-link v-right-click="rightMenu(1, 'doc')" href="javascript:void(0);"><span
                     v-html="art.article.title_match ? art.article.title_match : art.article.title"></span></el-link>
                 <el-tag style="margin-left:0.3rem;" effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
               </div>
@@ -28,15 +28,60 @@
           </el-card>
         </el-tab-pane>
         <el-tab-pane label="专题">
+          <el-card class="box-card">
+            <template #header>
+              <div class="card-header">
+                <el-input
+                    placeholder="请输入内容"
+                    v-model="keyword"
+                    class="input-with-select"
+                >
+                  <template #prefix>
+                    <i class="el-input__icon el-icon-search"></i>
+                  </template>
+                </el-input>
+              </div>
+            </template>
+            <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
+                 v-infinite-scroll="load">
+              <div v-bind:key="idx" v-for="(art, idx) in article" class="text item dirs">
+                <el-link v-right-click="rightMenu(1, 'topic')" href="javascript:void(0);"><span
+                    v-html="art.article.title_match ? art.article.title_match : art.article.title"></span></el-link>
+              </div>
+            </div>
+          </el-card>
         </el-tab-pane>
-        <el-tab-pane label="标签">角色管理</el-tab-pane>
+        <el-tab-pane label="标签">
+          <el-card class="box-card">
+            <template #header>
+              <div class="card-header">
+                <el-input
+                    placeholder="请输入内容"
+                    v-model="keyword"
+                    class="input-with-select"
+                >
+                  <template #prefix>
+                    <i class="el-input__icon el-icon-search"></i>
+                  </template>
+                </el-input>
+              </div>
+            </template>
+            <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
+                 v-infinite-scroll="load">
+              <div v-bind:key="idx" v-for="(art, idx) in article" class="text item dirs">
+                <el-link v-right-click="rightMenu(1, 'tag')" href="javascript:void(0);"><span
+                    v-html="art.article.title_match ? art.article.title_match : art.article.title"></span></el-link>
+              </div>
+            </div>
+          </el-card>
+        </el-tab-pane>
       </el-tabs>
     </el-aside>
     <el-main>
       <tool-editor/>
     </el-main>
   </el-container>
-  <right-menu ref="rightMenuRef"/>
+  <right-menu ref="rightMenuRef" @trigger="trigger" />
 </template>
 <script lang="ts">
 
@@ -45,7 +90,13 @@ import RightMenu from '../components/RightMenu.vue'
 
 import {defineComponent, reactive, ref, toRefs, watch} from 'vue'
 import {Position} from "@/components/RightMenu.vue";
-// import {ElMessage} from "element-plus";
+import {ElMessage} from "element-plus";
+import { ElMessageBox } from 'element-plus';
+
+interface TriggerState {
+  id: number
+  type: string
+}
 
 export default defineComponent({
   components: {
@@ -73,16 +124,24 @@ export default defineComponent({
     document.title = "editing"
 
     const rightMenuRef = ref()
-    const rightMenu = (position: Position) => {
-      rightMenuRef.value.showMenu()
-      rightMenuRef.value.positionMenu(position)
-      document.onclick = () => {
-        rightMenuRef.value.hideMenu()
+    const rightMenu = (id: number, type: string) => {
+      return (position: Position) => {
+        triggerState = {id, type}
+        rightMenuRef.value.showMenu()
+        rightMenuRef.value.positionMenu(position)
+        document.onclick = () => {
+          rightMenuRef.value.hideMenu()
+        }
       }
     }
 
-    const article: any[] = []
+    let article: any[] = []
+    let triggerState: TriggerState = {
+      id: 0,
+      type: ""
+    }
     const state = reactive({
+      triggerState: triggerState,
       keyword: "",
       page: 0,
       size: 10,
@@ -95,15 +154,43 @@ export default defineComponent({
       state.noMore = false
     }
 
+    const open = () => {
+      ElMessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+          .then(() => {
+            ElMessage({
+              type: 'success',
+              message: '删除成功!',
+            });
+          })
+          .catch(() => {
+            ElMessage({
+              type: 'info',
+              message: '已取消删除',
+            });
+          });
+    };
+
     // const handleCommand = (command: any) => {
     //   ElMessage(`click on item ${command}`);
     // };
+
+    const trigger = (type: string) => {
+      if (type == "delete") {
+        open()
+      }
+      console.log(type, triggerState)
+    }
 
     return {
       ...toRefs(state),
       rightMenuRef,
       rightMenu,
       defaults,
+      trigger,
     }
   },
 
@@ -178,9 +265,16 @@ export default defineComponent({
   }
 }
 
-.el-tabs--border-card {
-  .el-tabs__content {
-    padding: 0;
+.el-tabs--border-card > .el-tabs__content {
+  .el-card {
+    border: none;
+    box-shadow: none;
   }
+}
+
+</style>
+<style lang="scss">
+.user-pane > .el-tabs__content {
+  padding: 0;
 }
 </style>
