@@ -21,8 +21,7 @@ sudo apt-get update && sudo apt-get install elasticsearch kibana
 sudo chown -R guest /usr/share/elasticsearch/ /etc/elasticsearch/ /etc/default/elasticsearch /var/log/elasticsearch/
 
 # 安装中文分词器
-sudo ./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.13.3/elasticsearch-analysis-ik-7.13.3.zip
-
+sudo ./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.14.0/elasticsearch-analysis-ik-7.14.0.zip
 # 运行
 /usr/share/elasticsearch/bin/elasticsearch -d # -d 作为守护进程后台运行
 

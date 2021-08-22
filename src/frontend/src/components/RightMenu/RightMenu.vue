@@ -15,11 +15,7 @@
 <script lang="ts">
 
 import {defineComponent, reactive} from 'vue'
-
-export interface Position {
-  x: number
-  y: number
-}
+import {Position} from "@/components/RightMenu/RightMenu";
 
 export default defineComponent({
   name: "RightMenu",

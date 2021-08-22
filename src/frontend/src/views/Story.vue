@@ -34,8 +34,7 @@
                 <el-input
                     placeholder="请输入内容"
                     v-model="keyword"
-                    class="input-with-select"
-                >
+                    class="input-with-select">
                   <template #prefix>
                     <i class="el-input__icon el-icon-search"></i>
                   </template>
@@ -86,12 +85,12 @@
 <script lang="ts">
 
 import ToolEditor from '../components/ToolEditor.vue'
-import RightMenu from '../components/RightMenu.vue'
+import RightMenu from '../components/RightMenu/RightMenu.vue'
 
 import {defineComponent, reactive, ref, toRefs, watch} from 'vue'
-import {Position} from "@/components/RightMenu.vue";
 import {ElMessage} from "element-plus";
 import { ElMessageBox } from 'element-plus';
+import {Position} from "@/components/RightMenu/RightMenu";
 
 interface TriggerState {
   id: number
