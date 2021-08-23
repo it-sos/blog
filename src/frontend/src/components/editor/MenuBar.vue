@@ -2,7 +2,7 @@
   <div>
     <right-menu @trigger="rightMenuTrigger"/>
     <template v-for="(item, index) in items">
-      <div class="divider" v-if="item.type === 'divider'" :key="index"/>
+      <div class="divider" v-if="item.type === 'divider'" :key="index" />
       <menu-item :key="item.title" v-else v-bind="item"/>
     </template>
     <div class="menu-opt">

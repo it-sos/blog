@@ -6,13 +6,13 @@
           <menu-bar class="" :editor="editor"/>
           <el-tooltip class="item" effect="dark" :content="saveStatus.message" placement="left">
             <el-icon :class="saveStatus.isLoading" :color="saveStatus.color" :size="26">
-              <loading v-if="saveStatus.unsaved" />
-              <circle-check-filled v-else />
+              <loading v-if="saveStatus.unsaved"/>
+              <circle-check-filled v-else/>
             </el-icon>
           </el-tooltip>
         </div>
       </template>
-      <editor-content :editor="editor" />
+      <editor-content :editor="editor"/>
     </el-card>
   </div>
 </template>
@@ -34,9 +34,11 @@ import Subscript from '@tiptap/extension-subscript'
 import Superscript from '@tiptap/extension-superscript'
 import CodeBlockComponent from './editor/CodeBlockComponent.vue'
 import MenuBar from './editor/MenuBar.vue'
-import { Loading, CircleCheckFilled } from '@element-plus/icons'
+import {CircleCheckFilled, Loading} from '@element-plus/icons'
 
 import lowlight from 'lowlight'
+import {defineComponent, onUnmounted, reactive, toRefs} from 'vue'
+import {ElMessage} from 'element-plus'
 
 const CodeBlock = CodeBlockLowlight
     .extend({
@@ -45,9 +47,6 @@ const CodeBlock = CodeBlockLowlight
       },
     })
     .configure({lowlight})
-
-import {defineComponent, onMounted, reactive, toRefs} from 'vue'
-import { ElMessage } from 'element-plus'
 
 
 export default defineComponent({
@@ -61,19 +60,18 @@ export default defineComponent({
 
   setup() {
     const state = reactive({
-      percentage: 0,
       saveStatus: {
-          isLoading: "",
-          message:"",
-          color: "",
-          unsaved: false,
+        isLoading: "",
+        message: "已自动保存",
+        color: "#67C23A",
+        unsaved: false,
       }
     });
 
     const stateUnsaved = () => {
       state.saveStatus = {
         isLoading: "is-loading",
-        message:"停止编辑 5s 后将自动保存",
+        message: "停止编辑 5s 后将自动保存",
         color: "#F56C6C",
         unsaved: true,
       }
@@ -82,24 +80,31 @@ export default defineComponent({
     const stateSaved = () => {
       state.saveStatus = {
         isLoading: "",
-        message:"已自动保存",
+        message: "已自动保存",
         color: "#67C23A",
         unsaved: false,
       }
     };
 
-    onMounted(() => {
+    const save = () => {
+      stateUnsaved()
+      // 保存成功后执行
       stateSaved()
-    });
-
-    return {
-      ...toRefs(state),
-      stateSaved,
-      stateUnsaved
+      let json = editor.getJSON()
+      if (json.content[0].type == 'heading' && json.content[0].attrs.level == 2) {
+        let title: string = json.content[0].content[0].text
+        let content: string = editor.getHTML()
+        console.log(title, content.substring(content.indexOf("</h2>") + 5))
+      } else {
+        ElMessage({
+          duration: 0,
+          showClose: true,
+          message: '请设置h2开头的标题名称，可通过点击【H】图标进行设置！',
+          type: 'warning'
+        });
+      }
     }
-  },
 
-  data() {
     let extensions: Extensions = [
       Document,
       Paragraph,
@@ -117,51 +122,31 @@ export default defineComponent({
       Highlight,
       Typography,
     ];
-    let editor: any = null
-    return { editor, extensions }
-  },
 
-  mounted(): void {
     let timer: any = null;
-    let _this: any = this;
-    this.editor = new Editor({
+    let editor: any = new Editor({
       injectCSS: true,
       content: '<h2>这是一个标题</h2>',
-      extensions: this.extensions,
-      onUpdate({ editor }) {
-        _this.stateUnsaved()
+      extensions: extensions,
+      onUpdate() {
+        stateUnsaved()
         clearTimeout(timer)
         timer = setTimeout(() => {
-          let json = editor.getJSON()
-          if (json.content[0].type == 'heading' && json.content[0].attrs.level == 2) {
-            let title: string  = json.content[0].content[0].text
-            let content: string = editor.getHTML()
-            _this.save(title, content.substring(content.indexOf("</h2>")+5))
-          } else {
-            ElMessage({
-              duration: 0,
-              showClose: true,
-              message: '请设置h2开头的标题名称，可通过点击【H】图标进行设置！',
-              type: 'warning'
-            });
-          }
+          save()
         }, 5000)
       },
     })
+
+    onUnmounted(() => {
+      if (editor) editor.destroy();
+    })
+
+    return {
+      ...toRefs(state),
+      editor,
+      save,
+    }
   },
-
-  methods: {
-
-    save(title: string, content: string) {
-      this.stateSaved()
-      console.log(title, content)
-    },
-
-  },
-
-  beforeUnmount(): void {
-    if (this.editor) this.editor.destroy();
-  }
 })
 </script>
 <style lang="scss">
@@ -172,142 +157,145 @@ export default defineComponent({
   min-height: 335px;
   padding: 5px;
 
-  *, :after, :before {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    box-shadow: none;
-    outline: none;
-  }
+*, :after, :before {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  box-shadow: none;
+  outline: none;
+}
 
-  > * + * {
-    margin-top: 0.75em;
-  }
+> * + * {
+  margin-top: 0.75em;
+}
 
-  blockquote {
-    padding-left: 1rem;
-    border-left: 2px solid rgba(#0D0D0D, 0.1);
-  }
+blockquote {
+  padding-left: 1rem;
+  border-left: 2px solid rgba(#0D0D0D, 0.1);
+}
 
-  hr {
-    border: none;
-    border-top: 2px solid rgba(#0D0D0D, 0.1);
-    margin: 2rem 0;
-  }
+hr {
+  border: none;
+  border-top: 2px solid rgba(#0D0D0D, 0.1);
+  margin: 2rem 0;
+}
 
-  ul,
-  ol {
-    padding: 0 1rem;
-  }
+ul,
+ol {
+  padding: 0 1rem;
+}
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    line-height: 1.1;
-  }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.1;
+}
 
-  code {
-    background-color: rgba(#616161, 0.1);
-    color: #616161;
-  }
+code {
+  background-color: rgba(#616161, 0.1);
+  color: #616161;
+}
 
-  mark {
-    background-color: #FAF594;
-  }
+mark {
+  background-color: #FAF594;
+}
 
-  img {
-    max-width: 100%;
-    height: auto;
-  }
+img {
+  max-width: 100%;
+  height: auto;
+}
 
-  pre {
-    background: #0D0D0D;
-    color: #FFF;
-    font-family: 'JetBrainsMono', monospace;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
+pre {
+  background: #0D0D0D;
+  color: #FFF;
+  font-family: 'JetBrainsMono', monospace;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
 
-    code {
-      color: inherit;
-      padding: 0;
-      background: none;
-      font-size: 0.8rem;
-    }
+code {
+  color: inherit;
+  padding: 0;
+  background: none;
+  font-size: 0.8rem;
+}
 
-    .hljs-comment,
-    .hljs-quote {
-      color: #616161;
-    }
+.hljs-comment,
+.hljs-quote {
+  color: #616161;
+}
 
-    .hljs-variable,
-    .hljs-template-variable,
-    .hljs-attribute,
-    .hljs-tag,
-    .hljs-name,
-    .hljs-regexp,
-    .hljs-link,
-    .hljs-name,
-    .hljs-selector-id,
-    .hljs-selector-class {
-      color: #F98181;
-    }
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: #F98181;
+}
 
-    .hljs-number,
-    .hljs-meta,
-    .hljs-built_in,
-    .hljs-builtin-name,
-    .hljs-literal,
-    .hljs-type,
-    .hljs-params {
-      color: #FBBC88;
-    }
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+  color: #FBBC88;
+}
 
-    .hljs-string,
-    .hljs-symbol,
-    .hljs-bullet {
-      color: #B9F18D;
-    }
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+  color: #B9F18D;
+}
 
-    .hljs-title,
-    .hljs-section {
-      color: #FAF594;
-    }
+.hljs-title,
+.hljs-section {
+  color: #FAF594;
+}
 
-    .hljs-keyword,
-    .hljs-selector-tag {
-      color: #70CFF8;
-    }
+.hljs-keyword,
+.hljs-selector-tag {
+  color: #70CFF8;
+}
 
-    .hljs-emphasis {
-      font-style: italic;
-    }
+.hljs-emphasis {
+  font-style: italic;
+}
 
-    .hljs-strong {
-      font-weight: 700;
-    }
-  }
+.hljs-strong {
+  font-weight: 700;
+}
 
-  ul[data-type="taskList"] {
-    list-style: none;
-    padding: 0;
+}
 
-    li {
-      display: flex;
-      align-items: center;
+ul[data-type="taskList"] {
+  list-style: none;
+  padding: 0;
 
-      > label {
-        flex: 0 0 auto;
-        margin-right: 0.5rem;
-      }
-    }
+li {
+  display: flex;
+  align-items: center;
 
-    input[type="checkbox"] {
-      cursor: pointer;
-    }
-  }
+> label {
+  flex: 0 0 auto;
+  margin-right: 0.5rem;
+}
+
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+}
+
+}
 }
 
 .menu-bar-user {
@@ -319,18 +307,20 @@ export default defineComponent({
 .color {
   white-space: nowrap;
 
-  &::before {
-   content: ' ';
-   display: inline-block;
-   width: 1em;
-   height: 1em;
-   border: 1px solid rgba(128, 128, 128, 0.3);
-   vertical-align: middle;
-   margin-right: 0.1em;
-   margin-bottom: 0.15em;
-   border-radius: 2px;
-   background-color: var(--color);
- }
+&
+::before {
+  content: ' ';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  vertical-align: middle;
+  margin-right: 0.1em;
+  margin-bottom: 0.15em;
+  border-radius: 2px;
+  background-color: var(--color);
+}
+
 }
 </style>
 

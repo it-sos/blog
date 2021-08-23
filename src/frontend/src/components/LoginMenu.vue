@@ -15,24 +15,21 @@
   </el-dropdown>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import {defineComponent} from 'vue'
+export default defineComponent({
   name: "LoginMenu",
-  data() {
-    return {
-      active: false
+  setup() {
+    let active :boolean = false
+    const visibleChange = (isFold: boolean) => {
+      active = isFold
     }
-  },
-  methods: {
-    visibleChange(isFold) {
-      if (isFold) {
-        this.active = true
-      } else {
-        this.active = false
-      }
+    return {
+      active,
+      visibleChange,
     }
   }
-}
+})
 </script>
 
 <style scoped>
