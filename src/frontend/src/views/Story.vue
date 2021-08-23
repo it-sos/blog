@@ -1,150 +1,57 @@
 <template>
   <el-container>
     <el-aside width="200px" class="hidden-xs-only">
-      <el-tabs type="border-card" class="user-pane">
-        <el-tab-pane label="文章">
-          <el-card class="box-card">
-            <template #header>
-              <div class="card-header">
-                <el-input
-                    placeholder="请输入内容"
-                    v-model="keyword"
-                    class="input-with-select"
-                >
-                  <template #prefix>
-                    <i class="el-input__icon el-icon-search"></i>
-                  </template>
-                </el-input>
-              </div>
-            </template>
-            <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
-                 v-infinite-scroll="load">
-              <div v-bind:key="idx" v-for="(art, idx) in article" class="text item dirs">
-                <el-link v-right-click="rightMenu(1, 'doc')" href="javascript:void(0);"><span
-                    v-html="art.article.title_match ? art.article.title_match : art.article.title"></span></el-link>
-                <el-tag style="margin-left:0.3rem;" effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
-              </div>
-            </div>
-          </el-card>
-        </el-tab-pane>
-        <el-tab-pane label="专题">
-          <el-card class="box-card">
-            <template #header>
-              <div class="card-header">
-                <el-input
-                    placeholder="请输入内容"
-                    v-model="keyword"
-                    class="input-with-select">
-                  <template #prefix>
-                    <i class="el-input__icon el-icon-search"></i>
-                  </template>
-                </el-input>
-              </div>
-            </template>
-            <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
-                 v-infinite-scroll="load">
-              <div v-bind:key="idx" v-for="(art, idx) in article" class="text item dirs">
-                <el-link v-right-click="rightMenu(1, 'topic')" href="javascript:void(0);"><span
-                    v-html="art.article.title_match ? art.article.title_match : art.article.title"></span></el-link>
-              </div>
-            </div>
-          </el-card>
-        </el-tab-pane>
-        <el-tab-pane label="标签">
-          <el-card class="box-card">
-            <template #header>
-              <div class="card-header">
-                <el-input
-                    placeholder="请输入内容"
-                    v-model="keyword"
-                    class="input-with-select"
-                >
-                  <template #prefix>
-                    <i class="el-input__icon el-icon-search"></i>
-                  </template>
-                </el-input>
-              </div>
-            </template>
-            <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
-                 v-infinite-scroll="load">
-              <div v-bind:key="idx" v-for="(art, idx) in article" class="text item dirs">
-                <el-link v-right-click="rightMenu(1, 'tag')" href="javascript:void(0);"><span
-                    v-html="art.article.title_match ? art.article.title_match : art.article.title"></span></el-link>
-              </div>
-            </div>
-          </el-card>
-        </el-tab-pane>
-      </el-tabs>
+      <el-card class="box-card">
+        <template #header>
+          <div class="card-header">
+            <el-input
+                placeholder="请输入内容"
+                v-model="keyword"
+                class="input-with-select"
+            >
+              <template #prefix>
+                <i class="el-input__icon el-icon-search"></i>
+              </template>
+            </el-input>
+          </div>
+        </template>
+        <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
+             v-infinite-scroll="load">
+          <div v-bind:key="idx" v-for="(art, idx) in article" class="text item dirs">
+            <el-link href="javascript:void(0);" v-right-click="rightMenuFunc('article', idx)"><span
+                v-html="art.article.title_match ? art.article.title_match : art.article.title"></span></el-link>
+            <el-tag style="margin-left:0.3rem;" effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
+          </div>
+        </div>
+      </el-card>
     </el-aside>
     <el-main>
       <tool-editor/>
     </el-main>
   </el-container>
-  <right-menu ref="rightMenuRef" @trigger="trigger" />
+  <right-menu @trigger="trigger"/>
 </template>
 <script lang="ts">
 
 import ToolEditor from '../components/ToolEditor.vue'
-import RightMenu from '../plugins/vue3-right-click-menu-element-plus/RightMenu.vue'
 
-import {defineComponent, reactive, ref, toRefs, watch} from 'vue'
-import {ElMessage} from "element-plus";
-import { ElMessageBox } from 'element-plus';
-import {Position} from "@/plugins/vue3-right-click-menu-element-plus/RightMenu";
-
-interface TriggerState {
-  id: number
-  type: string
-}
+import {defineComponent, provide, reactive, ref, toRefs, watch} from 'vue'
+import {ElMessage, ElMessageBox} from "element-plus";
 
 export default defineComponent({
   components: {
     ToolEditor,
-    RightMenu,
-  },
-
-  directives: {
-    rightClick: {
-      mounted(el, binding) {
-        el.addEventListener("contextmenu", function (ev: any) {
-          ev.preventDefault();
-          const position: Position = {
-            x: ev.x,
-            y: ev.y,
-          }
-          binding.value(position)
-          return false;
-        }, false)
-      }
-    }
   },
 
   setup() {
     document.title = "editing"
 
-    const rightMenuRef = ref()
-    const rightMenu = (id: number, type: string) => {
-      return (position: Position) => {
-        triggerState = {id, type}
-        rightMenuRef.value.showMenu()
-        rightMenuRef.value.positionMenu(position)
-        document.onclick = () => {
-          rightMenuRef.value.hideMenu()
-        }
-      }
-    }
-
     let article: any[] = []
-    let triggerState: TriggerState = {
-      id: 0,
-      type: ""
-    }
     const state = reactive({
-      triggerState: triggerState,
-      keyword: "",
-      page: 0,
-      size: 10,
-      noMore: false,
+      keyword: ref(""),
+      page: ref(0),
+      size: ref(10),
+      noMore: ref(false),
       article: article,
     });
 
@@ -158,35 +65,87 @@ export default defineComponent({
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
-      })
-          .then(() => {
-            ElMessage({
-              type: 'success',
-              message: '删除成功!',
-            });
-          })
-          .catch(() => {
-            ElMessage({
-              type: 'info',
-              message: '已取消删除',
-            });
-          });
+      }).then(() => {
+        ElMessage({
+          type: 'success',
+          message: '删除成功!',
+        });
+      }).catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '已取消删除',
+        });
+      });
     };
 
-    // const handleCommand = (command: any) => {
-    //   ElMessage(`click on item ${command}`);
-    // };
+    let rightMenu = reactive({
+      id: ref(0),
+      position: ref({x: 0, y: 0}),
+      show: ref(false),
+      active: ref('article'),
+      menu: ref({
+        'article': [
+          {
+            'icon': 'el-icon-document-add',
+            'title': '新建',
+            'command': 'article_add',
+          },
+          {
+            'icon': 'el-icon-edit',
+            'title': '编辑',
+            'command': 'article_edit',
+          },
+          {
+            'icon': 'el-icon-delete',
+            'title': '删除',
+            'command': 'article_delete',
+          },
+        ],
+        'topic': [
+          {
+            'icon': 'el-icon-edit',
+            'title': '编辑',
+            'command': 'topic_edit',
+          },
+          {
+            'icon': 'el-icon-delete',
+            'title': '删除',
+            'command': 'topic_delete',
+          },
+        ],
+        'tag': [
+          {
+            'icon': 'el-icon-edit',
+            'title': '编辑',
+            'command': 'topic_edit',
+          },
+          {
+            'icon': 'el-icon-delete',
+            'title': '删除',
+            'command': 'topic_delete',
+          },
+        ]
+      })
+    })
+    provide('right-click-menu', rightMenu)
+
+    const rightMenuFunc = (active: string, id: number) => {
+      return () => {
+        rightMenu.active = active
+        rightMenu.id = id
+        return rightMenu
+      }
+    }
 
     const trigger = (type: string) => {
-      if (type == "delete") {
-        open()
-      }
-      console.log(type, triggerState)
+      console.log(type)
+      console.log(rightMenu.id)
+      open()
     }
 
     return {
       ...toRefs(state),
-      rightMenuRef,
+      rightMenuFunc,
       rightMenu,
       defaults,
       trigger,
@@ -259,16 +218,19 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
 
-  span {
-    font-size: 12px;
-  }
+span {
+  font-size: 12px;
+}
+
 }
 
 .el-tabs--border-card > .el-tabs__content {
-  .el-card {
-    border: none;
-    box-shadow: none;
-  }
+
+.el-card {
+  border: none;
+  box-shadow: none;
+}
+
 }
 
 </style>

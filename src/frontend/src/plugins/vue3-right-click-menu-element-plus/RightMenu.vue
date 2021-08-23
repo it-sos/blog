@@ -3,9 +3,7 @@
     <div v-if="state.show" class="contextMenu" @mouseleave="hideMenu" @mouseenter="showMenu" :style="positionCss">
       <el-dropdown @command="handleCommand">
         <el-dropdown-menu>
-          <el-dropdown-item command="add" icon="el-icon-document-add">新建</el-dropdown-item>
-          <el-dropdown-item command="edit" icon="el-icon-edit">编辑</el-dropdown-item>
-          <el-dropdown-item command="delete" icon="el-icon-delete">删除</el-dropdown-item>
+          <el-dropdown-item :key="index" v-for="(m, index) in state.menu[state.active]" :command="m.command" :icon="m.icon">{{m.title}}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -14,21 +12,25 @@
 
 <script lang="ts">
 
-import {defineComponent, reactive} from 'vue'
-import {Position} from "@/plugins/vue3-right-click-menu-element-plus/RightMenu";
+import {defineComponent, inject, reactive, ref} from 'vue'
 
 export default defineComponent({
   name: "RightMenu",
 
   setup(props, context) {
-    const state = reactive({
-      show: false,
-      position : {x: 0, y: 0},
+    let state = reactive({
+      position: ref({ x:0, y:0 }),
+      show: ref(true),
+      active: ref('test'),
+      menu: ref({'test':[
+          {
+            'icon': 'el-icon-question',
+            'title': '需要配置 menu 项，以填充更多功能',
+            'command': 'demo',
+          },
+        ]})
     })
-
-    const positionMenu = (position: Position) => {
-      state.position = position
-    }
+    state = inject('right-click-menu',  state)
 
     let timer: any = null;
     const hideMenu = () => {
@@ -36,7 +38,6 @@ export default defineComponent({
         state.show = false
       }, 500)
     }
-
     const showMenu = () => {
       clearTimeout(timer)
       state.show = true
@@ -50,7 +51,6 @@ export default defineComponent({
       state,
       showMenu,
       hideMenu,
-      positionMenu,
       handleCommand,
     }
   },
