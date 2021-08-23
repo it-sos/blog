@@ -85,12 +85,12 @@
 <script lang="ts">
 
 import ToolEditor from '../components/ToolEditor.vue'
-import RightMenu from '../components/RightMenu/RightMenu.vue'
+import RightMenu from '../plugins/vue3-right-click-menu-element-plus/RightMenu.vue'
 
 import {defineComponent, reactive, ref, toRefs, watch} from 'vue'
 import {ElMessage} from "element-plus";
 import { ElMessageBox } from 'element-plus';
-import {Position} from "@/components/RightMenu/RightMenu";
+import {Position} from "@/plugins/vue3-right-click-menu-element-plus/RightMenu";
 
 interface TriggerState {
   id: number

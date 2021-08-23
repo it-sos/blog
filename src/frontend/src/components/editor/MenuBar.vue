@@ -60,8 +60,8 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
 import {defineComponent, reactive, ref, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
-import {default as RightMenu} from "@/components/RightMenu/RightMenu.vue";
-import {Position} from "@/components/RightMenu/RightMenu";
+import {default as RightMenu} from "@/plugins/vue3-right-click-menu-element-plus/RightMenu.vue";
+import {Position} from "@/plugins/vue3-right-click-menu-element-plus/RightMenu";
 
 export default defineComponent({
   components: {

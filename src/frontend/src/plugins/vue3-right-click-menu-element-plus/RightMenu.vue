@@ -15,7 +15,7 @@
 <script lang="ts">
 
 import {defineComponent, reactive} from 'vue'
-import {Position} from "@/components/RightMenu/RightMenu";
+import {Position} from "@/plugins/vue3-right-click-menu-element-plus/RightMenu";
 
 export default defineComponent({
   name: "RightMenu",
