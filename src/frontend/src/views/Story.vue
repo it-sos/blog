@@ -29,7 +29,7 @@
       <tool-editor/>
     </el-main>
   </el-container>
-  <right-menu @trigger="trigger"/>
+  <right-menu @trigger="rightMenuTrigger"/>
 </template>
 <script lang="ts">
 
@@ -101,30 +101,6 @@ export default defineComponent({
             'command': 'article_delete',
           },
         ],
-        'topic': [
-          {
-            'icon': 'el-icon-edit',
-            'title': '编辑',
-            'command': 'topic_edit',
-          },
-          {
-            'icon': 'el-icon-delete',
-            'title': '删除',
-            'command': 'topic_delete',
-          },
-        ],
-        'tag': [
-          {
-            'icon': 'el-icon-edit',
-            'title': '编辑',
-            'command': 'topic_edit',
-          },
-          {
-            'icon': 'el-icon-delete',
-            'title': '删除',
-            'command': 'topic_delete',
-          },
-        ]
       })
     })
     provide('right-click-menu', rightMenu)
@@ -137,7 +113,7 @@ export default defineComponent({
       }
     }
 
-    const trigger = (type: string) => {
+    const rightMenuTrigger = (type: string) => {
       console.log(type)
       console.log(rightMenu.id)
       open()
@@ -145,10 +121,10 @@ export default defineComponent({
 
     return {
       ...toRefs(state),
-      rightMenuFunc,
-      rightMenu,
       defaults,
-      trigger,
+      rightMenu,
+      rightMenuFunc,
+      rightMenuTrigger,
     }
   },
 

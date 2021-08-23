@@ -66,7 +66,7 @@ export default defineComponent({
 <style scoped>
 .contextMenu {
   position: fixed;
-  z-index: 1000;
+  z-index: 9999;
   border: #E4E7ED 1px solid;
   border-radius: 4px;
 }

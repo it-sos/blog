@@ -1,5 +1,6 @@
 <template>
   <div>
+    <right-menu @trigger="rightMenuTrigger"/>
     <template v-for="(item, index) in items">
       <div class="divider" v-if="item.type === 'divider'" :key="index"/>
       <menu-item :key="item.title" v-else v-bind="item"/>
@@ -18,6 +19,7 @@
           :loading="encryptLoading"
           :beforeChange="encryptBeforeChange"></el-switch>
       <el-select
+          @change="changeTopic"
           class="menu-opt-item"
           v-model="topicValue"
           multiple
@@ -27,6 +29,7 @@
           size="mini"
           placeholder="选择专题">
         <el-option
+            v-right-click="rightMenuFunc('topic', item.value)"
             v-for="item in topicOptions"
             :key="item.value"
             :label="item.label"
@@ -34,6 +37,7 @@
         </el-option>
       </el-select>
       <el-select
+          @change="changeTag"
           class="menu-opt-item"
           v-model="tagValue"
           multiple
@@ -43,6 +47,7 @@
           size="mini"
           placeholder="选择标签">
         <el-option
+            v-right-click="rightMenuFunc('tag', item.value)"
             v-for="item in tagOptions"
             :key="item.value"
             :label="item.label"
@@ -51,21 +56,17 @@
       </el-select>
     </div>
   </div>
-<!--  <right-menu ref="rightMenuRefs" @trigger="trigger" />-->
 </template>
 
 <script lang="ts">
 import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
-import {defineComponent, reactive, toRefs} from 'vue'
+import {defineComponent, provide, reactive, ref, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
-// import {default as RightMenu} from "@/plugins/vue3-right-click-menu-element-plus/RightMenu.vue";
-// import {Position} from "@/plugins/vue3-right-click-menu-element-plus/RightMenu";
 
 export default defineComponent({
   components: {
     MenuItem,
-    // RightMenu,
   },
 
   props: {
@@ -75,45 +76,7 @@ export default defineComponent({
     },
   },
 
-  // directives: {
-  //   rightClick: {
-  //     mounted(el, binding) {
-  //       el.addEventListener("contextmenu", function (ev: any) {
-  //         ev.preventDefault();
-  //         const position: Position = {
-  //           x: ev.x,
-  //           y: ev.y,
-  //         }
-  //         binding.value(position)
-  //         return false;
-  //       }, false)
-  //     }
-  //   }
-  // },
-
   setup() {
-
-    // let triggerState = {
-    //   id: 0,
-    //   type: ""
-    // }
-    // const rightMenuRefs = ref()
-    // const rightMenu = (id: number, type: string) => {
-    //   return (position: Position) => {
-    //     triggerState = {id, type}
-    //     rightMenuRefs.value.showMenu()
-    //     rightMenuRefs.value.positionMenu(position)
-    //     document.onclick = () => {
-    //       rightMenuRefs.value.hideMenu()
-    //     }
-    //   }
-    // }
-    // const trigger = (type: string) => {
-    //   if (type == "delete") {
-    //     open()
-    //   }
-    //   console.log(type, triggerState)
-    // }
 
     const publishStatus = reactive({
       publish: false,
@@ -153,32 +116,82 @@ export default defineComponent({
         value: '选项1',
         label: 'mac 下以 root 角色开机启动执行脚本或命令'
       }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
         value: '选项5',
         label: '北京烤鸭'
       }],
-      tagValue: false,
-      tagOptions: [{lable:"php", value:"php"}],
+      tagValue: [],
+      tagOptions: [{
+        lable:"php",
+        value:"php"
+      }],
     })
 
+    let rightMenu = reactive({
+      id: ref(0),
+      position: ref({x: 0, y: 0}),
+      show: ref(false),
+      active: ref('article'),
+      menu: ref({
+        'topic': [
+          {
+            'icon': 'el-icon-edit',
+            'title': '编辑',
+            'command': 'topic_edit',
+          },
+          {
+            'icon': 'el-icon-delete',
+            'title': '删除',
+            'command': 'topic_delete',
+          },
+        ],
+        'tag': [
+          {
+            'icon': 'el-icon-edit',
+            'title': '编辑',
+            'command': 'tag_edit',
+          },
+          {
+            'icon': 'el-icon-delete',
+            'title': '删除',
+            'command': 'tag_delete',
+          },
+        ]
+      })
+    })
+    provide('right-click-menu', rightMenu)
+
+    const rightMenuFunc = (active: string, id: number) => {
+      return () => {
+        rightMenu.active = active
+        rightMenu.id = id
+        return rightMenu
+      }
+    }
+
+    const rightMenuTrigger = (type: string) => {
+      console.log(type)
+      console.log(rightMenu.id)
+    }
+
+    const changeTag = () => {
+      console.log(1111)
+    }
+
+    const changeTopic = () => {
+      console.log(1111)
+    }
+
     return {
+      changeTag,
+      changeTopic,
       ...toRefs(publishStatus),
       ...toRefs(encryptStatus),
       ...toRefs(selectStatus),
       publishBeforeChange,
       encryptBeforeChange,
-      // rightMenu,
-      // triggerState,
-      // trigger,
-      // rightMenuRefs,
+      rightMenu,
+      rightMenuFunc,
+      rightMenuTrigger,
     }
 
   },
