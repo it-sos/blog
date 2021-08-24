@@ -23,6 +23,7 @@ type Errors struct {
 var errCodeList = map[string]Errors{
 	"param_err":          {4002001, "参数异常"},
 	"article_exists_err": {5001001, "文章标题已存在"},
+	"update_err":         {5002001, "更新失败"},
 }
 
 func Error(key string) error {

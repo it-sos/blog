@@ -25,8 +25,10 @@ const (
 type CategoryRepository interface {
 	// Insert 新增
 	Insert(p *datamodels.Category) (id uint)
+	// Delete 删除
+	Delete(id uint) bool
 	// Update 更新
-	Update(p *datamodels.Category) (id uint)
+	Update(id uint, p *datamodels.Category) bool
 	// Select 查询单条
 	Select(p *datamodels.Category) (datamodels.Category, bool)
 	// SelectMany 查询多条
@@ -37,6 +39,14 @@ type categoryRepository struct {
 	db mysql.GoLibMysql
 }
 
+func (c categoryRepository) Delete(id uint) bool {
+	affected, err := c.db.ID(id).Delete(new(datamodels.Category))
+	if err != nil {
+		panic(err)
+	}
+	return affected > 0
+}
+
 func (c categoryRepository) Insert(p *datamodels.Category) uint {
 	_, err := c.db.Insert(p)
 	if err != nil {
@@ -45,12 +55,12 @@ func (c categoryRepository) Insert(p *datamodels.Category) uint {
 	return p.Id
 }
 
-func (c categoryRepository) Update(p *datamodels.Category) uint {
-	_, err := c.db.Update(p)
+func (c categoryRepository) Update(id uint, p *datamodels.Category) bool {
+	affected, err := c.db.ID(id).Update(p)
 	if err != nil {
 		panic(err)
 	}
-	return p.Id
+	return affected > 0
 }
 
 func (c categoryRepository) Select(p *datamodels.Category) (datamodels.Category, bool) {
