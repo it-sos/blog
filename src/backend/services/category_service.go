@@ -26,6 +26,14 @@ type CategoryService interface {
 	GetArticleListIds(cid uint) (aid []string)
 	// GetTopicAndTagName 获取标签专题名list
 	GetTopicAndTagName(aid uint) (topic, tag []string)
+	// NewTopic 新增专题
+	// DeleteTopic 删除专题
+	// UpdateTopic 更新专题
+	// GetTopicList 查询专题列表
+	// NewTag 新增标签
+	// DeleteTag 删除标签
+	// UpdateTag 更新标签
+	// GetTagList 查询标签列表
 }
 
 type categoryService struct {

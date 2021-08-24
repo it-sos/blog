@@ -18,8 +18,15 @@ import (
 )
 
 const (
+	// IsStatePrivate 私有
 	IsStatePrivate = 1
-	IsStatePublic  = 2
+	// IsStatePublic 公开
+	IsStatePublic = 2
+
+	// IsEncrypt 密文
+	IsEncrypt = 1
+	// IsPlaintext 明文
+	IsPlaintext = 2
 
 	// NotDeleted 删除状态
 	NotDeleted = 0
@@ -27,6 +34,16 @@ const (
 )
 
 type ArticleRepository interface {
+	// InsertTrans 新增文章与内容
+	InsertTrans(p *datamodels.Article, content string) (id uint)
+	// UpdateTrans 更新文章与内容
+	UpdateTrans(id uint, p *datamodels.Article, content string)
+	// DeleteTrans 删除文章与内容
+	DeleteTrans(id uint)
+	// TitleExists title存在性校验
+	TitleExists(title string) bool
+	// GetInfoById 通过id查询文章信息
+	GetInfoById(id uint) *datamodels.Article
 	// Insert 新增
 	Insert(p *datamodels.Article) (id uint)
 	// Update 更新
@@ -42,6 +59,88 @@ type ArticleRepository interface {
 
 type articleRepository struct {
 	db mysql.GoLibMysql
+}
+
+func (ur *articleRepository) GetInfoById(id uint) *datamodels.Article {
+	article := new(datamodels.Article)
+	_, err := ur.db.ID(id).Get(article)
+	if err != nil {
+		panic(err)
+	}
+	return article
+}
+
+func (ur *articleRepository) TitleExists(title string) bool {
+	article := datamodels.Article{Title: title}
+	isExits, err := ur.db.Exist(&article)
+	if err != nil {
+		panic(err)
+	}
+	return isExits
+}
+
+func (ur *articleRepository) DeleteTrans(id uint) {
+	session := ur.db.NewSession()
+	defer session.Close()
+	err := session.Begin()
+	_, err = session.ID(id).Delete(new(datamodels.ArticleContent))
+	if err == nil {
+		_, err = session.ID(id).Delete(new(datamodels.Article))
+	}
+	if err != nil {
+		session.Rollback()
+		panic(err)
+	}
+	err = session.Commit()
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (ur *articleRepository) InsertTrans(p *datamodels.Article, content string) (id uint) {
+	session := ur.db.NewSession()
+	defer session.Close()
+	err := session.Begin()
+	_, err = session.Insert(p)
+	if err != nil {
+		session.Rollback()
+		panic(err)
+	}
+
+	_, err = session.Insert(&datamodels.ArticleContent{
+		Aid:  p.Id,
+		Data: content,
+	})
+	if err != nil {
+		session.Rollback()
+		panic(err)
+	}
+	err = session.Commit()
+	if err != nil {
+		panic(err)
+	}
+	return p.Id
+}
+
+func (ur *articleRepository) UpdateTrans(id uint, p *datamodels.Article, content string) {
+	session := ur.db.NewSession()
+	defer session.Close()
+	err := session.Begin()
+	_, err = session.ID(id).Update(p)
+	if err != nil {
+		session.Rollback()
+		panic(err)
+	}
+
+	_, err = session.ID(id).Update(&datamodels.ArticleContent{Data: content})
+	if err != nil {
+		session.Rollback()
+		panic(err)
+	}
+	err = session.Commit()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (ur *articleRepository) Navigation(state []uint8, utime time.Time) (prevTitle, nextTitle string) {

@@ -11,6 +11,7 @@
 package services
 
 import (
+	"gitee.com/itsos/studynotes/datamodels"
 	"testing"
 )
 
@@ -35,4 +36,8 @@ func BenchmarkArticleService_GetContent(b *testing.B) {
 	for i := 0; i < b.N; i++ { //use b.N for looping
 		SArticle.GetContent(false, "@Valid 参数验证之自定义注解实现复杂验证逻辑")
 	}
+}
+
+func Test_articleService_NewArticleAndContent(t *testing.T) {
+	SArticle.NewArticleAndContent(datamodels.Article{Title: "hellos"}, "")
 }
