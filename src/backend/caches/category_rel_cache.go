@@ -26,11 +26,16 @@ type CategoryRelCmd interface {
 	Get() []string
 	Add(v uint)
 	Exists() bool
+	Remove(v uint) bool
 }
 
 type categoryRelCmd struct {
 	aidType string
 	db      redis.GoLibRedis
+}
+
+func (a *categoryRelCmd) Remove(v uint) bool {
+	return a.db.SRem(context.Background(), a.aidType, v).Val() > 0
 }
 
 func (a *categoryRelCmd) Exists() bool {
@@ -51,7 +56,7 @@ func (a *categoryRelCmd) Add(v uint) {
 const categoryRelPrefix = "category:%d_%d"
 
 func (a *categoryRel) Id(aid uint, types uint8) CategoryRelCmd {
-	return &categoryRelCmd{fmt.Sprintf(categoryRelPrefix, aid, types), redis.NewRedis()}
+	return &categoryRelCmd{aidType: fmt.Sprintf(categoryRelPrefix, aid, types), db: redis.NewRedis()}
 }
 
 // CCategoryRel cache文章的标题和标签

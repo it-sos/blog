@@ -60,6 +60,7 @@ type (
 	}
 )
 
+// ArticleService 标记为「后台」的方法按登录状态下的逻辑处理
 type ArticleService interface {
 	// GetRank 获取前访问前50的文章列表
 	GetRank(isLogin bool) []vo.ArticleAccessTimesVO
@@ -67,12 +68,15 @@ type ArticleService interface {
 	GetListPage(isLogin bool, page int, size int, keyword string) []vo.ArticleVO
 	// GetContent 获取文章详情
 	GetContent(isLogin bool, title string) vo.ArticleContentVO
-	// NewArticleAndContent 新增文章
+
+	// NewArticleAndContent 新增文章「后台」
 	NewArticleAndContent(article datamodels.Article, content string) (id uint)
-	// UpdateArticleAndContent 更新文章
-	UpdateArticleAndContent(id uint, article datamodels.Article, content string)
-	// DeleteArticle 删除文章&内容
+	// DeleteArticle 删除文章&内容「后台」
 	DeleteArticle(id uint)
+	// UpdateArticleAndContent 更新文章「后台」
+	UpdateArticleAndContent(id uint, article datamodels.Article, content string)
+	// GetArticleAndContent 查询文章及相关信息「后台」
+	GetArticleAndContent(id uint)
 }
 
 var SArticle ArticleService = &articleService{
@@ -86,6 +90,17 @@ type articleService struct {
 	accessTimes caches.AccessTimes
 }
 
+func (a articleService) GetArticleAndContent(id uint) {
+	article, has := a.article.GetInfoById(id)
+	if !has {
+		panic(errors.Error("article_notfound_err"))
+	}
+	content, _ := a.content.Select(&datamodels.ArticleContent{
+		Aid: article.Id,
+	})
+	content.Data = html.UnescapeString(content.Data)
+}
+
 func (a articleService) NewArticleAndContent(article datamodels.Article, content string) (id uint) {
 	if a.article.TitleExists(article.Title) {
 		panic(errors.Error("article_exists_err"))
@@ -93,17 +108,18 @@ func (a articleService) NewArticleAndContent(article datamodels.Article, content
 	if article.IsEncrypt == repositories.IsEncrypt {
 		// todo  此处通过公钥加密处理 conent
 	}
-	id = a.article.InsertTrans(&article, content)
+	id = a.article.InsertTrans(&article, html.EscapeString(content))
 	return
 }
 
 func (a articleService) UpdateArticleAndContent(id uint, article datamodels.Article, content string) {
 	// 判断避免与其他文章标题重叠
+	info, _ := a.article.GetInfoById(id)
 	if a.article.TitleExists(article.Title) &&
-		a.article.GetInfoById(id).Title != article.Title {
+		info.Title != article.Title {
 		panic(errors.Error("article_exists_err"))
 	}
-	a.article.UpdateTrans(id, &article, content)
+	a.article.UpdateTrans(id, &article, html.EscapeString(content))
 }
 
 func (a articleService) DeleteArticle(id uint) {

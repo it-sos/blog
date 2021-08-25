@@ -43,7 +43,7 @@ type ArticleRepository interface {
 	// TitleExists title存在性校验
 	TitleExists(title string) bool
 	// GetInfoById 通过id查询文章信息
-	GetInfoById(id uint) *datamodels.Article
+	GetInfoById(id uint) (datamodels.Article, bool)
 	// Insert 新增
 	Insert(p *datamodels.Article) (id uint)
 	// Update 更新
@@ -61,13 +61,13 @@ type articleRepository struct {
 	db mysql.GoLibMysql
 }
 
-func (ur *articleRepository) GetInfoById(id uint) *datamodels.Article {
+func (ur *articleRepository) GetInfoById(id uint) (datamodels.Article, bool) {
 	article := new(datamodels.Article)
-	_, err := ur.db.ID(id).Get(article)
+	has, err := ur.db.ID(id).Get(article)
 	if err != nil {
 		panic(err)
 	}
-	return article
+	return *article, has
 }
 
 func (ur *articleRepository) TitleExists(title string) bool {

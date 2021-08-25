@@ -12,14 +12,23 @@ definitions:
       intro:
         description: 简介
         type: string
+      intro_match:
+        description: 匹配简介
+        type: string
       is_del:
         description: 0未删除；1已删除
+        type: integer
+      is_encrypt:
+        description: 状态1密文；2明文
         type: integer
       is_state:
         description: 状态1私密；2公开
         type: integer
       title:
         description: 标题
+        type: string
+      title_match:
+        description: 匹配标题
         type: string
       uid:
         description: 编辑者id
@@ -37,9 +46,38 @@ definitions:
         description: 文章内容
         type: string
     type: object
+  datamodels.Category:
+    properties:
+      ctime:
+        readOnly: true
+        type: string
+      id:
+        description: 分类表ID
+        example: 1
+        readOnly: true
+        type: integer
+      info:
+        description: 简介
+        type: string
+      is_del:
+        description: 0未删除；1已删除
+        type: integer
+      name:
+        description: 专题/标签名称
+        type: string
+      pid:
+        description: 父编号
+        type: integer
+      type:
+        description: 类型1标签；2专题
+        type: integer
+      utime:
+        readOnly: true
+        type: string
+    type: object
   errors.Errors:
     properties:
-      errCode:
+      code:
         example: 4000000
         type: integer
       message:
@@ -59,10 +97,10 @@ definitions:
       article:
         $ref: '#/definitions/vo.ArticleVO'
         description: 文章信息
-      articleContent:
+      article_content:
         $ref: '#/definitions/datamodels.ArticleContent'
         description: 文章内容
-      navigation:
+      navigations:
         $ref: '#/definitions/vo.NavigationVO'
         description: 导航
       tags:
@@ -94,10 +132,10 @@ definitions:
     type: object
   vo.NavigationVO:
     properties:
-      nextTitle:
+      next_title:
         description: 下一文章title
         type: string
-      prevTitle:
+      prev_title:
         description: 上一文章title
         type: string
     type: object
@@ -130,6 +168,294 @@ info:
   title: api
   version: "1.0"
 paths:
+  /admin/article/content:
+    get:
+      consumes:
+      - application/json
+      description: 通过文章id获取文章详情
+      parameters:
+      - description: 文章id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 文章详情VO
+          schema:
+            $ref: '#/definitions/vo.ArticleVO'
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 文章内容
+      tags:
+      - 博客后台接口
+  /admin/category/bindartcount:
+    get:
+      consumes:
+      - application/json
+      description: 查询绑定的文章条数
+      parameters:
+      - description: 分类id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: 绑定文章条数
+          schema:
+            type: integer
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 查询绑定的文章条数
+      tags:
+      - 博客后台接口
+  /admin/category/relations:
+    delete:
+      consumes:
+      - application/json
+      description: 通过文章id和分类id解除绑定关系
+      parameters:
+      - description: 类别id
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: 文章id
+        in: query
+        name: aid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            type: string
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 解除绑定关系
+      tags:
+      - 博客后台接口
+  /admin/category/tag:
+    delete:
+      consumes:
+      - application/json
+      description: 删除标签
+      parameters:
+      - description: 标签id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            type: string
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 删除标签
+      tags:
+      - 博客后台接口
+    post:
+      consumes:
+      - application/json
+      description: 新增标签
+      parameters:
+      - description: 标签名称
+        in: query
+        name: name
+        required: true
+        type: integer
+      - description: 文章id
+        in: query
+        name: aid
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: 专题id
+          schema:
+            type: integer
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 新增标签
+      tags:
+      - 博客后台接口
+    put:
+      consumes:
+      - application/json
+      description: 更新标签
+      parameters:
+      - description: 标签id
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: 标签名称
+        in: query
+        name: name
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            type: string
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 更新标签
+      tags:
+      - 博客后台接口
+  /admin/category/tags:
+    get:
+      consumes:
+      - application/json
+      description: 查询标签列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 标签列表VO
+          schema:
+            items:
+              $ref: '#/definitions/datamodels.Category'
+            type: array
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 查询标签列表
+      tags:
+      - 博客后台接口
+  /admin/category/topic:
+    delete:
+      consumes:
+      - application/json
+      description: 通过专题id删除专题
+      parameters:
+      - description: 专题id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            type: string
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 删除专题
+      tags:
+      - 博客后台接口
+    post:
+      consumes:
+      - application/json
+      description: 新增专题
+      parameters:
+      - description: 专题名称
+        in: query
+        name: name
+        required: true
+        type: integer
+      - description: 文章id
+        in: query
+        name: aid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 专题id
+          schema:
+            type: integer
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 新增专题
+      tags:
+      - 博客后台接口
+    put:
+      consumes:
+      - application/json
+      description: 更新专题
+      parameters:
+      - description: 专题名称
+        in: query
+        name: name
+        required: true
+        type: integer
+      - description: 专题id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            type: string
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 更新专题
+      tags:
+      - 博客后台接口
+  /admin/category/topics:
+    get:
+      consumes:
+      - application/json
+      description: 返回专题列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 专题列表VO
+          schema:
+            items:
+              $ref: '#/definitions/datamodels.Category'
+            type: array
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 查询专题列表
+      tags:
+      - 博客后台接口
   /article/content:
     get:
       consumes:
@@ -163,6 +489,10 @@ paths:
       - application/json
       description: 分页接口通过page递增获取更多
       parameters:
+      - description: 关键词
+        in: query
+        name: keyword
+        type: string
       - description: 页码
         in: query
         name: page

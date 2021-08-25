@@ -16,10 +16,10 @@ import (
 )
 
 const (
-	// CategoryRelTypeTag 标签
-	CategoryRelTypeTag uint8 = 1
-	// CategoryRelTypeTopic 专题
-	CategoryRelTypeTopic uint8 = 2
+	// CategoryTypeTag 标签
+	CategoryTypeTag uint8 = 1
+	// CategoryTypeTopic 专题
+	CategoryTypeTopic uint8 = 2
 )
 
 type CategoryRepository interface {
@@ -29,14 +29,27 @@ type CategoryRepository interface {
 	Delete(id uint) bool
 	// Update 更新
 	Update(id uint, p *datamodels.Category) bool
+	// ExistName 名称存在性校验
+	ExistName(name string, cyType uint8) bool
 	// Select 查询单条
 	Select(p *datamodels.Category) (datamodels.Category, bool)
 	// SelectMany 查询多条
 	SelectMany() []datamodels.Category
+	// SelectManyByType 通过类型查询多条
+	SelectManyByType(cyType uint8) []datamodels.Category
 }
 
 type categoryRepository struct {
 	db mysql.GoLibMysql
+}
+
+func (c categoryRepository) ExistName(name string, cyType uint8) bool {
+	article := datamodels.Category{Name: name, Type: cyType}
+	isExits, err := c.db.Exist(&article)
+	if err != nil {
+		panic(err)
+	}
+	return isExits
 }
 
 func (c categoryRepository) Delete(id uint) bool {
@@ -72,12 +85,21 @@ func (c categoryRepository) Select(p *datamodels.Category) (datamodels.Category,
 }
 
 func (c categoryRepository) SelectMany() (results []datamodels.Category) {
-	category := make([]datamodels.Category, 0)
-	err := c.db.Desc("id").Find(&category)
+	results = make([]datamodels.Category, 0)
+	err := c.db.Desc("id").Find(&results)
 	if err != nil {
 		panic(err)
 	}
-	return category
+	return
+}
+
+func (c categoryRepository) SelectManyByType(cyType uint8) (results []datamodels.Category) {
+	results = make([]datamodels.Category, 0)
+	err := c.db.Where("type=?", cyType).Desc("id").Find(&results)
+	if err != nil {
+		panic(err)
+	}
+	return
 }
 
 var RCategory CategoryRepository = &categoryRepository{mysql.NewMysql()}

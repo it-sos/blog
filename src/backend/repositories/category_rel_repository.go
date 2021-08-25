@@ -22,6 +22,8 @@ type CategoryRelRepository interface {
 	Delete(id uint) bool
 	// DeleteByAid 删除所有与文章有关的专题与标签
 	DeleteByAid(aid uint) bool
+	// DeleteByAidAndCid 删除所有与文章有关的专题或标签
+	DeleteByAidAndCid(aid uint, cid uint) bool
 	// DeleteByCid 删除所有与专题或标签有关的文章
 	DeleteByCid(cid uint) bool
 	// Update 更新
@@ -32,10 +34,20 @@ type CategoryRelRepository interface {
 	SelectManyByAid(aid uint) []datamodels.CategoryRel
 	// SelectManyByCid 通过分类id查询多条
 	SelectManyByCid(cid uint) []datamodels.CategoryRel
+	// GetCountByCid 通过分类id查询绑定的条数
+	GetCountByCid(cid uint) uint
 }
 
 type categoryRelRepository struct {
 	db mysql.GoLibMysql
+}
+
+func (c categoryRelRepository) DeleteByAidAndCid(aid uint, cid uint) bool {
+	affected, err := c.db.Where("aid=? and cid=?", aid, cid).Delete(new(datamodels.CategoryRel))
+	if err != nil {
+		panic(err)
+	}
+	return affected > 0
 }
 
 func (c categoryRelRepository) DeleteByAid(aid uint) bool {
@@ -102,6 +114,14 @@ func (c categoryRelRepository) SelectManyByCid(cid uint) (results []datamodels.C
 		panic(err)
 	}
 	return categoryRel
+}
+
+func (c categoryRelRepository) GetCountByCid(cid uint) uint {
+	total, err := c.db.Where("cid=?", cid).Count(new(datamodels.CategoryRel))
+	if err != nil {
+		panic(err)
+	}
+	return uint(total)
 }
 
 var RCategoryRel CategoryRelRepository = &categoryRelRepository{mysql.NewMysql()}
