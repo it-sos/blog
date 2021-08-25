@@ -26,12 +26,19 @@ type CategoryRelCmd interface {
 	Get() []string
 	Add(v uint)
 	Exists() bool
+	// Remove 移除key下成员v
 	Remove(v uint) bool
+	// Delete 清空整个key
+	Delete() bool
 }
 
 type categoryRelCmd struct {
 	aidType string
 	db      redis.GoLibRedis
+}
+
+func (a *categoryRelCmd) Delete() bool {
+	return a.db.Del(context.Background(), a.aidType).Val() > 0
 }
 
 func (a *categoryRelCmd) Remove(v uint) bool {

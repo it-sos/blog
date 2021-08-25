@@ -13,6 +13,17 @@ package vo
 import "gitee.com/itsos/studynotes/datamodels"
 
 type (
+	// ArticleEditVO 后台文章详情
+	ArticleEditVO struct {
+		Id        uint
+		Title     string
+		Content   string
+		IsState   uint8
+		IsEncrypt uint8
+		Tags      []string
+		Topics    []string
+	}
+
 	// ArticleVO 首页文章列表vo
 	ArticleVO struct {
 		Article  datamodels.Article `json:"article"`

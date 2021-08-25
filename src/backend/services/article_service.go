@@ -76,7 +76,7 @@ type ArticleService interface {
 	// UpdateArticleAndContent 更新文章「后台」
 	UpdateArticleAndContent(id uint, article datamodels.Article, content string)
 	// GetArticleAndContent 查询文章及相关信息「后台」
-	GetArticleAndContent(id uint)
+	GetArticleAndContent(id uint) vo.ArticleEditVO
 }
 
 var SArticle ArticleService = &articleService{
@@ -90,7 +90,7 @@ type articleService struct {
 	accessTimes caches.AccessTimes
 }
 
-func (a articleService) GetArticleAndContent(id uint) {
+func (a articleService) GetArticleAndContent(id uint) vo.ArticleEditVO {
 	article, has := a.article.GetInfoById(id)
 	if !has {
 		panic(errors.Error("article_notfound_err"))
@@ -98,7 +98,10 @@ func (a articleService) GetArticleAndContent(id uint) {
 	content, _ := a.content.Select(&datamodels.ArticleContent{
 		Aid: article.Id,
 	})
-	content.Data = html.UnescapeString(content.Data)
+	info := vo.ArticleEditVO{Id: id, Title: article.Title, IsState: article.IsState, IsEncrypt: article.IsEncrypt}
+	info.Content = html.UnescapeString(content.Data)
+	info.Topics, info.Tags = SCategory.GetTopicAndTag(id)
+	return info
 }
 
 func (a articleService) NewArticleAndContent(article datamodels.Article, content string) (id uint) {
@@ -124,6 +127,8 @@ func (a articleService) UpdateArticleAndContent(id uint, article datamodels.Arti
 
 func (a articleService) DeleteArticle(id uint) {
 	a.article.DeleteTrans(id)
+	caches.CCategoryRel.Id(id, repositories.CategoryTypeTag)
+	caches.CCategoryRel.Id(id, repositories.CategoryTypeTopic)
 }
 
 func (a articleService) GetRank(isLogin bool) []vo.ArticleAccessTimesVO {
