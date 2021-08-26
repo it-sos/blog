@@ -14,7 +14,7 @@ sock: /tmp/studynotes.sock
 
 # swagger wiki 服务端口
 swagger:
-  port: 9090
+  port: 9099
 
 mysql:
   master:

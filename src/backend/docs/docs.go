@@ -24,9 +24,9 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin/article/content": {
+        "/admin/article": {
             "get": {
-                "description": "通过文章id获取文章详情",
+                "description": "查询文章及相关信息",
                 "consumes": [
                     "application/json"
                 ],
@@ -36,7 +36,7 @@ var doc = `{
                 "tags": [
                     "博客后台接口"
                 ],
-                "summary": "文章内容",
+                "summary": "查询文章及相关信息",
                 "parameters": [
                     {
                         "type": "integer",
@@ -50,7 +50,81 @@ var doc = `{
                     "200": {
                         "description": "文章详情VO",
                         "schema": {
-                            "$ref": "#/definitions/vo.ArticleVO"
+                            "$ref": "#/definitions/vo.ArticleEditVO"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "保存文章",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "保存文章",
+                "parameters": [
+                    {
+                        "description": "文章相关内容",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.ArticleParamsVO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "文章id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "删除文章",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "删除文章",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文章id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "http code = 200",
+                        "schema": {
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -284,7 +358,7 @@ var doc = `{
                 "summary": "查询标签列表",
                 "responses": {
                     "200": {
-                        "description": "标签列表VO",
+                        "description": "标签列表",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -440,7 +514,7 @@ var doc = `{
                 "summary": "查询专题列表",
                 "responses": {
                     "200": {
-                        "description": "专题列表VO",
+                        "description": "专题列表",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -612,7 +686,7 @@ var doc = `{
                     "type": "integer"
                 },
                 "is_encrypt": {
-                    "description": "状态1密文；2明文",
+                    "description": "状态1明文；2密文",
                     "type": "integer"
                 },
                 "is_state": {
@@ -745,6 +819,76 @@ var doc = `{
                 }
             }
         },
+        "vo.ArticleEditVO": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "文章内容",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "intro": {
+                    "description": "文章简介",
+                    "type": "string"
+                },
+                "is_encrypt": {
+                    "description": "是否加密1明文2密文",
+                    "type": "integer"
+                },
+                "is_state": {
+                    "description": "状态1私有2公开",
+                    "type": "integer"
+                },
+                "tags": {
+                    "description": "标签ID列表",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "description": "文章标题",
+                    "type": "string"
+                },
+                "topics": {
+                    "description": "专题ID列表",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "vo.ArticleParamsVO": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "文章内容",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "intro": {
+                    "description": "文章简介",
+                    "type": "string"
+                },
+                "is_encrypt": {
+                    "description": "是否加密1明文2密文",
+                    "type": "integer"
+                },
+                "is_state": {
+                    "description": "状态1私有2公开",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "文章标题",
+                    "type": "string"
+                }
+            }
+        },
         "vo.ArticleVO": {
             "type": "object",
             "properties": {
@@ -829,11 +973,11 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "生产：https://product.com 测试：http://test.com:9090 开发：http://localhost:9090",
+	Host:        "localhost:8090",
 	BasePath:    "",
 	Schemes:     []string{},
 	Title:       "api",
-	Description: "鹏sir笔记接口",
+	Description: "鹏sir笔记接口\\n环境信息：\\n生产：https://product.com\\n测试：http://test.com:8090\\n开发：http://localhost:8090",
 }
 
 type s struct{}

@@ -69,14 +69,12 @@ type ArticleService interface {
 	// GetContent 获取文章详情
 	GetContent(isLogin bool, title string) vo.ArticleContentVO
 
-	// NewArticleAndContent 新增文章「后台」
-	NewArticleAndContent(article datamodels.Article, content string) (id uint)
+	// SaveArticle 保存文章「后台」
+	SaveArticle(vo vo.ArticleParamsVO) (id uint, err error)
 	// DeleteArticle 删除文章&内容「后台」
 	DeleteArticle(id uint)
-	// UpdateArticleAndContent 更新文章「后台」
-	UpdateArticleAndContent(id uint, article datamodels.Article, content string)
 	// GetArticleAndContent 查询文章及相关信息「后台」
-	GetArticleAndContent(id uint) vo.ArticleEditVO
+	GetArticleAndContent(id uint) (art vo.ArticleEditVO, err error)
 }
 
 var SArticle ArticleService = &articleService{
@@ -90,43 +88,73 @@ type articleService struct {
 	accessTimes caches.AccessTimes
 }
 
-func (a articleService) GetArticleAndContent(id uint) vo.ArticleEditVO {
+func (a articleService) GetArticleAndContent(id uint) (info vo.ArticleEditVO, err error) {
 	article, has := a.article.GetInfoById(id)
 	if !has {
-		panic(errors.Error("article_notfound_err"))
+		err = errors.Error("article_notfound_err")
+		return
 	}
 	content, _ := a.content.Select(&datamodels.ArticleContent{
 		Aid: article.Id,
 	})
-	info := vo.ArticleEditVO{Id: id, Title: article.Title, IsState: article.IsState, IsEncrypt: article.IsEncrypt}
+
+	// 解密处理
+	if article.IsEncrypt == repositories.IsEncrypt {
+		// todo 通过用户私钥解密 intro、content 字段
+	}
+
+	info = vo.ArticleEditVO{
+		Id:        id,
+		Title:     article.Title,
+		Intro:     article.Intro,
+		IsState:   article.IsState,
+		IsEncrypt: article.IsEncrypt,
+	}
+
 	info.Content = html.UnescapeString(content.Data)
 	info.Topics, info.Tags = SCategory.GetTopicAndTag(id)
-	return info
+	return info, nil
 }
 
-func (a articleService) NewArticleAndContent(article datamodels.Article, content string) (id uint) {
-	if a.article.TitleExists(article.Title) {
-		panic(errors.Error("article_exists_err"))
+func (a articleService) SaveArticle(vo vo.ArticleParamsVO) (id uint, err error) {
+	// 验证标题是否存在
+	if a.article.TitleExists(vo.Title) {
+		var title string
+		if vo.Id > 0 {
+			info, _ := a.article.GetInfoById(vo.Id)
+			title = info.Title
+		}
+		if vo.Id < 1 || title != vo.Title {
+			err = errors.Error("article_exists_err")
+			return
+		}
 	}
-	if article.IsEncrypt == repositories.IsEncrypt {
-		// todo  此处通过公钥加密处理 conent
+	vo.Content = html.EscapeString(vo.Content)
+	vo.Intro = html.EscapeString(vo.Intro)
+
+	if vo.IsEncrypt == repositories.IsEncrypt {
+		// todo  此处通过公钥加密处理 vo.Content,vo.Intro
 	}
-	id = a.article.InsertTrans(&article, html.EscapeString(content))
+
+	article := datamodels.Article{
+		Title:     vo.Title,
+		Intro:     vo.Intro,
+		IsState:   vo.IsState,
+		IsEncrypt: vo.IsEncrypt,
+	}
+
+	if vo.Id > 0 {
+		// 更新
+		a.article.UpdateTrans(vo.Id, &article, vo.Content)
+	} else {
+		// 新增
+		vo.Id = a.article.InsertTrans(&article, vo.Content)
+	}
 	return
 }
 
-func (a articleService) UpdateArticleAndContent(id uint, article datamodels.Article, content string) {
-	// 判断避免与其他文章标题重叠
-	info, _ := a.article.GetInfoById(id)
-	if a.article.TitleExists(article.Title) &&
-		info.Title != article.Title {
-		panic(errors.Error("article_exists_err"))
-	}
-	a.article.UpdateTrans(id, &article, html.EscapeString(content))
-}
-
 func (a articleService) DeleteArticle(id uint) {
-	a.article.DeleteTrans(id)
+	a.article.SoftDelete(id)
 	caches.CCategoryRel.Id(id, repositories.CategoryTypeTag)
 	caches.CCategoryRel.Id(id, repositories.CategoryTypeTopic)
 }

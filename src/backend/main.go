@@ -12,7 +12,7 @@
 // Usage: swag init
 // @title api
 // @version 1.0
-// @description 鹏sir笔记接口
-// @host 生产：https://product.com 测试：http://test.com:9090 开发：http://localhost:9090
+// @description 鹏sir笔记接口\n环境信息：\n生产：https://product.com\n测试：http://test.com:8090\n开发：http://localhost:8090
+// @host localhost:8090
 
 package studynotes

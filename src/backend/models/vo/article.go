@@ -15,13 +15,24 @@ import "gitee.com/itsos/studynotes/datamodels"
 type (
 	// ArticleEditVO 后台文章详情
 	ArticleEditVO struct {
-		Id        uint
-		Title     string
-		Content   string
-		IsState   uint8
-		IsEncrypt uint8
-		Tags      []string
-		Topics    []string
+		Id        uint     `json:"id"`
+		Title     string   `json:"title"`      // 文章标题
+		Intro     string   `json:"intro"`      // 文章简介
+		Content   string   `json:"content"`    // 文章内容
+		IsState   uint8    `json:"is_state"`   // 状态1私有2公开
+		IsEncrypt uint8    `json:"is_encrypt"` // 是否加密1明文2密文
+		Tags      []string `json:"tags"`       // 标签ID列表
+		Topics    []string `json:"topics"`     // 专题ID列表
+	}
+
+	// ArticleParamsVO 后台文章详情
+	ArticleParamsVO struct {
+		Id        uint   `json:"id"`
+		Title     string `json:"title"`      // 文章标题
+		Intro     string `json:"intro"`      // 文章简介
+		Content   string `json:"content"`    // 文章内容
+		IsState   uint8  `json:"is_state"`   // 状态1私有2公开
+		IsEncrypt uint8  `json:"is_encrypt"` // 是否加密1明文2密文
 	}
 
 	// ArticleVO 首页文章列表vo

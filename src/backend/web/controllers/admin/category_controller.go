@@ -53,7 +53,7 @@ func (c *CategoryController) DeleteCategoryRelations() {
 // @Success 200 {integer} integer "专题id"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/category/topic [post]
-func (c *CategoryController) PostCategoryTopic() uint {
+func (c *CategoryController) PostCategoryTopic() (uint, error) {
 	name := c.Ctx.FormValue("name")
 	aid, _ := strconv.Atoi(c.Ctx.FormValue("aid"))
 	return services.SCategory.NewTopic(name, uint(aid))
@@ -69,9 +69,9 @@ func (c *CategoryController) PostCategoryTopic() uint {
 // @Success 200 {string} string "success"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/category/topic [delete]
-func (c *CategoryController) DeleteCategoryTopic() {
+func (c *CategoryController) DeleteCategoryTopic() error {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
-	services.SCategory.DeleteTopic(uint(id))
+	return services.SCategory.DeleteTopic(uint(id))
 }
 
 // PutCategoryTopic
@@ -85,10 +85,10 @@ func (c *CategoryController) DeleteCategoryTopic() {
 // @Success 200 {string} string "success"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/category/topic [put]
-func (c *CategoryController) PutCategoryTopic() {
+func (c *CategoryController) PutCategoryTopic() error {
 	name := c.Ctx.FormValue("name")
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
-	services.SCategory.UpdateTopic(uint(id), name)
+	return services.SCategory.UpdateTopic(uint(id), name)
 }
 
 // GetCategoryTopics
@@ -115,7 +115,7 @@ func (c *CategoryController) GetCategoryTopics() []datamodels.Category {
 // @Success 200 {integer} integer "专题id"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/category/tag [post]
-func (c *CategoryController) PostCategoryTag() uint {
+func (c *CategoryController) PostCategoryTag() (uint, error) {
 	name := c.Ctx.FormValue("name")
 	aid, _ := strconv.Atoi(c.Ctx.FormValue("aid"))
 	return services.SCategory.NewTag(name, uint(aid))
@@ -131,9 +131,9 @@ func (c *CategoryController) PostCategoryTag() uint {
 // @Success 200 {string} string "success"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/category/tag [delete]
-func (c *CategoryController) DeleteCategoryTag() {
+func (c *CategoryController) DeleteCategoryTag() error {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
-	services.SCategory.DeleteTag(uint(id))
+	return services.SCategory.DeleteTag(uint(id))
 }
 
 // PutCategoryTag
@@ -147,10 +147,10 @@ func (c *CategoryController) DeleteCategoryTag() {
 // @Success 200 {string} string "success"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/category/tag [put]
-func (c *CategoryController) PutCategoryTag() {
+func (c *CategoryController) PutCategoryTag() error {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
 	name := c.Ctx.FormValue("name")
-	services.SCategory.UpdateTag(uint(id), name)
+	return services.SCategory.UpdateTag(uint(id), name)
 }
 
 // GetCategoryTag

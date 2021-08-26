@@ -40,6 +40,8 @@ type ArticleRepository interface {
 	UpdateTrans(id uint, p *datamodels.Article, content string)
 	// DeleteTrans 删除文章与内容
 	DeleteTrans(id uint)
+	// SoftDelete 软删除
+	SoftDelete(id uint)
 	// TitleExists title存在性校验
 	TitleExists(title string) bool
 	// GetInfoById 通过id查询文章信息
@@ -59,6 +61,13 @@ type ArticleRepository interface {
 
 type articleRepository struct {
 	db mysql.GoLibMysql
+}
+
+func (ur *articleRepository) SoftDelete(id uint) {
+	_, err := ur.db.ID(id).Update(datamodels.Article{IsDel: IsDeleted})
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (ur *articleRepository) GetInfoById(id uint) (datamodels.Article, bool) {

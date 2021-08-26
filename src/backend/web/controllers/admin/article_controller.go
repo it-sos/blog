@@ -11,8 +11,13 @@
 package admin
 
 import (
+	"bytes"
+	"encoding/json"
+	"gitee.com/itsos/studynotes/models/vo"
+	"gitee.com/itsos/studynotes/services"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/sessions"
+	"strconv"
 	"time"
 )
 
@@ -22,18 +27,51 @@ type ArticleController struct {
 	Sess      *sessions.Session
 }
 
-// GetArticleContent
+// DeleteArticle
 // @Tags 博客后台接口
-// @Summary 文章内容
-// @Description 通过文章id获取文章详情
+// @Summary 删除文章
+// @Description 删除文章
 // @Accept json
 // @Produce json
 // @Param id query integer true "文章id"
-// @Success 200 {object} vo.ArticleVO "文章详情VO"
+// @Success 200 {string} string "http code = 200"
 // @Failure 400 {object} errors.Errors "error"
-// @Router /admin/article/content [get]
-func (c *ArticleController) GetArticleContent() interface{} {
-	//isLogin, _ := c.Sess.GetBoolean("authenticated")
-	//id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
-	return "{1}"
+// @Router /admin/article [delete]
+func (c *ArticleController) DeleteArticle() {
+	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
+	services.SArticle.DeleteArticle(uint(id))
+}
+
+// PostArticle
+// @Tags 博客后台接口
+// @Summary 保存文章
+// @Description 保存文章
+// @Accept json
+// @Produce plain
+// @Param body body vo.ArticleParamsVO true "文章相关内容"
+// @Success 200 {integer} integer "文章id"
+// @Failure 400 {object} errors.Errors "error"
+// @Router /admin/article [post]
+func (c *ArticleController) PostArticle() (uint, error) {
+	body, _ := c.Ctx.GetBody()
+	article := new(vo.ArticleParamsVO)
+	if err := json.NewDecoder(bytes.NewBuffer(body)).Decode(&article); err != nil {
+		panic(err)
+	}
+	return services.SArticle.SaveArticle(*article)
+}
+
+// GetArticle
+// @Tags 博客后台接口
+// @Summary 查询文章及相关信息
+// @Description 查询文章及相关信息
+// @Accept json
+// @Produce json
+// @Param id query integer true "文章id"
+// @Success 200 {object} vo.ArticleEditVO "文章详情VO"
+// @Failure 400 {object} errors.Errors "error"
+// @Router /admin/article [get]
+func (c *ArticleController) GetArticle() (vo.ArticleEditVO, error) {
+	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
+	return services.SArticle.GetArticleAndContent(uint(id))
 }

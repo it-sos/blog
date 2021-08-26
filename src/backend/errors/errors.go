@@ -21,13 +21,13 @@ type Errors struct {
 }
 
 var errCodeList = map[string]Errors{
-	"param_err":            {4002001, "参数异常"},
-	"article_exists_err":   {5001001, "文章标题已存在"},
-	"article_notfound_err": {5001002, "该文章不存在"},
-	"topic_exists_err":     {5002001, "专题已存在"},
-	"topic_remove_err":     {5002002, "专题移除失败"},
-	"tag_exists_err":       {5003001, "标签已存在"},
-	"tag_remove_err":       {5003002, "标签移除失败"},
+	"param_err":            {4020001, "参数异常"},
+	"article_exists_err":   {4001001, "文章标题已存在"},
+	"article_notfound_err": {4001002, "该文章不存在"},
+	"topic_exists_err":     {4002001, "专题已存在"},
+	"topic_remove_err":     {4002002, "专题移除失败"},
+	"tag_exists_err":       {4003001, "标签已存在"},
+	"tag_remove_err":       {4003002, "标签移除失败"},
 }
 
 func Error(key string) error {

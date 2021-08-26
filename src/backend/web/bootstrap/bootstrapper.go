@@ -106,7 +106,7 @@ func (b *Bootstrapper) SetupErrorHandlers() {
 		}
 
 		err := iris.Map{
-			"errCode": res.GetErrCode(),
+			"code":    res.GetErrCode(),
 			"message": res.GetMessage(),
 		}
 		ctx.ViewData("Err", err)

@@ -19,7 +19,7 @@ definitions:
         description: 0未删除；1已删除
         type: integer
       is_encrypt:
-        description: 状态1密文；2明文
+        description: 状态1明文；2密文
         type: integer
       is_state:
         description: 状态1私密；2公开
@@ -114,6 +114,56 @@ definitions:
           $ref: '#/definitions/vo.TopicVO'
         type: array
     type: object
+  vo.ArticleEditVO:
+    properties:
+      content:
+        description: 文章内容
+        type: string
+      id:
+        type: integer
+      intro:
+        description: 文章简介
+        type: string
+      is_encrypt:
+        description: 是否加密1明文2密文
+        type: integer
+      is_state:
+        description: 状态1私有2公开
+        type: integer
+      tags:
+        description: 标签ID列表
+        items:
+          type: string
+        type: array
+      title:
+        description: 文章标题
+        type: string
+      topics:
+        description: 专题ID列表
+        items:
+          type: string
+        type: array
+    type: object
+  vo.ArticleParamsVO:
+    properties:
+      content:
+        description: 文章内容
+        type: string
+      id:
+        type: integer
+      intro:
+        description: 文章简介
+        type: string
+      is_encrypt:
+        description: 是否加密1明文2密文
+        type: integer
+      is_state:
+        description: 状态1私有2公开
+        type: integer
+      title:
+        description: 文章标题
+        type: string
+    type: object
   vo.ArticleVO:
     properties:
       article:
@@ -161,18 +211,42 @@ definitions:
         description: 专题名
         type: string
     type: object
-host: 生产：https://product.com 测试：http://test.com:9090 开发：http://localhost:9090
+host: localhost:8090
 info:
   contact: {}
-  description: 鹏sir笔记接口
+  description: 鹏sir笔记接口\n环境信息：\n生产：https://product.com\n测试：http://test.com:8090\n开发：http://localhost:8090
   title: api
   version: "1.0"
 paths:
-  /admin/article/content:
+  /admin/article:
+    delete:
+      consumes:
+      - application/json
+      description: 删除文章
+      parameters:
+      - description: 文章id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: http code = 200
+          schema:
+            type: string
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 删除文章
+      tags:
+      - 博客后台接口
     get:
       consumes:
       - application/json
-      description: 通过文章id获取文章详情
+      description: 查询文章及相关信息
       parameters:
       - description: 文章id
         in: query
@@ -185,12 +259,37 @@ paths:
         "200":
           description: 文章详情VO
           schema:
-            $ref: '#/definitions/vo.ArticleVO'
+            $ref: '#/definitions/vo.ArticleEditVO'
         "400":
           description: error
           schema:
             $ref: '#/definitions/errors.Errors'
-      summary: 文章内容
+      summary: 查询文章及相关信息
+      tags:
+      - 博客后台接口
+    post:
+      consumes:
+      - application/json
+      description: 保存文章
+      parameters:
+      - description: 文章相关内容
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/vo.ArticleParamsVO'
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: 文章id
+          schema:
+            type: integer
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 保存文章
       tags:
       - 博客后台接口
   /admin/category/bindartcount:
@@ -340,7 +439,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: 标签列表VO
+          description: 标签列表
           schema:
             items:
               $ref: '#/definitions/datamodels.Category'
@@ -444,7 +543,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: 专题列表VO
+          description: 专题列表
           schema:
             items:
               $ref: '#/definitions/datamodels.Category'

@@ -32,19 +32,19 @@ type CategoryService interface {
 	// Unbind 解除绑定关系「后台」
 	Unbind(id uint, aid uint)
 	// NewTopic 新增专题「后台」
-	NewTopic(name string, aid uint) uint
+	NewTopic(name string, aid uint) (id uint, err error)
 	// DeleteTopic 删除专题「后台」
-	DeleteTopic(id uint)
+	DeleteTopic(id uint) (err error)
 	// UpdateTopic 更新专题「后台」
-	UpdateTopic(id uint, name string)
+	UpdateTopic(id uint, name string) (err error)
 	// GetTopicList 查询专题列表「后台」
 	GetTopicList() []datamodels.Category
 	// NewTag 新增标签「后台」
-	NewTag(name string, aid uint) uint
+	NewTag(name string, aid uint) (id uint, err error)
 	// DeleteTag 删除标签「后台」
-	DeleteTag(id uint)
+	DeleteTag(id uint) error
 	// UpdateTag 更新标签「后台」
-	UpdateTag(id uint, name string)
+	UpdateTag(id uint, name string) error
 	// GetTagList 查询标签列表「后台」
 	GetTagList() []datamodels.Category
 	// GetBindArtCount 查询绑定的文章条数「后台」
@@ -65,11 +65,12 @@ func (c categoryService) GetBindArtCount(id uint) uint {
 	return c.cyr.GetCountByCid(id)
 }
 
-func (c categoryService) NewTopic(name string, aid uint) uint {
+func (c categoryService) NewTopic(name string, aid uint) (id uint, err error) {
 	if c.cy.ExistName(name, repositories.CategoryTypeTopic) {
-		panic(errors.Error("topic_exists_err"))
+		err = errors.Error("topic_exists_err")
+		return
 	}
-	id := c.cy.Insert(&datamodels.Category{
+	id = c.cy.Insert(&datamodels.Category{
 		Name: name,
 		Type: repositories.CategoryTypeTopic,
 	})
@@ -79,12 +80,12 @@ func (c categoryService) NewTopic(name string, aid uint) uint {
 		Type: repositories.CategoryTypeTopic,
 	})
 	caches.CCategoryRel.Id(aid, repositories.CategoryTypeTopic).Add(id)
-	return id
+	return
 }
 
-func (c categoryService) DeleteTopic(id uint) {
+func (c categoryService) DeleteTopic(id uint) (err error) {
 	if !c.cy.Delete(id) {
-		panic(errors.Error("topic_remove_err"))
+		return errors.Error("topic_remove_err")
 	}
 	// 移除相关cache
 	caches.CCategory.Id(id).Remove()
@@ -94,28 +95,31 @@ func (c categoryService) DeleteTopic(id uint) {
 	}
 	// 删除绑定关系
 	c.cyr.DeleteByCid(id)
+	return
 }
 
-func (c categoryService) UpdateTopic(id uint, name string) {
+func (c categoryService) UpdateTopic(id uint, name string) (err error) {
 	if c.cy.ExistName(name, repositories.CategoryTypeTopic) {
-		panic(errors.Error("topic_exists_err"))
+		return errors.Error("topic_exists_err")
 	}
 	if c.cy.Update(id, &datamodels.Category{
 		Name: name,
 	}) {
 		caches.CCategory.Id(id).Set(name)
 	}
+	return
 }
 
 func (c categoryService) GetTopicList() []datamodels.Category {
 	return c.cy.SelectManyByType(repositories.CategoryTypeTopic)
 }
 
-func (c categoryService) NewTag(name string, aid uint) uint {
+func (c categoryService) NewTag(name string, aid uint) (id uint, err error) {
 	if c.cy.ExistName(name, repositories.CategoryTypeTag) {
-		panic(errors.Error("topic_exists_err"))
+		err = errors.Error("topic_exists_err")
+		return
 	}
-	id := c.cy.Insert(&datamodels.Category{
+	id = c.cy.Insert(&datamodels.Category{
 		Name: name,
 		Type: repositories.CategoryTypeTag,
 	})
@@ -125,12 +129,13 @@ func (c categoryService) NewTag(name string, aid uint) uint {
 		Type: repositories.CategoryTypeTag,
 	})
 	caches.CCategoryRel.Id(aid, repositories.CategoryTypeTag).Add(id)
-	return id
+	return
 }
 
-func (c categoryService) DeleteTag(id uint) {
+func (c categoryService) DeleteTag(id uint) (err error) {
 	if !c.cy.Delete(id) {
-		panic(errors.Error("tag_remove_err"))
+		err = errors.Error("tag_remove_err")
+		return
 	}
 	// 移除与之相关的 cache
 	caches.CCategory.Id(id).Remove()
@@ -140,17 +145,20 @@ func (c categoryService) DeleteTag(id uint) {
 	}
 	// 删除绑定关系
 	c.cyr.DeleteByCid(id)
+	return
 }
 
-func (c categoryService) UpdateTag(id uint, name string) {
+func (c categoryService) UpdateTag(id uint, name string) (err error) {
 	if c.cy.ExistName(name, repositories.CategoryTypeTag) {
-		panic(errors.Error("tag_exists_err"))
+		err = errors.Error("tag_exists_err")
+		return
 	}
 	if c.cy.Update(id, &datamodels.Category{
 		Name: name,
 	}) {
 		caches.CCategory.Id(id).Set(name)
 	}
+	return
 }
 
 func (c categoryService) GetTagList() []datamodels.Category {
