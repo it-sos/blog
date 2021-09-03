@@ -72,7 +72,7 @@ type ArticleService interface {
 	// SaveArticle 保存文章「后台」
 	SaveArticle(vo vo.ArticleParamsVO) (id uint, err error)
 	// DeleteArticle 删除文章&内容「后台」
-	DeleteArticle(id uint)
+	DeleteArticle(id uint) error
 	// GetArticleAndContent 查询文章及相关信息「后台」
 	GetArticleAndContent(id uint) (art vo.ArticleEditVO, err error)
 }
@@ -124,7 +124,7 @@ func (a articleService) SaveArticle(vo vo.ArticleParamsVO) (id uint, err error) 
 			info, _ := a.article.GetInfoById(vo.Id)
 			title = info.Title
 		}
-		if vo.Id < 1 || title != vo.Title {
+		if vo.Id < 1 || title != "" && title != vo.Title {
 			err = errors.Error("article_exists_err")
 			return
 		}
@@ -150,13 +150,18 @@ func (a articleService) SaveArticle(vo vo.ArticleParamsVO) (id uint, err error) 
 		// 新增
 		vo.Id = a.article.InsertTrans(&article, vo.Content)
 	}
+	id = vo.Id
 	return
 }
 
-func (a articleService) DeleteArticle(id uint) {
-	a.article.SoftDelete(id)
+func (a articleService) DeleteArticle(id uint) (err error) {
+	if !a.article.SoftDelete(id) {
+		err = errors.Error("article_remove_err")
+		return
+	}
 	caches.CCategoryRel.Id(id, repositories.CategoryTypeTag)
 	caches.CCategoryRel.Id(id, repositories.CategoryTypeTopic)
+	return nil
 }
 
 func (a articleService) GetRank(isLogin bool) []vo.ArticleAccessTimesVO {

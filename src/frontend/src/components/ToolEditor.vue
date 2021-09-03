@@ -5,9 +5,9 @@
         <div class="card-header menu-bar-user">
           <menu-bar class="" :editor="editor"/>
           <el-tooltip class="item" effect="dark" :content="saveStatus.message" placement="left">
-            <el-icon :class="saveStatus.isLoading" :color="saveStatus.color" :size="26">
+            <el-icon :class="saveStatus.icon" :color="saveStatus.color" :size="26">
               <loading v-if="saveStatus.unsaved"/>
-              <circle-check-filled v-else/>
+              <!--              <circle-check-filled v-else/>-->
             </el-icon>
           </el-tooltip>
         </div>
@@ -34,11 +34,12 @@ import Subscript from '@tiptap/extension-subscript'
 import Superscript from '@tiptap/extension-superscript'
 import CodeBlockComponent from './editor/CodeBlockComponent.vue'
 import MenuBar from './editor/MenuBar.vue'
-import {CircleCheckFilled, Loading} from '@element-plus/icons'
+import {Loading} from '@element-plus/icons'
 
 import lowlight from 'lowlight'
 import {defineComponent, onUnmounted, reactive, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
+import axios from "axios";
 
 const CodeBlock = CodeBlockLowlight
     .extend({
@@ -55,54 +56,98 @@ export default defineComponent({
     MenuBar,
     EditorContent,
     Loading,
-    CircleCheckFilled,
+    // CircleCheckFilled,
   },
 
   setup() {
     const state = reactive({
       saveStatus: {
-        isLoading: "",
+        icon: "el-icon-success",
         message: "已自动保存",
         color: "#67C23A",
         unsaved: false,
-      }
+      },
+      id: 0,
+      isState: 1,
+      isEncrypt: 2,
     });
 
     const stateUnsaved = () => {
       state.saveStatus = {
-        isLoading: "is-loading",
+        icon: "is-loading",
         message: "停止编辑 5s 后将自动保存",
-        color: "#F56C6C",
+        color: "#67C23A",
         unsaved: true,
       }
     };
 
     const stateSaved = () => {
       state.saveStatus = {
-        isLoading: "",
+        icon: "el-icon-success",
         message: "已自动保存",
         color: "#67C23A",
         unsaved: false,
       }
     };
 
+    const stateSaveFail = () => {
+      state.saveStatus = {
+        icon: "el-icon-error",
+        message: "保存失败",
+        color: "#F56C6C",
+        unsaved: false,
+      }
+    };
+
     const save = () => {
       stateUnsaved()
-      // 保存成功后执行
-      stateSaved()
       let json = editor.getJSON()
-      if (json.content[0].type == 'heading' && json.content[0].attrs.level == 2) {
-        let title: string = json.content[0].content[0].text
-        let content: string = editor.getHTML()
-        console.log(title, content.substring(content.indexOf("</h2>") + 5))
-      } else {
+      if (json.content[0].type != 'heading' || json.content[0].attrs.level != 2) {
         ElMessage({
           duration: 0,
           showClose: true,
           message: '请设置h2开头的标题名称，可通过点击【H】图标进行设置！',
           type: 'warning'
         });
+        stateSaveFail()
+        return
       }
+      let title: string = json.content[0].content[0].text
+      let content: string = editor.getHTML()
+      content.substring(content.indexOf("</h2>") + 5)
+      let intro: string = ""
+      if (typeof json.content[1].content != "undefined" &&
+          json.content[1].content[0].text != "") {
+        intro = json.content[1].content[0].text
+      }
+
+      console.log("saveing...")
+      axios('/admin/article', {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        method: "post",
+        responseType: "json",
+        data: {
+          "id": state.id,
+          "title": title,
+          "intro": intro,
+          "content": content,
+          "is_encrypt": state.isEncrypt,
+          "is_state": state.isState,
+        }
+      }).then((response: any) => {
+        state.id = response.data
+        stateSaved()
+      }).catch((error: any) => {
+        stateSaveFail()
+        ElMessage({
+          duration: 3000,
+          showClose: true,
+          message: error.response.data.message,
+          type: 'error'
+        });
+      })
     }
 
     let extensions: Extensions = [
@@ -126,14 +171,14 @@ export default defineComponent({
     let timer: any = null;
     let editor: any = new Editor({
       injectCSS: true,
-      content: '<h2>这是一个标题</h2>',
+      content: '<h2>此行为标题，固定样式为H2</h2>\r<p>此行为简介，可自定义文本格式</p>',
       extensions: extensions,
       onUpdate() {
         stateUnsaved()
         clearTimeout(timer)
         timer = setTimeout(() => {
           save()
-        }, 5000)
+        }, 3000)
       },
     })
 
@@ -144,7 +189,6 @@ export default defineComponent({
     return {
       ...toRefs(state),
       editor,
-      save,
     }
   },
 })

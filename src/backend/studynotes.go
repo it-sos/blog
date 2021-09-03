@@ -20,7 +20,7 @@ import (
 	"os"
 )
 
-func newApp() *bootstrap.Bootstrapper {
+func NewApp() *bootstrap.Bootstrapper {
 	app := bootstrap.New("studynotes", "peng.yu@qjfu.cn")
 	app.Bootstrap()
 	app.Configure(identity.Configure, routes.Configure)
@@ -28,14 +28,14 @@ func newApp() *bootstrap.Bootstrapper {
 }
 
 func Listen() {
-	newApp().Listen(":"+config.C.GetPort(), iris.WithOptimizations)
+	NewApp().Listen(":"+config.C.GetPort(), iris.WithOptimizations)
 }
 
 // ListenSock socket 方式
 // socat -d -d TCP-LISTEN:8080,fork,bind=127.0.0.1 UNIX:/tmp/studynote.sock
 // curl http://localhost:8080
 func ListenSock() {
-	app := newApp()
+	app := NewApp()
 	socketFile := config.C.GetSock()
 	if errOs := os.Remove(socketFile); errOs != nil && !os.IsNotExist(errOs) {
 		app.Logger().Fatal(errOs)

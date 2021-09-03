@@ -97,7 +97,7 @@ export default defineComponent({
       this.loading = true
       this.page++
 
-      var keyword = this.$route.params.keyword
+      let keyword = this.$route.params.keyword;
       if (keyword) {
         keyword = decodeURIComponent(keyword.toString())
       }

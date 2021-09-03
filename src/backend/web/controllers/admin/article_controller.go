@@ -52,11 +52,11 @@ func (c *ArticleController) DeleteArticle() {
 // @Success 200 {integer} integer "文章id"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/article [post]
-func (c *ArticleController) PostArticle() (uint, error) {
+func (c *ArticleController) PostArticle() (id uint, err error) {
 	body, _ := c.Ctx.GetBody()
 	article := new(vo.ArticleParamsVO)
-	if err := json.NewDecoder(bytes.NewBuffer(body)).Decode(&article); err != nil {
-		panic(err)
+	if err = json.NewDecoder(bytes.NewBuffer(body)).Decode(&article); err != nil {
+		return
 	}
 	return services.SArticle.SaveArticle(*article)
 }
