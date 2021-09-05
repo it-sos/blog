@@ -61,7 +61,7 @@
 <script lang="ts">
 import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
-import {defineComponent, provide, reactive, ref, toRefs} from 'vue'
+import {defineComponent, provide, reactive, ref, toRefs, watchEffect} from 'vue'
 import {ElMessage} from 'element-plus'
 
 export default defineComponent({
@@ -81,6 +81,10 @@ export default defineComponent({
     const publishStatus = reactive({
       publish: false,
       publishLoading: false,
+    })
+
+    watchEffect(() => {
+      // publishStatus.publish = props.publish
     })
 
     const encryptStatus = reactive({

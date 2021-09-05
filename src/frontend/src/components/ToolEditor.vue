@@ -7,7 +7,6 @@
           <el-tooltip class="item" effect="dark" :content="saveStatus.message" placement="left">
             <el-icon :class="saveStatus.icon" :color="saveStatus.color" :size="26">
               <loading v-if="saveStatus.unsaved"/>
-              <!--              <circle-check-filled v-else/>-->
             </el-icon>
           </el-tooltip>
         </div>
@@ -34,12 +33,13 @@ import Subscript from '@tiptap/extension-subscript'
 import Superscript from '@tiptap/extension-superscript'
 import CodeBlockComponent from './editor/CodeBlockComponent.vue'
 import MenuBar from './editor/MenuBar.vue'
-import {Loading} from '@element-plus/icons'
 
 import lowlight from 'lowlight'
-import {defineComponent, onUnmounted, reactive, toRefs} from 'vue'
+import {defineComponent, onMounted, onUnmounted, reactive, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
 import axios from "axios";
+import {router} from '@/routes'
+import {Loading} from '@element-plus/icons'
 
 const CodeBlock = CodeBlockLowlight
     .extend({
@@ -53,10 +53,9 @@ const CodeBlock = CodeBlockLowlight
 export default defineComponent({
 
   components: {
+    Loading,
     MenuBar,
     EditorContent,
-    Loading,
-    // CircleCheckFilled,
   },
 
   setup() {
@@ -90,38 +89,38 @@ export default defineComponent({
       }
     };
 
-    const stateSaveFail = () => {
+    const stateSaveFail = (message?: string, type: 'success' | 'warning' | 'info' | 'error' | '' = "error", duration: number = 3000) => {
       state.saveStatus = {
         icon: "el-icon-error",
-        message: "保存失败",
+        message: "保存失败." + message,
         color: "#F56C6C",
         unsaved: false,
       }
+
+      ElMessage({
+        duration: duration,
+        showClose: true,
+        message: message,
+        type: type,
+      });
     };
 
     const save = () => {
       stateUnsaved()
       let json = editor.getJSON()
       if (json.content[0].type != 'heading' || json.content[0].attrs.level != 2) {
-        ElMessage({
-          duration: 0,
-          showClose: true,
-          message: '请设置h2开头的标题名称，可通过点击【H】图标进行设置！',
-          type: 'warning'
-        });
-        stateSaveFail()
+        stateSaveFail("请设置h2开头的标题名称，可通过点击【H】图标进行设置！", 'warning', 0)
         return
       }
       let title: string = json.content[0].content[0].text
-      let content: string = editor.getHTML()
-      content.substring(content.indexOf("</h2>") + 5)
+      let contents: string = editor.getHTML()
+      let content: string = contents.substring(contents.indexOf("</h2>") + 5)
       let intro: string = ""
       if (typeof json.content[1].content != "undefined" &&
           json.content[1].content[0].text != "") {
         intro = json.content[1].content[0].text
       }
 
-      console.log("saveing...")
       axios('/admin/article', {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -138,15 +137,12 @@ export default defineComponent({
         }
       }).then((response: any) => {
         state.id = response.data
+        if (typeof router.currentRoute.value.params.id == "undefined") {
+           router.push('/e/'+state.id)
+        }
         stateSaved()
       }).catch((error: any) => {
-        stateSaveFail()
-        ElMessage({
-          duration: 3000,
-          showClose: true,
-          message: error.response.data.message,
-          type: 'error'
-        });
+        stateSaveFail(error.response.data.message)
       })
     }
 
@@ -167,6 +163,25 @@ export default defineComponent({
       Highlight,
       Typography,
     ];
+
+    onMounted(() => {
+      if (typeof router.currentRoute.value.params.id != "undefined") {
+        state.id = parseInt(router.currentRoute.value.params.id.toString())
+      }
+      if (state.id > 0) {
+        axios('/admin/article', {
+          method: "get",
+          responseType: "json",
+          params: {
+            "id": state.id,
+          }
+        }).then((response: any) => {
+          editor.commands.setContent(`<h2>${response.data.title}</h2>\n${response.data.content}`)
+        }).catch((error: any) => {
+          stateSaveFail(error.response.data.message)
+        })
+      }
+    })
 
     let timer: any = null;
     let editor: any = new Editor({

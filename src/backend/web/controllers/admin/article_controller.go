@@ -72,6 +72,6 @@ func (c *ArticleController) PostArticle() (id uint, err error) {
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/article [get]
 func (c *ArticleController) GetArticle() (vo.ArticleEditVO, error) {
-	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
+	id, _ := c.Ctx.URLParamInt("id")
 	return services.SArticle.GetArticleAndContent(uint(id))
 }
