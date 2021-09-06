@@ -35,7 +35,7 @@ import CodeBlockComponent from './editor/CodeBlockComponent.vue'
 import MenuBar from './editor/MenuBar.vue'
 
 import lowlight from 'lowlight'
-import {defineComponent, onMounted, onUnmounted, reactive, toRefs} from 'vue'
+import {defineComponent, onMounted, onUnmounted, provide, reactive, ref, toRefs, watch} from 'vue'
 import {ElMessage} from 'element-plus'
 import axios from "axios";
 import {router} from '@/routes'
@@ -59,6 +59,22 @@ export default defineComponent({
   },
 
   setup() {
+
+    const publishStatus = reactive({
+      publish: ref(false),
+      publishLoading: ref(false),
+    })
+    const encryptStatus = reactive({
+      encrypt: ref(false),
+      encryptLoading: ref(false),
+    })
+    provide('publishStatus', publishStatus)
+    provide('encryptStatus', encryptStatus)
+
+    watch([publishStatus, encryptStatus], () => {
+      save()
+    })
+
     const state = reactive({
       saveStatus: {
         icon: "el-icon-success",
@@ -67,8 +83,6 @@ export default defineComponent({
         unsaved: false,
       },
       id: 0,
-      isState: 1,
-      isEncrypt: 2,
     });
 
     const stateUnsaved = () => {
@@ -132,13 +146,13 @@ export default defineComponent({
           "title": title,
           "intro": intro,
           "content": content,
-          "is_encrypt": state.isEncrypt,
-          "is_state": state.isState,
+          "is_encrypt": encryptStatus.encrypt ? 2 : 1,
+          "is_state": publishStatus.publish ? 1 : 2,
         }
       }).then((response: any) => {
         state.id = response.data
         if (typeof router.currentRoute.value.params.id == "undefined") {
-           router.push('/e/'+state.id)
+          router.push('/e/' + state.id)
         }
         stateSaved()
       }).catch((error: any) => {
@@ -177,6 +191,8 @@ export default defineComponent({
           }
         }).then((response: any) => {
           editor.commands.setContent(`<h2>${response.data.title}</h2>\n${response.data.content}`)
+          publishStatus.publish = response.data.is_state == 1
+          encryptStatus.encrypt = response.data.is_encrypt == 2
         }).catch((error: any) => {
           stateSaveFail(error.response.data.message)
         })
@@ -204,6 +220,8 @@ export default defineComponent({
     return {
       ...toRefs(state),
       editor,
+      publishStatus,
+      encryptStatus,
     }
   },
 })

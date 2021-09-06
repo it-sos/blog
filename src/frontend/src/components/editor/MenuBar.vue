@@ -2,21 +2,21 @@
   <div>
     <right-menu @trigger="rightMenuTrigger"/>
     <template v-for="(item, index) in items">
-      <div class="divider" v-if="item.type === 'divider'" :key="index" />
+      <div class="divider" v-if="item.type === 'divider'" :key="index"/>
       <menu-item :key="item.title" v-else v-bind="item"/>
     </template>
     <div class="menu-opt">
       <el-switch
           class="menu-opt-item"
-          v-model="publish"
+          v-model="publishStatus.publish"
           active-text="公开"
-          :loading="publishLoading"
+          :loading="publishStatus.publishLoading"
           :beforeChange="publishBeforeChange"></el-switch>
       <el-switch
           class="menu-opt-item"
-          v-model="encrypt"
+          v-model="encryptStatus.encrypt"
           active-text="加密"
-          :loading="encryptLoading"
+          :loading="encryptStatus.encryptLoading"
           :beforeChange="encryptBeforeChange"></el-switch>
       <el-select
           @change="changeTopic"
@@ -61,7 +61,7 @@
 <script lang="ts">
 import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
-import {defineComponent, provide, reactive, ref, toRefs, watchEffect} from 'vue'
+import {defineComponent, inject, provide, reactive, ref, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
 
 export default defineComponent({
@@ -78,39 +78,36 @@ export default defineComponent({
 
   setup() {
 
-    const publishStatus = reactive({
-      publish: false,
-      publishLoading: false,
+    let publishStatus = reactive({
+      publish: ref(false),
+      publishLoading: ref(false),
     })
-
-    watchEffect(() => {
-      // publishStatus.publish = props.publish
+    let encryptStatus = reactive({
+      encrypt: ref(false),
+      encryptLoading: ref(false),
     })
-
-    const encryptStatus = reactive({
-      encrypt: false,
-      encryptLoading: false,
-    })
+    publishStatus = inject('publishStatus', publishStatus)
+    encryptStatus = inject('encryptStatus', encryptStatus)
 
     const publishBeforeChange = () => {
       publishStatus.publishLoading = true
       return new Promise(resolve => {
-        setTimeout(() => {
-          publishStatus.publishLoading = false
-          ElMessage.success('切换成功')
-          return resolve(true)
-        }, 1000)
+        // setTimeout(() => {
+        publishStatus.publishLoading = false
+        ElMessage.success('切换成功')
+        return resolve(true)
+        // }, 500)
       })
     }
 
     const encryptBeforeChange = () => {
       encryptStatus.encryptLoading = true
       return new Promise(resolve => {
-        setTimeout(() => {
-          encryptStatus.encryptLoading = false
-          ElMessage.success('切换成功')
-          return resolve(true)
-        }, 1000)
+        // setTimeout(() => {
+        encryptStatus.encryptLoading = false
+        ElMessage.success('切换成功')
+        return resolve(true)
+        // }, 500)
       })
     }
 
@@ -125,8 +122,8 @@ export default defineComponent({
       }],
       tagValue: [],
       tagOptions: [{
-        lable:"php",
-        value:"php"
+        lable: "php",
+        value: "php"
       }],
     })
 
@@ -188,8 +185,8 @@ export default defineComponent({
     return {
       changeTag,
       changeTopic,
-      ...toRefs(publishStatus),
-      ...toRefs(encryptStatus),
+      publishStatus,
+      encryptStatus,
       ...toRefs(selectStatus),
       publishBeforeChange,
       encryptBeforeChange,
@@ -371,8 +368,10 @@ export default defineComponent({
 .menu-opt {
   padding-top: 0.5rem;
   line-height: 2rem;
-  .menu-opt-item {
-    margin-right: 12px;
-  }
+
+.menu-opt-item {
+  margin-right: 12px;
+}
+
 }
 </style>
