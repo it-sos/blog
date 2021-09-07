@@ -264,7 +264,7 @@ var doc = `{
                 }
             },
             "post": {
-                "description": "新增标签",
+                "description": "新增标签并绑定文章",
                 "consumes": [
                     "application/json"
                 ],
@@ -274,7 +274,7 @@ var doc = `{
                 "tags": [
                     "博客后台接口"
                 ],
-                "summary": "新增标签",
+                "summary": "新增标签并绑定文章",
                 "parameters": [
                     {
                         "type": "integer",
@@ -420,7 +420,7 @@ var doc = `{
                 }
             },
             "post": {
-                "description": "新增专题",
+                "description": "新增专题并绑定文章",
                 "consumes": [
                     "application/json"
                 ],
@@ -430,7 +430,7 @@ var doc = `{
                 "tags": [
                     "博客后台接口"
                 ],
-                "summary": "新增专题",
+                "summary": "新增专题并绑定文章",
                 "parameters": [
                     {
                         "type": "integer",
@@ -740,10 +740,6 @@ var doc = `{
                 "info": {
                     "description": "简介",
                     "type": "string"
-                },
-                "is_del": {
-                    "description": "0未删除；1已删除",
-                    "type": "integer"
                 },
                 "name": {
                     "description": "专题/标签名称",

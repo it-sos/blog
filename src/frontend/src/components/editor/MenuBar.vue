@@ -8,15 +8,15 @@
     <div class="menu-opt">
       <el-switch
           class="menu-opt-item"
-          v-model="publishStatus.publish"
+          v-model="switchStatus.publish"
           active-text="公开"
-          :loading="publishStatus.publishLoading"
+          :loading="switchLoading.publishLoading"
           :beforeChange="publishBeforeChange"></el-switch>
       <el-switch
           class="menu-opt-item"
-          v-model="encryptStatus.encrypt"
+          v-model="switchStatus.encrypt"
           active-text="加密"
-          :loading="encryptStatus.encryptLoading"
+          :loading="switchLoading.encryptLoading"
           :beforeChange="encryptBeforeChange"></el-switch>
       <el-select
           @change="changeTopic"
@@ -78,22 +78,21 @@ export default defineComponent({
 
   setup() {
 
-    let publishStatus = reactive({
-      publish: ref(false),
-      publishLoading: ref(false),
-    })
-    let encryptStatus = reactive({
+    let switchStatus = reactive({
       encrypt: ref(false),
+      publish: ref(false),
+    })
+    let switchLoading  = reactive({
+      publishLoading: ref(false),
       encryptLoading: ref(false),
     })
-    publishStatus = inject('publishStatus', publishStatus)
-    encryptStatus = inject('encryptStatus', encryptStatus)
+    switchStatus = inject('switch-status', switchStatus)
 
     const publishBeforeChange = () => {
-      publishStatus.publishLoading = true
+      switchLoading.publishLoading = true
       return new Promise(resolve => {
         // setTimeout(() => {
-        publishStatus.publishLoading = false
+        switchLoading.publishLoading = false
         ElMessage.success('切换成功')
         return resolve(true)
         // }, 500)
@@ -101,31 +100,34 @@ export default defineComponent({
     }
 
     const encryptBeforeChange = () => {
-      encryptStatus.encryptLoading = true
+      switchLoading.encryptLoading = true
       return new Promise(resolve => {
         // setTimeout(() => {
-        encryptStatus.encryptLoading = false
+        switchLoading.encryptLoading = false
         ElMessage.success('切换成功')
         return resolve(true)
         // }, 500)
       })
     }
 
-    const selectStatus = reactive({
-      topicValue: ['选项1'],
-      topicOptions: [{
+    let selectStatus = reactive({
+      topicValue: ref([]),
+      topicOptions: ref([{
         value: '选项1',
         label: 'mac 下以 root 角色开机启动执行脚本或命令'
       }, {
         value: '选项5',
         label: '北京烤鸭'
-      }],
-      tagValue: [],
-      tagOptions: [{
+      }]),
+      tagValue: ref([]),
+      tagOptions: ref([{
         lable: "php",
         value: "php"
-      }],
+      }]),
     })
+
+    selectStatus.topicValue = inject("topic-value", selectStatus.topicValue)
+    selectStatus.tagValue = inject("tag-value", selectStatus.tagValue)
 
     let rightMenu = reactive({
       id: ref(0),
@@ -185,8 +187,8 @@ export default defineComponent({
     return {
       changeTag,
       changeTopic,
-      publishStatus,
-      encryptStatus,
+      switchStatus,
+      switchLoading,
       ...toRefs(selectStatus),
       publishBeforeChange,
       encryptBeforeChange,

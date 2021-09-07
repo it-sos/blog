@@ -59,9 +59,6 @@ definitions:
       info:
         description: 简介
         type: string
-      is_del:
-        description: 0未删除；1已删除
-        type: integer
       name:
         description: 专题/标签名称
         type: string
@@ -375,7 +372,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: 新增标签
+      description: 新增标签并绑定文章
       parameters:
       - description: 标签名称
         in: query
@@ -398,7 +395,7 @@ paths:
           description: error
           schema:
             $ref: '#/definitions/errors.Errors'
-      summary: 新增标签
+      summary: 新增标签并绑定文章
       tags:
       - 博客后台接口
     put:
@@ -479,7 +476,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: 新增专题
+      description: 新增专题并绑定文章
       parameters:
       - description: 专题名称
         in: query
@@ -502,7 +499,7 @@ paths:
           description: error
           schema:
             $ref: '#/definitions/errors.Errors'
-      summary: 新增专题
+      summary: 新增专题并绑定文章
       tags:
       - 博客后台接口
     put:

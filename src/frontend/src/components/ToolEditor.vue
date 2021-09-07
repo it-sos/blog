@@ -60,18 +60,13 @@ export default defineComponent({
 
   setup() {
 
-    const publishStatus = reactive({
+    const switchStatus = reactive({
       publish: ref(false),
-      publishLoading: ref(false),
-    })
-    const encryptStatus = reactive({
       encrypt: ref(false),
-      encryptLoading: ref(false),
     })
-    provide('publishStatus', publishStatus)
-    provide('encryptStatus', encryptStatus)
+    provide('switch-status', switchStatus)
 
-    watch([publishStatus, encryptStatus], () => {
+    watch([switchStatus], () => {
       save()
     })
 
@@ -146,8 +141,8 @@ export default defineComponent({
           "title": title,
           "intro": intro,
           "content": content,
-          "is_encrypt": encryptStatus.encrypt ? 2 : 1,
-          "is_state": publishStatus.publish ? 1 : 2,
+          "is_encrypt": switchStatus.encrypt ? 2 : 1,
+          "is_state": switchStatus.publish ? 2 : 1,
         }
       }).then((response: any) => {
         state.id = response.data
@@ -191,8 +186,8 @@ export default defineComponent({
           }
         }).then((response: any) => {
           editor.commands.setContent(`<h2>${response.data.title}</h2>\n${response.data.content}`)
-          publishStatus.publish = response.data.is_state == 1
-          encryptStatus.encrypt = response.data.is_encrypt == 2
+          switchStatus.publish = response.data.is_state == 2
+          switchStatus.encrypt = response.data.is_encrypt == 2
         }).catch((error: any) => {
           stateSaveFail(error.response.data.message)
         })
@@ -220,8 +215,7 @@ export default defineComponent({
     return {
       ...toRefs(state),
       editor,
-      publishStatus,
-      encryptStatus,
+      switchStatus,
     }
   },
 })

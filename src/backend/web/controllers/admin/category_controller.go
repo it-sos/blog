@@ -44,8 +44,8 @@ func (c *CategoryController) DeleteCategoryRelations() {
 
 // PostCategoryTopic
 // @Tags 博客后台接口
-// @Summary 新增专题
-// @Description 新增专题
+// @Summary 新增专题并绑定文章
+// @Description 新增专题并绑定文章
 // @Accept json
 // @Produce json
 // @Param name query integer true "专题名称"
@@ -106,8 +106,8 @@ func (c *CategoryController) GetCategoryTopics() []datamodels.Category {
 
 // PostCategoryTag
 // @Tags 博客后台接口
-// @Summary 新增标签
-// @Description 新增标签
+// @Summary 新增标签并绑定文章
+// @Description 新增标签并绑定文章
 // @Accept json
 // @Produce plain
 // @Param name query integer true "标签名称"
