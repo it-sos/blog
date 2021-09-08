@@ -130,7 +130,7 @@ definitions:
       tags:
         description: 标签ID列表
         items:
-          type: string
+          type: integer
         type: array
       title:
         description: 文章标题
@@ -138,7 +138,7 @@ definitions:
       topics:
         description: 专题ID列表
         items:
-          type: string
+          type: integer
         type: array
     type: object
   vo.ArticleParamsVO:
@@ -314,6 +314,66 @@ paths:
       summary: 查询绑定的文章条数
       tags:
       - 博客后台接口
+  /admin/category/bindtag:
+    post:
+      consumes:
+      - application/json
+      description: 绑定标签与文章
+      parameters:
+      - description: 专题id
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: 文章id
+        in: query
+        name: aid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 绑定标签与文章
+      tags:
+      - 博客后台接口
+  /admin/category/bindtopic:
+    post:
+      consumes:
+      - application/json
+      description: 绑定专题与文章
+      parameters:
+      - description: 专题id
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: 文章id
+        in: query
+        name: aid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 绑定专题与文章
+      tags:
+      - 博客后台接口
   /admin/category/relations:
     delete:
       consumes:
@@ -372,7 +432,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: 新增标签并绑定文章
+      description: 新增标签
       parameters:
       - description: 标签名称
         in: query
@@ -395,7 +455,7 @@ paths:
           description: error
           schema:
             $ref: '#/definitions/errors.Errors'
-      summary: 新增标签并绑定文章
+      summary: 新增标签
       tags:
       - 博客后台接口
     put:
@@ -476,13 +536,13 @@ paths:
     post:
       consumes:
       - application/json
-      description: 新增专题并绑定文章
+      description: 新增专题
       parameters:
       - description: 专题名称
         in: query
         name: name
         required: true
-        type: integer
+        type: string
       - description: 文章id
         in: query
         name: aid
@@ -499,7 +559,7 @@ paths:
           description: error
           schema:
             $ref: '#/definitions/errors.Errors'
-      summary: 新增专题并绑定文章
+      summary: 新增专题
       tags:
       - 博客后台接口
     put:
@@ -511,7 +571,7 @@ paths:
         in: query
         name: name
         required: true
-        type: integer
+        type: string
       - description: 专题id
         in: query
         name: id

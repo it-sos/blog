@@ -66,6 +66,12 @@ export default defineComponent({
     })
     provide('switch-status', switchStatus)
 
+    const selectValue = reactive({
+      topic: [],
+      tag: [],
+    })
+    provide('select-value', selectValue)
+
     watch([switchStatus], () => {
       save()
     })
@@ -188,6 +194,8 @@ export default defineComponent({
           editor.commands.setContent(`<h2>${response.data.title}</h2>\n${response.data.content}`)
           switchStatus.publish = response.data.is_state == 2
           switchStatus.encrypt = response.data.is_encrypt == 2
+          selectValue.topic = response.data.topics
+          selectValue.tag = response.data.tags
         }).catch((error: any) => {
           stateSaveFail(error.response.data.message)
         })
@@ -215,7 +223,6 @@ export default defineComponent({
     return {
       ...toRefs(state),
       editor,
-      switchStatus,
     }
   },
 })

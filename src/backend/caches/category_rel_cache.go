@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"gitee.com/itsos/golibs/v2/db/redis"
 	"golang.org/x/net/context"
+	"strconv"
 )
 
 type CategoryRel interface {
@@ -23,7 +24,7 @@ type CategoryRel interface {
 type categoryRel struct{}
 
 type CategoryRelCmd interface {
-	Get() []string
+	Get() []uint
 	Add(v uint)
 	Exists() bool
 	// Remove 移除key下成员v
@@ -49,8 +50,16 @@ func (a *categoryRelCmd) Exists() bool {
 	return a.db.Exists(context.Background(), a.aidType).Val() > 0
 }
 
-func (a *categoryRelCmd) Get() []string {
-	return a.db.SMembers(context.Background(), a.aidType).Val()
+func (a *categoryRelCmd) Get() []uint {
+	t := make([]uint, 0)
+	s := a.db.SMembers(context.Background(), a.aidType).Val()
+	if len(s) > 0 {
+		for _, v := range s {
+			i, _ := strconv.Atoi(v)
+			t = append(t, uint(i))
+		}
+	}
+	return t
 }
 
 func (a *categoryRelCmd) Add(v uint) {

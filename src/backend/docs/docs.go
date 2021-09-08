@@ -174,6 +174,96 @@ var doc = `{
                 }
             }
         },
+        "/admin/category/bindtag": {
+            "post": {
+                "description": "绑定标签与文章",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "绑定标签与文章",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "专题id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "文章id",
+                        "name": "aid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/category/bindtopic": {
+            "post": {
+                "description": "绑定专题与文章",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "绑定专题与文章",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "专题id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "文章id",
+                        "name": "aid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/category/relations": {
             "delete": {
                 "description": "通过文章id和分类id解除绑定关系",
@@ -264,7 +354,7 @@ var doc = `{
                 }
             },
             "post": {
-                "description": "新增标签并绑定文章",
+                "description": "新增标签",
                 "consumes": [
                     "application/json"
                 ],
@@ -274,7 +364,7 @@ var doc = `{
                 "tags": [
                     "博客后台接口"
                 ],
-                "summary": "新增标签并绑定文章",
+                "summary": "新增标签",
                 "parameters": [
                     {
                         "type": "integer",
@@ -390,7 +480,7 @@ var doc = `{
                 "summary": "更新专题",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "专题名称",
                         "name": "name",
                         "in": "query",
@@ -420,7 +510,7 @@ var doc = `{
                 }
             },
             "post": {
-                "description": "新增专题并绑定文章",
+                "description": "新增专题",
                 "consumes": [
                     "application/json"
                 ],
@@ -430,10 +520,10 @@ var doc = `{
                 "tags": [
                     "博客后台接口"
                 ],
-                "summary": "新增专题并绑定文章",
+                "summary": "新增专题",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "专题名称",
                         "name": "name",
                         "in": "query",
@@ -841,7 +931,7 @@ var doc = `{
                     "description": "标签ID列表",
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "integer"
                     }
                 },
                 "title": {
@@ -852,7 +942,7 @@ var doc = `{
                     "description": "专题ID列表",
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "integer"
                     }
                 }
             }

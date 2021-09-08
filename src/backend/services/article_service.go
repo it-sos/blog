@@ -242,22 +242,20 @@ func (a articleService) getTopicAndTagArticle(isLogin bool, id uint) (topics []v
 	topic, tag := SCategory.GetTopicAndTag(id)
 
 	for _, v := range topic {
-		cid, _ := strconv.Atoi(v)
 		topics = append(
 			topics,
 			vo.TopicVO{
-				Title:   SCategory.GetNameById(uint(cid)),
-				Article: a.getArticleList(isLogin, SCategory.GetArticleListIds(uint(cid))),
+				Title:   SCategory.GetNameById(v),
+				Article: a.getArticleList(isLogin, SCategory.GetArticleListIds(v)),
 			},
 		)
 	}
 	for _, v := range tag {
-		cid, _ := strconv.Atoi(v)
 		tags = append(
 			tags,
 			vo.TagVO{
-				Title:   SCategory.GetNameById(uint(cid)),
-				Article: a.getArticleList(isLogin, SCategory.GetArticleListIds(uint(cid))),
+				Title:   SCategory.GetNameById(v),
+				Article: a.getArticleList(isLogin, SCategory.GetArticleListIds(v)),
 			},
 		)
 	}

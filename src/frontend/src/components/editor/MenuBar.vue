@@ -10,8 +10,7 @@
           class="menu-opt-item"
           v-model="switchStatus.publish"
           active-text="公开"
-          :loading="switchLoading.publishLoading"
-          :beforeChange="publishBeforeChange"></el-switch>
+          :loading="switchLoading.publishLoading"></el-switch>
       <el-switch
           class="menu-opt-item"
           v-model="switchStatus.encrypt"
@@ -21,7 +20,7 @@
       <el-select
           @change="changeTopic"
           class="menu-opt-item"
-          v-model="topicValue"
+          v-model="selectValue.topic"
           multiple
           allow-create
           filterable
@@ -39,7 +38,7 @@
       <el-select
           @change="changeTag"
           class="menu-opt-item"
-          v-model="tagValue"
+          v-model="selectValue.tag"
           multiple
           allow-create
           filterable
@@ -88,17 +87,7 @@ export default defineComponent({
     })
     switchStatus = inject('switch-status', switchStatus)
 
-    const publishBeforeChange = () => {
-      switchLoading.publishLoading = true
-      return new Promise(resolve => {
-        // setTimeout(() => {
-        switchLoading.publishLoading = false
-        ElMessage.success('切换成功')
-        return resolve(true)
-        // }, 500)
-      })
-    }
-
+    // 用于检测是否设置过加密秘钥
     const encryptBeforeChange = () => {
       switchLoading.encryptLoading = true
       return new Promise(resolve => {
@@ -111,23 +100,24 @@ export default defineComponent({
     }
 
     let selectStatus = reactive({
-      topicValue: ref([]),
       topicOptions: ref([{
-        value: '选项1',
+        value: 7,
         label: 'mac 下以 root 角色开机启动执行脚本或命令'
       }, {
-        value: '选项5',
+        value: 8,
         label: '北京烤鸭'
       }]),
-      tagValue: ref([]),
       tagOptions: ref([{
-        lable: "php",
-        value: "php"
+        value: 6,
+        label: "php",
       }]),
     })
 
-    selectStatus.topicValue = inject("topic-value", selectStatus.topicValue)
-    selectStatus.tagValue = inject("tag-value", selectStatus.tagValue)
+    let selectValue = reactive({
+      topic: [],
+      tag: [],
+    })
+    selectValue = inject("select-value", selectValue)
 
     let rightMenu = reactive({
       id: ref(0),
@@ -177,10 +167,12 @@ export default defineComponent({
     }
 
     const changeTag = () => {
+      console.log(selectValue.tag)
       console.log(1111)
     }
 
     const changeTopic = () => {
+      console.log(selectValue.topic)
       console.log(1111)
     }
 
@@ -188,9 +180,9 @@ export default defineComponent({
       changeTag,
       changeTopic,
       switchStatus,
+      selectValue,
       switchLoading,
       ...toRefs(selectStatus),
-      publishBeforeChange,
       encryptBeforeChange,
       rightMenu,
       rightMenuFunc,

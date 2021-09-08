@@ -23,16 +23,20 @@ type CategoryService interface {
 	// GetNameById 通过分类id获取分类名
 	GetNameById(cid uint) string
 	// GetTopicAndTag 通过文章id获取专题与标签list id
-	GetTopicAndTag(aid uint) (topic, tag []string)
+	GetTopicAndTag(aid uint) (topic, tag []uint)
 	// GetArticleListIds 获取文章列表id
 	GetArticleListIds(cid uint) (aid []string)
 	// GetTopicAndTagName 获取标签专题名list
 	GetTopicAndTagName(aid uint) (topic, tag []string)
 
+	// BindTopic 绑定专题与文章「后台」
+	BindTopic(id uint, aid uint)
+	// BindTag 绑定标签与文章「后台」
+	BindTag(id uint, aid uint)
 	// Unbind 解除绑定关系「后台」
 	Unbind(id uint, aid uint)
 	// NewTopic 新增专题「后台」
-	NewTopic(name string, aid uint) (id uint, err error)
+	NewTopic(name string) (id uint, err error)
 	// DeleteTopic 删除专题「后台」
 	DeleteTopic(id uint) (err error)
 	// UpdateTopic 更新专题「后台」
@@ -40,7 +44,7 @@ type CategoryService interface {
 	// GetTopicList 查询专题列表「后台」
 	GetTopicList() []datamodels.Category
 	// NewTag 新增标签「后台」
-	NewTag(name string, aid uint) (id uint, err error)
+	NewTag(name string) (id uint, err error)
 	// DeleteTag 删除标签「后台」
 	DeleteTag(id uint) error
 	// UpdateTag 更新标签「后台」
@@ -56,6 +60,24 @@ type categoryService struct {
 	cy  repositories.CategoryRepository
 }
 
+func (c categoryService) BindTopic(id uint, aid uint) {
+	c.cyr.Insert(&datamodels.CategoryRel{
+		Aid:  aid,
+		Cid:  id,
+		Type: repositories.CategoryTypeTopic,
+	})
+	caches.CCategoryRel.Id(aid, repositories.CategoryTypeTopic).Add(id)
+}
+
+func (c categoryService) BindTag(id uint, aid uint) {
+	c.cyr.Insert(&datamodels.CategoryRel{
+		Aid:  aid,
+		Cid:  id,
+		Type: repositories.CategoryTypeTag,
+	})
+	caches.CCategoryRel.Id(aid, repositories.CategoryTypeTag).Add(id)
+}
+
 func (c categoryService) Unbind(id uint, aid uint) {
 	c.cyr.DeleteByAidAndCid(aid, id)
 	caches.CCategoryRel.Id(aid, repositories.CategoryTypeTopic).Remove(id)
@@ -65,7 +87,7 @@ func (c categoryService) GetBindArtCount(id uint) uint {
 	return c.cyr.GetCountByCid(id)
 }
 
-func (c categoryService) NewTopic(name string, aid uint) (id uint, err error) {
+func (c categoryService) NewTopic(name string) (id uint, err error) {
 	if c.cy.ExistName(name, repositories.CategoryTypeTopic) {
 		err = errors.Error("topic_exists_err")
 		return
@@ -74,12 +96,6 @@ func (c categoryService) NewTopic(name string, aid uint) (id uint, err error) {
 		Name: name,
 		Type: repositories.CategoryTypeTopic,
 	})
-	c.cyr.Insert(&datamodels.CategoryRel{
-		Aid:  aid,
-		Cid:  id,
-		Type: repositories.CategoryTypeTopic,
-	})
-	caches.CCategoryRel.Id(aid, repositories.CategoryTypeTopic).Add(id)
 	return
 }
 
@@ -114,7 +130,7 @@ func (c categoryService) GetTopicList() []datamodels.Category {
 	return c.cy.SelectManyByType(repositories.CategoryTypeTopic)
 }
 
-func (c categoryService) NewTag(name string, aid uint) (id uint, err error) {
+func (c categoryService) NewTag(name string) (id uint, err error) {
 	if c.cy.ExistName(name, repositories.CategoryTypeTag) {
 		err = errors.Error("topic_exists_err")
 		return
@@ -123,12 +139,6 @@ func (c categoryService) NewTag(name string, aid uint) (id uint, err error) {
 		Name: name,
 		Type: repositories.CategoryTypeTag,
 	})
-	c.cyr.Insert(&datamodels.CategoryRel{
-		Aid:  aid,
-		Cid:  id,
-		Type: repositories.CategoryTypeTag,
-	})
-	caches.CCategoryRel.Id(aid, repositories.CategoryTypeTag).Add(id)
 	return
 }
 
@@ -186,7 +196,7 @@ func (c categoryService) GetNameById(cid uint) string {
 }
 
 // GetTopicAndTag 专题标签id
-func (c categoryService) GetTopicAndTag(aid uint) (topic, tag []string) {
+func (c categoryService) GetTopicAndTag(aid uint) (topic, tag []uint) {
 	tags := caches.CCategoryRel.Id(aid, repositories.CategoryTypeTag)
 	topics := caches.CCategoryRel.Id(aid, repositories.CategoryTypeTopic)
 	if !(tags.Exists() && topics.Exists()) {
@@ -207,12 +217,10 @@ func (c categoryService) GetTopicAndTag(aid uint) (topic, tag []string) {
 func (c categoryService) GetTopicAndTagName(aid uint) (topic, tag []string) {
 	topicIds, tagIds := c.GetTopicAndTag(aid)
 	for _, v := range topicIds {
-		cid, _ := strconv.Atoi(v)
-		topic = append(topic, c.GetNameById(uint(cid)))
+		topic = append(topic, c.GetNameById(v))
 	}
 	for _, v := range tagIds {
-		cid, _ := strconv.Atoi(v)
-		tag = append(tag, c.GetNameById(uint(cid)))
+		tag = append(tag, c.GetNameById(v))
 	}
 	return
 }

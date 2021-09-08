@@ -44,19 +44,35 @@ func (c *CategoryController) DeleteCategoryRelations() {
 
 // PostCategoryTopic
 // @Tags 博客后台接口
-// @Summary 新增专题并绑定文章
-// @Description 新增专题并绑定文章
+// @Summary 新增专题
+// @Description 新增专题
 // @Accept json
 // @Produce json
-// @Param name query integer true "专题名称"
+// @Param name query string true "专题名称"
 // @Param aid query integer true "文章id"
 // @Success 200 {integer} integer "专题id"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/category/topic [post]
 func (c *CategoryController) PostCategoryTopic() (uint, error) {
 	name := c.Ctx.FormValue("name")
+	return services.SCategory.NewTopic(name)
+}
+
+// PostCategoryBindtopic
+// @Tags 博客后台接口
+// @Summary 绑定专题与文章
+// @Description 绑定专题与文章
+// @Accept json
+// @Produce json
+// @Param id query integer true "专题id"
+// @Param aid query integer true "文章id"
+// @Success 200 {integer} string ""
+// @Failure 400 {object} errors.Errors "error"
+// @Router /admin/category/bindtopic [post]
+func (c *CategoryController) PostCategoryBindtopic() {
+	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
 	aid, _ := strconv.Atoi(c.Ctx.FormValue("aid"))
-	return services.SCategory.NewTopic(name, uint(aid))
+	services.SCategory.BindTopic(uint(id), uint(aid))
 }
 
 // DeleteCategoryTopic
@@ -80,7 +96,7 @@ func (c *CategoryController) DeleteCategoryTopic() error {
 // @Description 更新专题
 // @Accept json
 // @Produce json
-// @Param name query integer true "专题名称"
+// @Param name query string true "专题名称"
 // @Param id query integer true "专题id"
 // @Success 200 {string} string "success"
 // @Failure 400 {object} errors.Errors "error"
@@ -106,8 +122,8 @@ func (c *CategoryController) GetCategoryTopics() []datamodels.Category {
 
 // PostCategoryTag
 // @Tags 博客后台接口
-// @Summary 新增标签并绑定文章
-// @Description 新增标签并绑定文章
+// @Summary 新增标签
+// @Description 新增标签
 // @Accept json
 // @Produce plain
 // @Param name query integer true "标签名称"
@@ -117,8 +133,24 @@ func (c *CategoryController) GetCategoryTopics() []datamodels.Category {
 // @Router /admin/category/tag [post]
 func (c *CategoryController) PostCategoryTag() (uint, error) {
 	name := c.Ctx.FormValue("name")
+	return services.SCategory.NewTag(name)
+}
+
+// PostCategoryBindtag
+// @Tags 博客后台接口
+// @Summary 绑定标签与文章
+// @Description 绑定标签与文章
+// @Accept json
+// @Produce json
+// @Param id query integer true "专题id"
+// @Param aid query integer true "文章id"
+// @Success 200 {integer} string ""
+// @Failure 400 {object} errors.Errors "error"
+// @Router /admin/category/bindtag [post]
+func (c *CategoryController) PostCategoryBindtag() {
+	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
 	aid, _ := strconv.Atoi(c.Ctx.FormValue("aid"))
-	return services.SCategory.NewTag(name, uint(aid))
+	services.SCategory.BindTopic(uint(id), uint(aid))
 }
 
 // DeleteCategoryTag
