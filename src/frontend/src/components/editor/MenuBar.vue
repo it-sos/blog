@@ -62,6 +62,16 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
 import {defineComponent, inject, provide, reactive, ref, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
+import axios from "axios";
+import {router} from "@/routes";
+
+// eslint-disable-next-line
+const enum CATEGORY_TYPE {
+// eslint-disable-next-line
+  Topic = "topic",
+// eslint-disable-next-line
+  Tag = "tag",
+}
 
 export default defineComponent({
   components: {
@@ -77,11 +87,18 @@ export default defineComponent({
 
   setup() {
 
+    const articleId = () => {
+      if (typeof router.currentRoute.value.params.id != "undefined") {
+        return parseInt(router.currentRoute.value.params.id.toString())
+      }
+      return 0
+    }
+
     let switchStatus = reactive({
       encrypt: ref(false),
       publish: ref(false),
     })
-    let switchLoading  = reactive({
+    let switchLoading = reactive({
       publishLoading: ref(false),
       encryptLoading: ref(false),
     })
@@ -100,22 +117,39 @@ export default defineComponent({
     }
 
     let selectStatus = reactive({
-      topicOptions: ref([{
-        value: 7,
-        label: 'mac 下以 root 角色开机启动执行脚本或命令'
-      }, {
-        value: 8,
-        label: '北京烤鸭'
-      }]),
-      tagOptions: ref([{
-        value: 6,
-        label: "php",
-      }]),
+      topicOptions: ref([{value: 0, label: ""}]),
+      tagOptions: ref([{value: 0, label: ""}]),
+    })
+
+    // 查询专题列表
+    axios('/admin/category/topics', {
+      method: "get",
+      responseType: "json",
+    }).then((response: any) => {
+      selectStatus.topicOptions = []
+      response.data.forEach((v: any) => {
+        selectStatus.topicOptions.push({value: v.id, label: v.name})
+      })
+    }).catch((error: any) => {
+      console.log(error)
+    })
+
+    // 查询标签列表
+    axios('/admin/category/tags', {
+      method: "get",
+      responseType: "json",
+    }).then((response: any) => {
+      selectStatus.tagOptions = []
+      response.data.forEach((v: any) => {
+        selectStatus.tagOptions.push({value: v.id, label: v.name})
+      })
+    }).catch((error: any) => {
+      console.log(error)
     })
 
     let selectValue = reactive({
-      topic: [],
-      tag: [],
+      topic: [0],
+      tag: [0],
     })
     selectValue = inject("select-value", selectValue)
 
@@ -166,14 +200,70 @@ export default defineComponent({
       console.log(rightMenu.id)
     }
 
-    const changeTag = () => {
-      console.log(selectValue.tag)
-      console.log(1111)
+    const saveCategory = (type: CATEGORY_TYPE, name: string) => {
+      axios('/admin/category/' + type, {
+        method: "post",
+        responseType: "json",
+        params: {name: name},
+      }).then((response: any) => {
+        if (type == CATEGORY_TYPE.Tag) {
+          selectStatus.tagOptions.push({value: response.data, label: name})
+        } else {
+          selectStatus.topicOptions.push({value: response.data, label: name})
+        }
+        if (articleId() == 0) {
+          ElMessage.warning('绑定文章失败，需要先保存文章')
+          return
+        }
+        if (type == CATEGORY_TYPE.Tag) {
+          selectValue.tag.push(response.data)
+        } else {
+          selectValue.topic.push(response.data)
+        }
+      }).catch((error: any) => {
+        console.log(error)
+      })
     }
 
-    const changeTopic = () => {
-      console.log(selectValue.topic)
-      console.log(1111)
+    const bindCategory = (type: CATEGORY_TYPE, id: number) => {
+      let aid = articleId()
+      if (aid == 0) {
+        ElMessage.warning('绑定文章失败，需要先保存文章')
+        return
+      }
+      axios('/admin/category/bind' + type, {
+        method: "post",
+        responseType: "json",
+        params: {id: id, aid: aid},
+      }).then((response: any) => {
+        if (type == CATEGORY_TYPE.Tag) {
+          selectValue.tag.push(response.data)
+        } else {
+          selectValue.topic.push(response.data)
+        }
+      }).catch((error: any) => {
+        console.log(error)
+      })
+    }
+
+    const changeTag = (v: any) => {
+      selectValue.tag = v.filter((value: any) => {
+        if (isNaN(value)) {
+          saveCategory(CATEGORY_TYPE.Tag, value)
+          return false
+        }
+        // bindCategory()
+      })
+    }
+
+    const changeTopic = (v: any) => {
+      selectValue.topic = v.filter((value: any) => {
+        if (isNaN(value)) {
+          saveCategory(CATEGORY_TYPE.Topic, value)
+          return false
+        }
+        return true
+      })
     }
 
     return {

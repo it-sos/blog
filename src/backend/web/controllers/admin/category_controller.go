@@ -49,7 +49,6 @@ func (c *CategoryController) DeleteCategoryRelations() {
 // @Accept json
 // @Produce json
 // @Param name query string true "专题名称"
-// @Param aid query integer true "文章id"
 // @Success 200 {integer} integer "专题id"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/category/topic [post]
@@ -127,7 +126,6 @@ func (c *CategoryController) GetCategoryTopics() []datamodels.Category {
 // @Accept json
 // @Produce plain
 // @Param name query integer true "标签名称"
-// @Param aid query integer true "文章id"
 // @Success 200 {integer} integer "专题id"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/category/tag [post]
@@ -185,7 +183,7 @@ func (c *CategoryController) PutCategoryTag() error {
 	return services.SCategory.UpdateTag(uint(id), name)
 }
 
-// GetCategoryTag
+// GetCategoryTags
 // @Tags 博客后台接口
 // @Summary 查询标签列表
 // @Description 查询标签列表
@@ -194,7 +192,7 @@ func (c *CategoryController) PutCategoryTag() error {
 // @Success 200 {object} []datamodels.Category "标签列表"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/category/tags [get]
-func (c *CategoryController) GetCategoryTag() []datamodels.Category {
+func (c *CategoryController) GetCategoryTags() []datamodels.Category {
 	return services.SCategory.GetTagList()
 }
 

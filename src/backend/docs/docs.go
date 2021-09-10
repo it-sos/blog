@@ -372,13 +372,6 @@ var doc = `{
                         "name": "name",
                         "in": "query",
                         "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "文章id",
-                        "name": "aid",
-                        "in": "query",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -526,13 +519,6 @@ var doc = `{
                         "type": "string",
                         "description": "专题名称",
                         "name": "name",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "文章id",
-                        "name": "aid",
                         "in": "query",
                         "required": true
                     }

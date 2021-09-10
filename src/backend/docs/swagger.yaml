@@ -439,11 +439,6 @@ paths:
         name: name
         required: true
         type: integer
-      - description: 文章id
-        in: query
-        name: aid
-        required: true
-        type: integer
       produces:
       - text/plain
       responses:
@@ -543,11 +538,6 @@ paths:
         name: name
         required: true
         type: string
-      - description: 文章id
-        in: query
-        name: aid
-        required: true
-        type: integer
       produces:
       - application/json
       responses:
