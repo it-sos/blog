@@ -60,7 +60,7 @@
 <script lang="ts">
 import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
-import {defineComponent, inject, provide, reactive, ref, toRefs} from 'vue'
+import {defineComponent, inject, provide, reactive, ref, toRefs, watch} from 'vue'
 import {ElMessage} from 'element-plus'
 import axios from "axios";
 import {router} from "@/routes";
@@ -121,6 +121,13 @@ export default defineComponent({
       tagOptions: ref([{value: 0, label: ""}]),
     })
 
+    let selectValue = reactive({
+      topic: [0],
+      tag: [0],
+    })
+    selectValue = inject("select-value", selectValue)
+
+
     // 查询专题列表
     axios('/admin/category/topics', {
       method: "get",
@@ -146,12 +153,6 @@ export default defineComponent({
     }).catch((error: any) => {
       console.log(error)
     })
-
-    let selectValue = reactive({
-      topic: [0],
-      tag: [0],
-    })
-    selectValue = inject("select-value", selectValue)
 
     let rightMenu = reactive({
       id: ref(0),
@@ -246,14 +247,50 @@ export default defineComponent({
       })
     }
 
-    const changeTag = (v: any) => {
-      selectValue.tag = v.filter((value: any) => {
-        if (isNaN(value)) {
-          saveCategory(CATEGORY_TYPE.Tag, value)
-          return false
-        }
-        // bindCategory()
+    const unbindCategory = (id: number) => {
+      let aid = articleId()
+      if (aid == 0) {
+        ElMessage.warning('解除绑定文章失败，需要先保存文章')
+        return
+      }
+      axios('/admin/category/relations', {
+        method: "delete",
+        responseType: "json",
+        params: {id: id, aid: aid},
+      }).then((response: any) => {
+        console.log(response.data)
+      }).catch((error: any) => {
+        console.log(error)
       })
+    }
+
+    let tagOld: number[] = []
+    watch(selectValue, (_, o)=> {
+      if (tagOld.length == 0) {
+        tagOld = o.tag
+      }
+    })
+    const changeTag = (v: any) => {
+      console.log(tagOld, v)
+      let os = new Set(tagOld)
+      let ns = new Set(v)
+      // 绑定
+      if (tagOld.length < v.length) {
+        let val = v.filter((value: any) => {
+          return !os.has(value)
+        })
+        if (isNaN(val[0])) {
+          saveCategory(CATEGORY_TYPE.Tag, val[0])
+        } else {
+          bindCategory(CATEGORY_TYPE.Tag, val[0])
+        }
+      } else {
+        let val: number[] = tagOld.filter((value: any) => {
+          return !ns.has(value)
+        })
+        // 解绑
+        unbindCategory(val[0])
+      }
     }
 
     const changeTopic = (v: any) => {
