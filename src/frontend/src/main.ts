@@ -14,12 +14,6 @@ if (process.env.NODE_ENV === "production") {
     axios.defaults.baseURL = '/api';
 } else {
     axios.defaults.baseURL = 'http://localhost:8090';
-    // axios.defaults.withCredentials=false;
-    // axios.defaults.proxy = {
-    //     host: "localhost",
-    //     port: 8090,
-    //     protocol: "http"
-    // }
 }
 
 const app = createApp(App)
@@ -32,4 +26,3 @@ app.config.globalProperties.axios=axios
 app.config.unwrapInjectedRef = true
 
 app.mount('#app')
-

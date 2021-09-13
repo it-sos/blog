@@ -13,6 +13,7 @@ package studynotes
 import (
 	"gitee.com/itsos/studynotes/config"
 	"gitee.com/itsos/studynotes/web/bootstrap"
+	"gitee.com/itsos/studynotes/web/middleware/cros"
 	"gitee.com/itsos/studynotes/web/middleware/identity"
 	"gitee.com/itsos/studynotes/web/routes"
 	"github.com/kataras/iris/v12"
@@ -23,7 +24,7 @@ import (
 func NewApp() *bootstrap.Bootstrapper {
 	app := bootstrap.New("studynotes", "peng.yu@qjfu.cn")
 	app.Bootstrap()
-	app.Configure(identity.Configure, routes.Configure)
+	app.Configure(identity.Configure, cros.Configure, routes.Configure)
 	return app
 }
 

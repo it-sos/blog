@@ -34,7 +34,7 @@ type CategoryService interface {
 	// BindTag 绑定标签与文章「后台」
 	BindTag(id uint, aid uint)
 	// Unbind 解除绑定关系「后台」
-	Unbind(id uint, aid uint)
+	Unbind(id uint, aid uint) error
 	// NewTopic 新增专题「后台」
 	NewTopic(name string) (id uint, err error)
 	// DeleteTopic 删除专题「后台」
@@ -78,9 +78,17 @@ func (c categoryService) BindTag(id uint, aid uint) {
 	caches.CCategoryRel.Id(aid, repositories.CategoryTypeTag).Add(id)
 }
 
-func (c categoryService) Unbind(id uint, aid uint) {
-	c.cyr.DeleteByAidAndCid(aid, id)
-	caches.CCategoryRel.Id(aid, repositories.CategoryTypeTopic).Remove(id)
+func (c categoryService) Unbind(id uint, aid uint) (err error) {
+	res, _ := c.cyr.Select(&datamodels.CategoryRel{
+		Cid: id,
+		Aid: aid,
+	})
+	if !caches.CCategoryRel.Id(aid, res.Type).Remove(id) {
+		err = errors.Error("unbind_err")
+	} else {
+		c.cyr.DeleteByAidAndCid(aid, id)
+	}
+	return
 }
 
 func (c categoryService) GetBindArtCount(id uint) uint {
@@ -100,9 +108,6 @@ func (c categoryService) NewTopic(name string) (id uint, err error) {
 }
 
 func (c categoryService) DeleteTopic(id uint) (err error) {
-	if !c.cy.Delete(id) {
-		return errors.Error("topic_remove_err")
-	}
 	// 移除相关cache
 	caches.CCategory.Id(id).Remove()
 	aids := c.cyr.SelectManyByCid(id)
@@ -111,6 +116,9 @@ func (c categoryService) DeleteTopic(id uint) (err error) {
 	}
 	// 删除绑定关系
 	c.cyr.DeleteByCid(id)
+	if !c.cy.Delete(id) {
+		return errors.Error("topic_remove_err")
+	}
 	return
 }
 
@@ -143,10 +151,6 @@ func (c categoryService) NewTag(name string) (id uint, err error) {
 }
 
 func (c categoryService) DeleteTag(id uint) (err error) {
-	if !c.cy.Delete(id) {
-		err = errors.Error("tag_remove_err")
-		return
-	}
 	// 移除与之相关的 cache
 	caches.CCategory.Id(id).Remove()
 	aids := c.cyr.SelectManyByCid(id)
@@ -155,6 +159,10 @@ func (c categoryService) DeleteTag(id uint) (err error) {
 	}
 	// 删除绑定关系
 	c.cyr.DeleteByCid(id)
+	if !c.cy.Delete(id) {
+		err = errors.Error("tag_remove_err")
+		return
+	}
 	return
 }
 

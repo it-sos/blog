@@ -61,7 +61,7 @@
 import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
 import {defineComponent, inject, provide, reactive, ref, toRefs, watch} from 'vue'
-import {ElMessage} from 'element-plus'
+import {ElMessage, ElMessageBox} from 'element-plus'
 import axios from "axios";
 import {router} from "@/routes";
 
@@ -154,6 +154,7 @@ export default defineComponent({
       console.log(error)
     })
 
+    // 自定义右键菜单
     let rightMenu = reactive({
       id: ref(0),
       position: ref({x: 0, y: 0}),
@@ -188,6 +189,7 @@ export default defineComponent({
     })
     provide('right-click-menu', rightMenu)
 
+    // 设置右键菜单点击参入值
     const rightMenuFunc = (active: string, id: number) => {
       return () => {
         rightMenu.active = active
@@ -196,13 +198,139 @@ export default defineComponent({
       }
     }
 
-    const rightMenuTrigger = (type: string) => {
-      console.log(type)
-      console.log(rightMenu.id)
+    // 执行移除分类操作
+    const removeCategory = (type: CATEGORY_TYPE, id: number) => {
+      axios.delete(`/admin/category/${type}`, {
+        params: {id: id},
+        responseType: "json",
+      }).then(() => {
+        if (type == CATEGORY_TYPE.Tag) {
+          tagOld = selectValue.tag = selectValue.tag.filter((v: any) => {
+            return v != id
+          })
+          selectStatus.tagOptions = selectStatus.tagOptions.filter((v: any) => {
+            return v.value != id
+          })
+        } else {
+          topicOld = selectValue.topic = selectValue.topic.filter((v: any) => {
+            return v != id
+          })
+          selectStatus.topicOptions = selectStatus.topicOptions.filter((v: any) => {
+            return v.value != id
+          })
+        }
+        ElMessage({
+          type: 'success',
+          message: '移除成功!',
+        });
+      }).catch((error: any) => {
+        ElMessage.warning(error.response.data.message)
+      })
     }
 
+    // 确认移除弹窗
+    const removeConfirm = (type: CATEGORY_TYPE, id: number) => {
+      ElMessageBox.confirm('此操作将永久移除该分类, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+      .then(() => {
+        removeCategory(type, id)
+      })
+      .catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '已取消移除',
+        });
+      });
+    }
+
+    // 更新分类名称操作
+    const updateCategory = (type: CATEGORY_TYPE, id: number, name: string) => {
+      axios.put(`/admin/category/${type}`, {
+        params: {id: id, name: name},
+        responseType: "json",
+      }).then(() => {
+        if (type == CATEGORY_TYPE.Tag) {
+          selectStatus.tagOptions = selectStatus.tagOptions.map((v: any) => {
+            if (v.value == id) {
+              v.label = name
+            }
+            return v
+          })
+        } else {
+          selectStatus.topicOptions = selectStatus.topicOptions.map((v: any) => {
+            if (v.value == id) {
+              v.label = name
+            }
+            return v
+          })
+        }
+        ElMessage({
+          type: 'success',
+          message: '更新成功!',
+        });
+      }).catch((error: any) => {
+        ElMessage.warning(error.response.data.message)
+      })
+    }
+
+    // 获取分类名
+    const getLabel = (type: CATEGORY_TYPE, id: number): string => {
+      let options: any
+      if (type == CATEGORY_TYPE.Tag) {
+        options = selectStatus.tagOptions
+      } else {
+        options = selectStatus.topicOptions
+      }
+      options = options.filter((v: any) => {
+        return v.value == id
+      })
+      return options[0].label
+    }
+
+    // 分类编辑弹窗
+    const editDialog = (type: CATEGORY_TYPE, id: number) => {
+      ElMessageBox.prompt('请输入将要变更的分类名称', '编辑分类', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValue: getLabel(type, id),
+      })
+      .then(({ value }) => {
+        updateCategory(type, id, value)
+      })
+      .catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '取消输入',
+        });
+      });
+    }
+
+    // 右键菜单逻辑处理
+    const rightMenuTrigger = (type: string) => {
+      switch (type) {
+        case 'topic_delete':
+          removeConfirm(CATEGORY_TYPE.Topic, rightMenu.id)
+          break;
+        case 'tag_delete':
+          removeConfirm(CATEGORY_TYPE.Tag, rightMenu.id)
+          break;
+        case 'topic_edit':
+          editDialog(CATEGORY_TYPE.Topic, rightMenu.id)
+          break;
+        case 'tag_edit':
+          editDialog(CATEGORY_TYPE.Tag, rightMenu.id)
+          break;
+        default:
+          break;
+      }
+    }
+
+    // 新增分类名（专题/标签）
     const saveCategory = (type: CATEGORY_TYPE, name: string) => {
-      axios('/admin/category/' + type, {
+      axios(`/admin/category/${type}`, {
         method: "post",
         responseType: "json",
         params: {name: name},
@@ -212,20 +340,13 @@ export default defineComponent({
         } else {
           selectStatus.topicOptions.push({value: response.data, label: name})
         }
-        if (articleId() == 0) {
-          ElMessage.warning('绑定文章失败，需要先保存文章')
-          return
-        }
-        if (type == CATEGORY_TYPE.Tag) {
-          selectValue.tag.push(response.data)
-        } else {
-          selectValue.topic.push(response.data)
-        }
+        bindCategory(type, response.data)
       }).catch((error: any) => {
-        console.log(error)
+        ElMessage.warning(error.response.data.message)
       })
     }
 
+    // 绑定分类（专题/标签）
     const bindCategory = (type: CATEGORY_TYPE, id: number) => {
       let aid = articleId()
       if (aid == 0) {
@@ -236,71 +357,94 @@ export default defineComponent({
         method: "post",
         responseType: "json",
         params: {id: id, aid: aid},
-      }).then((response: any) => {
+      }).then(() => {
         if (type == CATEGORY_TYPE.Tag) {
-          selectValue.tag.push(response.data)
+          selectValue.tag.push(id)
+          tagOld = selectValue.tag
         } else {
-          selectValue.topic.push(response.data)
+          selectValue.topic.push(id)
+          topicOld = selectValue.topic
         }
       }).catch((error: any) => {
-        console.log(error)
+        ElMessage.warning(error.response.data.message)
       })
     }
 
-    const unbindCategory = (id: number) => {
+    // 解绑分类（专题/标签）
+    const unbindCategory = (type: CATEGORY_TYPE, id: number) => {
       let aid = articleId()
       if (aid == 0) {
         ElMessage.warning('解除绑定文章失败，需要先保存文章')
         return
       }
-      axios('/admin/category/relations', {
-        method: "delete",
-        responseType: "json",
+      axios.delete('/admin/category/relations', {
         params: {id: id, aid: aid},
-      }).then((response: any) => {
-        console.log(response.data)
+        responseType: "json",
+      }).then(() => {
+        if (type == CATEGORY_TYPE.Tag) {
+          tagOld = selectValue.tag = selectValue.tag.filter((v: any) => {
+            return v != id
+          })
+        } else {
+          topicOld = selectValue.topic = selectValue.topic.filter((v: any) => {
+            return v != id
+          })
+        }
       }).catch((error: any) => {
-        console.log(error)
+        ElMessage.warning(error.response.data.message)
       })
     }
 
+    // 赋初始值，用于辨别新增还是移除
     let tagOld: number[] = []
+    let topicOld: number[] = []
     watch(selectValue, (_, o)=> {
       if (tagOld.length == 0) {
         tagOld = o.tag
       }
+      if (topicOld.length == 0) {
+        topicOld = o.topic
+      }
     })
-    const changeTag = (v: any) => {
-      console.log(tagOld, v)
-      let os = new Set(tagOld)
+
+    // 专题/标签发生变更时的处理逻辑（新增、绑定、解绑）
+    const changeCore = (v: any, old: any, type: CATEGORY_TYPE) => {
+      let os = new Set(old)
       let ns = new Set(v)
+
+      if (type == CATEGORY_TYPE.Tag) {
+        selectValue.tag = old
+      } else {
+        selectValue.topic = old
+      }
+
       // 绑定
-      if (tagOld.length < v.length) {
+      if (old.length < v.length) {
         let val = v.filter((value: any) => {
           return !os.has(value)
         })
         if (isNaN(val[0])) {
-          saveCategory(CATEGORY_TYPE.Tag, val[0])
+          saveCategory(type, val[0])
         } else {
-          bindCategory(CATEGORY_TYPE.Tag, val[0])
+          bindCategory(type, val[0])
         }
       } else {
-        let val: number[] = tagOld.filter((value: any) => {
+        // 解绑
+        let val: number[] = old.filter((value: any) => {
           return !ns.has(value)
         })
-        // 解绑
-        unbindCategory(val[0])
+        unbindCategory(type, val[0])
       }
     }
 
+    // 标签发生变更时触发
+    const changeTag = (v: any) => {
+      changeCore(v, tagOld, CATEGORY_TYPE.Tag)
+    }
+
+    // 专题发生变更时触发
     const changeTopic = (v: any) => {
-      selectValue.topic = v.filter((value: any) => {
-        if (isNaN(value)) {
-          saveCategory(CATEGORY_TYPE.Topic, value)
-          return false
-        }
-        return true
-      })
+      changeCore(v, topicOld, CATEGORY_TYPE.Topic)
     }
 
     return {

@@ -36,10 +36,10 @@ type CategoryController struct {
 // @Success 200 {string} string "success"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/category/relations [delete]
-func (c *CategoryController) DeleteCategoryRelations() {
+func (c *CategoryController) DeleteCategoryRelations() error {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
 	aid, _ := strconv.Atoi(c.Ctx.FormValue("aid"))
-	services.SCategory.Unbind(uint(id), uint(aid))
+	return services.SCategory.Unbind(uint(id), uint(aid))
 }
 
 // PostCategoryTopic
@@ -148,7 +148,7 @@ func (c *CategoryController) PostCategoryTag() (uint, error) {
 func (c *CategoryController) PostCategoryBindtag() {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
 	aid, _ := strconv.Atoi(c.Ctx.FormValue("aid"))
-	services.SCategory.BindTopic(uint(id), uint(aid))
+	services.SCategory.BindTag(uint(id), uint(aid))
 }
 
 // DeleteCategoryTag

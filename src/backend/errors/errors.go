@@ -29,6 +29,7 @@ var errCodeList = map[string]Errors{
 	"topic_remove_err":     {4002002, "专题移除失败"},
 	"tag_exists_err":       {4003001, "标签已存在"},
 	"tag_remove_err":       {4003002, "标签移除失败"},
+	"unbind_err":           {4004001, "解绑操作失败"},
 }
 
 func Error(key string) error {

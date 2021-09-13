@@ -22,12 +22,11 @@ func TestCategoryController_CategoryTopic(t *testing.T) {
 
 	e := httptest.New(t, studynotes.NewApp().Application)
 
-	t.Run("新增专题与绑定文章", func(t *testing.T) {
+	t.Run("新增专题", func(t *testing.T) {
 		r := e.POST("/admin/category/topic").
 			WithHeader("Accept", "application/json").
-			WithJSON(map[string]interface{}{
+			WithForm(map[string]interface{}{
 				"name": "创建专题",
-				"aid":  "1",
 			}).
 			Expect().Status(iris.StatusOK)
 		t.Log(r.Body())
@@ -36,9 +35,8 @@ func TestCategoryController_CategoryTopic(t *testing.T) {
 	t.Run("创建重复的专题", func(t *testing.T) {
 		r := e.POST("/admin/category/topic").
 			WithHeader("Accept", "application/json").
-			WithJSON(map[string]interface{}{
+			WithForm(map[string]interface{}{
 				"name": "创建专题",
-				"aid":  "1",
 			}).
 			Expect().Status(iris.StatusBadRequest)
 		t.Log(r.JSON().Object().ValueEqual("code", 4002001))
@@ -61,6 +59,14 @@ func TestCategoryController_CategoryTopic(t *testing.T) {
 			WithQuery("id", "1").
 			Expect().Status(iris.StatusOK)
 		r.JSON().Array().Element(0).Object().ValueEqual("name", "修改专题")
+	})
+
+	t.Run("新增专题文章绑定", func(t *testing.T) {
+		r := e.POST("/admin/category/bindtopic").
+			WithQuery("id", "1").
+			WithQuery("aid", "1").
+			Expect().Status(iris.StatusOK)
+		t.Log(r.Body())
 	})
 
 	t.Run("获取绑定次数", func(t *testing.T) {
@@ -93,6 +99,95 @@ func TestCategoryController_CategoryTopic(t *testing.T) {
 		r.JSON().Object().ValueEqual("code", 4002002)
 	})
 
-	mysql.NewMysql().Exec("truncate table category")
-	mysql.NewMysql().Exec("truncate table category_rel")
+	t.Run("清除表数据", func(t *testing.T) {
+		mysql.NewMysql().Exec("truncate table category")
+		mysql.NewMysql().Exec("truncate table category_rel")
+	})
+}
+
+func TestCategoryController_CategoryTag(t *testing.T) {
+
+	e := httptest.New(t, studynotes.NewApp().Application)
+
+	t.Run("新增标签", func(t *testing.T) {
+		r := e.POST("/admin/category/tag").
+			WithHeader("Accept", "application/json").
+			WithForm(map[string]interface{}{
+				"name": "创建标签",
+			}).
+			Expect().Status(iris.StatusOK)
+		t.Log(r.Body())
+	})
+
+	t.Run("创建重复的标签", func(t *testing.T) {
+		r := e.POST("/admin/category/tag").
+			WithHeader("Accept", "application/json").
+			WithForm(map[string]interface{}{
+				"name": "创建标签",
+			}).
+			Expect().Status(iris.StatusBadRequest)
+		t.Log(r.JSON().Object().ValueEqual("code", 4002001))
+	})
+
+	t.Run("修改标签", func(t *testing.T) {
+		r := e.PUT("/admin/category/tag").
+			WithHeader("Accept", "application/json").
+			WithForm(map[string]interface{}{
+				"name": "修改标签",
+				"id":   "1",
+			}).
+			Expect().Status(iris.StatusOK)
+		t.Log(r.Body())
+	})
+
+	t.Run("查询标签列表", func(t *testing.T) {
+		r := e.GET("/admin/category/tags").
+			WithHeader("Accept", "application/json").
+			WithQuery("id", "1").
+			Expect().Status(iris.StatusOK)
+		r.JSON().Array().Element(0).Object().ValueEqual("name", "修改标签")
+	})
+
+	t.Run("新增标签文章绑定", func(t *testing.T) {
+		r := e.POST("/admin/category/bindtag").
+			WithQuery("id", "1").
+			WithQuery("aid", "1").
+			Expect().Status(iris.StatusOK)
+		t.Log(r.Body())
+	})
+
+	t.Run("获取绑定次数", func(t *testing.T) {
+		r := e.GET("/admin/category/bindartcount").
+			WithQuery("id", "1").
+			Expect().Status(iris.StatusOK)
+		r.JSON().Number().Equal(1)
+	})
+
+	t.Run("解除标签绑定关系", func(t *testing.T) {
+		r := e.DELETE("/admin/category/relations").
+			WithQuery("id", "1").
+			WithQuery("aid", "1").
+			Expect().Status(iris.StatusOK)
+		t.Log(r.Body())
+	})
+
+	t.Run("删除标签", func(t *testing.T) {
+		r := e.DELETE("/admin/category/tag").
+			WithQuery("id", "1").
+			Expect().Status(iris.StatusOK)
+		t.Log(r.Body())
+	})
+
+	t.Run("删除不存在标签", func(t *testing.T) {
+		r := e.DELETE("/admin/category/tag").
+			WithHeader("Accept", "application/json").
+			WithQuery("id", "1").
+			Expect().Status(iris.StatusBadRequest)
+		r.JSON().Object().ValueEqual("code", 4003002)
+	})
+
+	t.Run("清除表数据", func(t *testing.T) {
+		mysql.NewMysql().Exec("truncate table category")
+		mysql.NewMysql().Exec("truncate table category_rel")
+	})
 }

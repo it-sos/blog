@@ -144,14 +144,6 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 	blockKey := securecookie.GenerateRandomKey(32)
 	b.SetupSessions(10*time.Minute, hashKey, blockKey)
 
-	b.Use(func(ctx *context.Context) {
-		// 设置允许跨域访问
-		ctx.Header("Access-Control-Allow-Origin", "*")
-		// 设置操作时重置session时间
-		b.Sessions.ShiftExpiration(ctx)
-		ctx.Next()
-	})
-
 	// 设置错误捕获
 	b.SetupErrorHandlers()
 
