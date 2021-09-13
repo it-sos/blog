@@ -235,21 +235,24 @@ export default defineComponent({
         cancelButtonText: '取消',
         type: 'warning',
       })
-      .then(() => {
-        removeCategory(type, id)
-      })
-      .catch(() => {
-        ElMessage({
-          type: 'info',
-          message: '已取消移除',
-        });
-      });
+          .then(() => {
+            removeCategory(type, id)
+          })
+          .catch(() => {
+            ElMessage({
+              type: 'info',
+              message: '已取消移除',
+            });
+          });
     }
 
     // 更新分类名称操作
     const updateCategory = (type: CATEGORY_TYPE, id: number, name: string) => {
-      axios.put(`/admin/category/${type}`, {
-        params: {id: id, name: name},
+      let formData = new FormData();
+      formData.append("name", name);
+      formData.append("id", id.toString());
+      axios.put(`/admin/category/${type}`, formData, {
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         responseType: "json",
       }).then(() => {
         if (type == CATEGORY_TYPE.Tag) {
@@ -297,15 +300,15 @@ export default defineComponent({
         cancelButtonText: '取消',
         inputValue: getLabel(type, id),
       })
-      .then(({ value }) => {
-        updateCategory(type, id, value)
-      })
-      .catch(() => {
-        ElMessage({
-          type: 'info',
-          message: '取消输入',
-        });
-      });
+          .then(({value}) => {
+            updateCategory(type, id, value)
+          })
+          .catch(() => {
+            ElMessage({
+              type: 'info',
+              message: '取消输入',
+            });
+          });
     }
 
     // 右键菜单逻辑处理
@@ -398,7 +401,7 @@ export default defineComponent({
     // 赋初始值，用于辨别新增还是移除
     let tagOld: number[] = []
     let topicOld: number[] = []
-    watch(selectValue, (_, o)=> {
+    watch(selectValue, (_, o) => {
       if (tagOld.length == 0) {
         tagOld = o.tag
       }
