@@ -25,6 +25,14 @@ type (
 		Topics    []uint `json:"topics"`     // 专题ID列表
 	}
 
+	// ArticleListVO 后台文章列表
+	ArticleListVO struct {
+		Id         uint   `json:"id"`
+		Title      string `json:"title"`       // 标题
+		TitleMatch string `json:"title_match"` // 匹配的title
+		Duration   string `json:"duration"`    // 持续时间
+	}
+
 	// ArticleParamsVO 后台文章详情
 	ArticleParamsVO struct {
 		Id        uint   `json:"id"`

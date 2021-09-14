@@ -235,15 +235,15 @@ export default defineComponent({
         cancelButtonText: '取消',
         type: 'warning',
       })
-          .then(() => {
-            removeCategory(type, id)
-          })
-          .catch(() => {
-            ElMessage({
-              type: 'info',
-              message: '已取消移除',
-            });
-          });
+      .then(() => {
+        removeCategory(type, id)
+      })
+      .catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '已取消移除',
+        });
+      });
     }
 
     // 更新分类名称操作
@@ -401,13 +401,13 @@ export default defineComponent({
     // 赋初始值，用于辨别新增还是移除
     let tagOld: number[] = []
     let topicOld: number[] = []
+    let init = false
     watch(selectValue, (_, o) => {
-      if (tagOld.length == 0) {
+      if (!init) {
         tagOld = o.tag
-      }
-      if (topicOld.length == 0) {
         topicOld = o.topic
       }
+      init = true
     })
 
     // 专题/标签发生变更时的处理逻辑（新增、绑定、解绑）

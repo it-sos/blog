@@ -141,6 +141,20 @@ definitions:
           type: integer
         type: array
     type: object
+  vo.ArticleListVO:
+    properties:
+      duration:
+        description: 持续时间
+        type: string
+      id:
+        type: integer
+      title:
+        description: 标题
+        type: string
+      title_match:
+        description: 匹配的title
+        type: string
+    type: object
   vo.ArticleParamsVO:
     properties:
       content:
@@ -230,7 +244,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: http code = 200
+          description: OK
           schema:
             type: string
         "400":
@@ -266,7 +280,7 @@ paths:
       - 博客后台接口
     post:
       consumes:
-      - application/json
+      - application/x-www-form-urlencoded
       description: 保存文章
       parameters:
       - description: 文章相关内容
@@ -287,6 +301,40 @@ paths:
           schema:
             $ref: '#/definitions/errors.Errors'
       summary: 保存文章
+      tags:
+      - 博客后台接口
+  /admin/articles:
+    get:
+      consumes:
+      - application/json
+      description: 查询文章列表
+      parameters:
+      - description: 关键词
+        in: query
+        name: keyword
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 每页条数
+        in: query
+        name: size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 文章列表VO
+          schema:
+            $ref: '#/definitions/vo.ArticleListVO'
+        "400":
+          description: error
+          schema:
+            $ref: '#/definitions/errors.Errors'
+      summary: 查询文章列表
       tags:
       - 博客后台接口
   /admin/category/bindartcount:
@@ -455,19 +503,19 @@ paths:
       - 博客后台接口
     put:
       consumes:
-      - application/json
+      - application/x-www-form-urlencoded
       description: 更新标签
       parameters:
       - description: 标签id
-        in: query
+        in: formData
         name: id
         required: true
         type: integer
       - description: 标签名称
-        in: query
+        in: formData
         name: name
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -554,19 +602,19 @@ paths:
       - 博客后台接口
     put:
       consumes:
-      - application/json
+      - application/x-www-form-urlencoded
       description: 更新专题
       parameters:
-      - description: 专题名称
-        in: query
-        name: name
-        required: true
-        type: string
       - description: 专题id
-        in: query
+        in: formData
         name: id
         required: true
         type: integer
+      - description: 专题名称
+        in: formData
+        name: name
+        required: true
+        type: string
       produces:
       - application/json
       responses:

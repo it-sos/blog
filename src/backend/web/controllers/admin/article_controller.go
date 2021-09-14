@@ -34,7 +34,7 @@ type ArticleController struct {
 // @Accept json
 // @Produce json
 // @Param id query integer true "文章id"
-// @Success 200 {string} string "http code = 200"
+// @Success 200 {string} string ""
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/article [delete]
 func (c *ArticleController) DeleteArticle() {
@@ -46,7 +46,7 @@ func (c *ArticleController) DeleteArticle() {
 // @Tags 博客后台接口
 // @Summary 保存文章
 // @Description 保存文章
-// @Accept json
+// @Accept application/x-www-form-urlencoded
 // @Produce plain
 // @Param body body vo.ArticleParamsVO true "文章相关内容"
 // @Success 200 {integer} integer "文章id"
@@ -74,4 +74,23 @@ func (c *ArticleController) PostArticle() (id uint, err error) {
 func (c *ArticleController) GetArticle() (vo.ArticleEditVO, error) {
 	id, _ := c.Ctx.URLParamInt("id")
 	return services.SArticle.GetArticleAndContent(uint(id))
+}
+
+// GetArticles
+// @Tags 博客后台接口
+// @Summary 查询文章列表
+// @Description 查询文章列表
+// @Accept json
+// @Produce json
+// @Param keyword query string false "关键词"
+// @Param page query integer true "页码"
+// @Param size query integer true "每页条数"
+// @Success 200 {object} vo.ArticleListVO "文章列表VO"
+// @Failure 400 {object} errors.Errors "error"
+// @Router /admin/articles [get]
+func (c *ArticleController) GetArticles() []vo.ArticleListVO {
+	page, _ := strconv.Atoi(c.Ctx.FormValue("page"))
+	size, _ := strconv.Atoi(c.Ctx.FormValue("size"))
+	keyword := c.Ctx.FormValue("keyword")
+	return services.SArticle.GetArticleList(page, size, keyword)
 }

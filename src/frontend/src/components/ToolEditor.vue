@@ -58,7 +58,14 @@ export default defineComponent({
     EditorContent,
   },
 
-  setup() {
+  setup(prop,context) {
+
+    const articleId = () => {
+      if (typeof router.currentRoute.value.params.id != "undefined") {
+        return parseInt(router.currentRoute.value.params.id.toString())
+      }
+      return 0
+    }
 
     const switchStatus = reactive({
       publish: ref(false),
@@ -135,7 +142,7 @@ export default defineComponent({
           json.content[1].content[0].text != "") {
         intro = json.content[1].content[0].text
       }
-
+      let id: number = articleId()
       axios('/admin/article', {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -143,7 +150,7 @@ export default defineComponent({
         method: "post",
         responseType: "json",
         data: {
-          "id": state.id,
+          "id": id,
           "title": title,
           "intro": intro,
           "content": content,
@@ -151,9 +158,11 @@ export default defineComponent({
           "is_state": switchStatus.publish ? 2 : 1,
         }
       }).then((response: any) => {
-        state.id = response.data
-        if (typeof router.currentRoute.value.params.id == "undefined") {
-          router.push('/e/' + state.id)
+        if (id == 0) {
+          router.push('/e/' + response.data)
+          context.emit("syncArticleList", 'add', response.data, title)
+        } else {
+          context.emit("syncArticleList", 'update', response.data, title)
         }
         stateSaved()
       }).catch((error: any) => {
@@ -180,15 +189,13 @@ export default defineComponent({
     ];
 
     onMounted(() => {
-      if (typeof router.currentRoute.value.params.id != "undefined") {
-        state.id = parseInt(router.currentRoute.value.params.id.toString())
-      }
-      if (state.id > 0) {
+      let id: number = articleId()
+      if (id > 0) {
         axios('/admin/article', {
           method: "get",
           responseType: "json",
           params: {
-            "id": state.id,
+            "id": id,
           }
         }).then((response: any) => {
           editor.commands.setContent(`<h2>${response.data.title}</h2>\n${response.data.content}`)

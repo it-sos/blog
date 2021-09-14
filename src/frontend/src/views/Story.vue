@@ -18,15 +18,15 @@
         <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
              v-infinite-scroll="load">
           <div v-bind:key="idx" v-for="(art, idx) in article" class="text item dirs">
-            <el-link href="javascript:void(0);" v-right-click="rightMenuFunc('article', idx)"><span
-                v-html="art.article.title_match ? art.article.title_match : art.article.title"></span></el-link>
+            <el-link href="javascript:void(0);" v-right-click="rightMenuFunc('article', art.id)"><span
+                v-html="art.title_match ? art.title_match : art.title"></span></el-link>
             <el-tag style="margin-left:0.3rem;" effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
           </div>
         </div>
       </el-card>
     </el-aside>
     <el-main>
-      <tool-editor/>
+      <tool-editor @syncArticleList="syncArticleList" />
     </el-main>
   </el-container>
   <right-menu @trigger="rightMenuTrigger"/>
@@ -35,8 +35,17 @@
 
 import ToolEditor from '../components/ToolEditor.vue'
 
-import {defineComponent, provide, reactive, ref, toRefs, watch} from 'vue'
+import {defineComponent, provide, reactive, ref, toRefs} from 'vue'
 import {ElMessage, ElMessageBox} from "element-plus";
+import axios from "axios";
+import {router} from "@/routes";
+
+interface ArticleList {
+  id?: number
+  title: string
+  title_match?: string
+  duration?: string
+}
 
 export default defineComponent({
   components: {
@@ -46,30 +55,102 @@ export default defineComponent({
   setup() {
     document.title = "editing"
 
-    let article: any[] = []
+    const articleId = () => {
+      if (typeof router.currentRoute.value.params.id != "undefined") {
+        return parseInt(router.currentRoute.value.params.id.toString())
+      }
+      return 0
+    }
+
     const state = reactive({
       keyword: ref(""),
       page: ref(0),
       size: ref(10),
       noMore: ref(false),
-      article: article,
+      article: ref<ArticleList[]>([]),
     });
 
-    const defaults = () => {
-      state.page = 0
-      state.noMore = false
+    const load = () => {
+      if (state.noMore) {
+        return
+      }
+      state.page++
+      axios.get('/admin/articles', {
+        responseType: "json",
+        params: {page: state.page, size: state.size, keyword: state.keyword},
+      }).then((response) => {
+        response.data.forEach((v: ArticleList) => {
+          state.article.push(v)
+        })
+        if (response.data.length < state.size) {
+          state.noMore = true
+        }
+      }).catch((error: any) => {
+        ElMessage.warning(error.response.data.message)
+      })
     }
 
-    const open = () => {
-      ElMessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+    // 重置文章列表
+    const articleListRest = () => {
+      state.page = 0
+      state.noMore = false
+      state.article = []
+      load()
+    }
+
+    // eslint-disable-next-line
+    const enum OPT_TYPE {
+      // eslint-disable-next-line
+      Add = "add",
+      // eslint-disable-next-line
+      Update = "update"
+    }
+
+    // 编辑文章并动态同步文章列表
+    const syncArticleList = (type: OPT_TYPE, id: number, title: string) => {
+      // 更新
+      if (type == OPT_TYPE.Update) {
+        state.article = state.article.map((v: ArticleList) => {
+          if (v.id == id) {
+            v.title = title
+          }
+          return v
+        })
+      }
+      // 新增
+      else if(type == OPT_TYPE.Add) {
+        state.article.unshift({
+          id: id,
+          title: title,
+          duration: '1秒前',
+        })
+      }
+    }
+
+    // 删除操作
+    const deleteConfirm = (id: number) => {
+      ElMessageBox.confirm('此操作将永久删除该文章, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        ElMessage({
-          type: 'success',
-          message: '删除成功!',
-        });
+        axios.delete('/admin/article', {
+          responseType: "json",
+          params: {id: id},
+        }).then(() => {
+          state.article = state.article.filter((v: any) => {
+            return id != v.id
+          })
+          ElMessage({
+            type: 'success',
+            message: '删除成功!',
+          });
+          if (articleId() == id) {
+            router.push('/e/')
+          }
+        }).catch((error: any) => {
+          ElMessage.warning(error.response.data.message)
+        })
       }).catch(() => {
         ElMessage({
           type: 'info',
@@ -114,71 +195,27 @@ export default defineComponent({
     }
 
     const rightMenuTrigger = (type: string) => {
-      console.log(type)
-      console.log(rightMenu.id)
-      open()
+      switch (type) {
+        case 'article_add':
+          router.push('/e/')
+          break;
+        case 'article_edit':
+          router.push('/e/'+rightMenu.id)
+          break;
+        case 'article_delete':
+          deleteConfirm(rightMenu.id)
+          break;
+      }
     }
 
     return {
       ...toRefs(state),
-      defaults,
+      load,
+      articleListRest,
+      syncArticleList,
       rightMenu,
       rightMenuFunc,
       rightMenuTrigger,
-    }
-  },
-
-  created() {
-    let timer: any = null
-    watch(
-        () => this.keyword,
-        () => {
-          clearTimeout(timer)
-          timer = setTimeout(() => {
-            this.defaults()
-            this.load()
-          }, 1000)
-        }
-    )
-  },
-
-  methods: {
-    load(): void {
-      if (this.noMore) {
-        return
-      }
-      this.article = [
-        {
-          article: {
-            title: "标准标题1"
-          },
-          duration: "2秒"
-        },
-        {
-          article: {
-            title: "标准标题2"
-          },
-          duration: "2秒"
-        },
-      ]
-      // this.page++
-      // this.$http.get('/article/list', {
-      //   params: {
-      //     "page": this.page,
-      //     "size": this.size,
-      //     // "keyword": this.keyword
-      //   }
-      // }).then((response) => {
-      //   if (response.data.length === 0) {
-      //     this.noMore = true
-      //     return
-      //   }
-      //   response.data.forEach((v: any) => {
-      //     this.article.push(v)
-      //   })
-      // }).catch((error) => {
-      //   console.log(error)
-      // })
     }
   }
 })

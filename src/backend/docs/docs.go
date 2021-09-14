@@ -64,7 +64,7 @@ var doc = `{
             "post": {
                 "description": "保存文章",
                 "consumes": [
-                    "application/json"
+                    "application/x-www-form-urlencoded"
                 ],
                 "produces": [
                     "text/plain"
@@ -122,9 +122,60 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "http code = 200",
+                        "description": "OK",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/articles": {
+            "get": {
+                "description": "查询文章列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "查询文章列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "关键词",
+                        "name": "keyword",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页条数",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "文章列表VO",
+                        "schema": {
+                            "$ref": "#/definitions/vo.ArticleListVO"
                         }
                     },
                     "400": {
@@ -313,7 +364,7 @@ var doc = `{
             "put": {
                 "description": "更新标签",
                 "consumes": [
-                    "application/json"
+                    "application/x-www-form-urlencoded"
                 ],
                 "produces": [
                     "application/json"
@@ -327,14 +378,14 @@ var doc = `{
                         "type": "integer",
                         "description": "标签id",
                         "name": "id",
-                        "in": "query",
+                        "in": "formData",
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "标签名称",
                         "name": "name",
-                        "in": "query",
+                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -462,7 +513,7 @@ var doc = `{
             "put": {
                 "description": "更新专题",
                 "consumes": [
-                    "application/json"
+                    "application/x-www-form-urlencoded"
                 ],
                 "produces": [
                     "application/json"
@@ -473,17 +524,17 @@ var doc = `{
                 "summary": "更新专题",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "专题名称",
-                        "name": "name",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
                         "type": "integer",
                         "description": "专题id",
                         "name": "id",
-                        "in": "query",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "专题名称",
+                        "name": "name",
+                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -930,6 +981,26 @@ var doc = `{
                     "items": {
                         "type": "integer"
                     }
+                }
+            }
+        },
+        "vo.ArticleListVO": {
+            "type": "object",
+            "properties": {
+                "duration": {
+                    "description": "持续时间",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                },
+                "title_match": {
+                    "description": "匹配的title",
+                    "type": "string"
                 }
             }
         },

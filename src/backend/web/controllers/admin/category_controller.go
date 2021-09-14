@@ -93,16 +93,16 @@ func (c *CategoryController) DeleteCategoryTopic() error {
 // @Tags 博客后台接口
 // @Summary 更新专题
 // @Description 更新专题
-// @Accept json
+// @Accept application/x-www-form-urlencoded
 // @Produce json
-// @Param name query string true "专题名称"
-// @Param id query integer true "专题id"
+// @Param id formData integer true "专题id"
+// @Param name formData string true "专题名称"
 // @Success 200 {string} string "success"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/category/topic [put]
 func (c *CategoryController) PutCategoryTopic() error {
-	name := c.Ctx.FormValue("name")
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
+	name := c.Ctx.FormValue("name")
 	return services.SCategory.UpdateTopic(uint(id), name)
 }
 
@@ -170,10 +170,10 @@ func (c *CategoryController) DeleteCategoryTag() error {
 // @Tags 博客后台接口
 // @Summary 更新标签
 // @Description 更新标签
-// @Accept json
+// @Accept application/x-www-form-urlencoded
 // @Produce json
-// @Param id query integer true "标签id"
-// @Param name query integer true "标签名称"
+// @Param id formData integer true "标签id"
+// @Param name formData string true "标签名称"
 // @Success 200 {string} string "success"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/category/tag [put]

@@ -75,6 +75,8 @@ type ArticleService interface {
 	DeleteArticle(id uint) error
 	// GetArticleAndContent 查询文章及相关信息「后台」
 	GetArticleAndContent(id uint) (art vo.ArticleEditVO, err error)
+	// GetArticleList 获取文章列表 [后台]
+	GetArticleList(page int, size int, keyword string) []vo.ArticleListVO
 }
 
 var SArticle ArticleService = &articleService{
@@ -86,6 +88,23 @@ type articleService struct {
 	article     repositories.ArticleRepository
 	content     repositories.ArticleContentRepository
 	accessTimes caches.AccessTimes
+}
+
+// GetArticleList 获取文章列表 [后台]
+func (a articleService) GetArticleList(page int, size int, keyword string) []vo.ArticleListVO {
+	article := a.getListPage(true, page, size, keyword)
+	articleVO := make([]vo.ArticleListVO, 0)
+	if len(article) > 0 {
+		for _, v := range article {
+			articleVO = append(articleVO, vo.ArticleListVO{
+				Id:         v.Id,
+				Title:      v.Title,
+				TitleMatch: v.TitleMatch,
+				Duration:   utils.TimeDuration(v.Utime),
+			})
+		}
+	}
+	return articleVO
 }
 
 func (a articleService) GetArticleAndContent(id uint) (info vo.ArticleEditVO, err error) {
@@ -155,13 +174,12 @@ func (a articleService) SaveArticle(vo vo.ArticleParamsVO) (id uint, err error) 
 }
 
 func (a articleService) DeleteArticle(id uint) (err error) {
-	if !a.article.SoftDelete(id) {
-		err = errors.Error("article_remove_err")
-		return
-	}
 	caches.CCategoryRel.Id(id, repositories.CategoryTypeTag)
 	caches.CCategoryRel.Id(id, repositories.CategoryTypeTopic)
-	return nil
+	if !a.article.SoftDelete(id) {
+		err = errors.Error("article_remove_err")
+	}
+	return
 }
 
 func (a articleService) GetRank(isLogin bool) []vo.ArticleAccessTimesVO {
@@ -171,37 +189,7 @@ func (a articleService) GetRank(isLogin bool) []vo.ArticleAccessTimesVO {
 }
 
 func (a articleService) GetListPage(isLogin bool, page int, size int, keyword string) []vo.ArticleVO {
-	page = validate.IntRange(page, 1, 100000)
-	size = validate.IntRange(size, 1, 100000)
-	offset := (page - 1) * size
-
-	var article []datamodels.Article
-	if keyword != "" {
-		es := a.search(isLogin, keyword, offset, size)
-		for _, v := range es.Hits.SubHits {
-			var titleMatch, introMatch string
-			if len(v.Highlight.Title) > 0 {
-				titleMatch = v.Highlight.Title[0]
-			}
-			if len(v.Highlight.Intro) > 0 {
-				introMatch = v.Highlight.Intro[0]
-			}
-			id, _ := strconv.Atoi(v.Id)
-			article = append(article, datamodels.Article{
-				Id:         uint(id),
-				Title:      v.Source.Title,
-				TitleMatch: titleMatch,
-				Intro:      v.Source.Intro,
-				IntroMatch: introMatch,
-				IsState:    v.Source.IsState,
-				Utime:      v.Source.Utime,
-				Ctime:      v.Source.Ctime,
-			})
-		}
-	} else {
-		article = a.article.SelectMany(a.getAuthorize(isLogin), offset, size)
-	}
-
+	article := a.getListPage(isLogin, page, size, keyword)
 	articleVO := make([]vo.ArticleVO, 0)
 	if len(article) > 0 {
 		for _, v := range article {
@@ -346,4 +334,39 @@ func (a articleService) search(isLogin bool, keyword string, offset, size int) *
 		print(err.Error() + res.String())
 	}
 	return esResultDTO
+}
+
+// 获取文章列表（分页）
+func (a articleService) getListPage(isLogin bool, page int, size int, keyword string) []datamodels.Article {
+	page = validate.IntRange(page, 1, 100000)
+	size = validate.IntRange(size, 1, 100000)
+	offset := (page - 1) * size
+
+	var article []datamodels.Article
+	if keyword != "" {
+		es := a.search(isLogin, keyword, offset, size)
+		for _, v := range es.Hits.SubHits {
+			var titleMatch, introMatch string
+			if len(v.Highlight.Title) > 0 {
+				titleMatch = v.Highlight.Title[0]
+			}
+			if len(v.Highlight.Intro) > 0 {
+				introMatch = v.Highlight.Intro[0]
+			}
+			id, _ := strconv.Atoi(v.Id)
+			article = append(article, datamodels.Article{
+				Id:         uint(id),
+				Title:      v.Source.Title,
+				TitleMatch: titleMatch,
+				Intro:      v.Source.Intro,
+				IntroMatch: introMatch,
+				IsState:    v.Source.IsState,
+				Utime:      v.Source.Utime,
+				Ctime:      v.Source.Ctime,
+			})
+		}
+	} else {
+		article = a.article.SelectMany(a.getAuthorize(isLogin), offset, size)
+	}
+	return article
 }
