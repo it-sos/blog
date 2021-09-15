@@ -29,8 +29,8 @@ const (
 	IsPlaintext = 2
 
 	// NotDeleted 删除状态
-	NotDeleted = 0
-	IsDeleted  = 1
+	NotDeleted = 1
+	IsDeleted  = 2
 )
 
 type ArticleRepository interface {

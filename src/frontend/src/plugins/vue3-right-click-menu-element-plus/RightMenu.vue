@@ -21,7 +21,7 @@ export default defineComponent({
     let state = reactive({
       position: ref({ x:0, y:0 }),
       show: ref(true),
-      active: ref('test'),
+      active: ref<string>('test'),
       menu: ref({'test':[
           {
             'icon': 'el-icon-question',

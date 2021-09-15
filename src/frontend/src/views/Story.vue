@@ -17,8 +17,8 @@
         </template>
         <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
              v-infinite-scroll="load">
-          <div v-bind:key="idx" v-for="(art, idx) in article" class="text item dirs">
-            <el-link href="javascript:void(0);" v-right-click="rightMenuFunc('article', art.id)"><span
+          <div v-bind:key="art.id" v-for="art in article" class="text item dirs">
+            <el-link href="javascript:void(0);" @click="edit(art.id)" v-right-click="rightMenuFunc('article', art.id)"><span
                 v-html="art.title_match ? art.title_match : art.title"></span></el-link>
             <el-tag style="margin-left:0.3rem;" effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
           </div>
@@ -26,7 +26,7 @@
       </el-card>
     </el-aside>
     <el-main>
-      <tool-editor @syncArticleList="syncArticleList" />
+      <tool-editor ref="articleRef" @syncArticleList="syncArticleList" />
     </el-main>
   </el-container>
   <right-menu @trigger="rightMenuTrigger"/>
@@ -147,6 +147,9 @@ export default defineComponent({
           });
           if (articleId() == id) {
             router.push('/e/')
+            setTimeout(()=>{
+              articleRef.value.loadArticle()
+            })
           }
         }).catch((error: any) => {
           ElMessage.warning(error.response.data.message)
@@ -171,11 +174,11 @@ export default defineComponent({
             'title': '新建',
             'command': 'article_add',
           },
-          {
-            'icon': 'el-icon-edit',
-            'title': '编辑',
-            'command': 'article_edit',
-          },
+          // {
+          //   'icon': 'el-icon-edit',
+          //   'title': '编辑',
+          //   'command': 'article_edit',
+          // },
           {
             'icon': 'el-icon-delete',
             'title': '删除',
@@ -198,18 +201,30 @@ export default defineComponent({
       switch (type) {
         case 'article_add':
           router.push('/e/')
+          setTimeout(()=>{
+            articleRef.value.loadArticle()
+          })
           break;
-        case 'article_edit':
-          router.push('/e/'+rightMenu.id)
-          break;
+        // case 'article_edit':
+        //   router.push('/e/'+rightMenu.id)
+        //   break;
         case 'article_delete':
           deleteConfirm(rightMenu.id)
           break;
       }
     }
+    const articleRef = ref();
+    const edit = (id: number) => {
+      router.push('/e/'+id)
+      setTimeout(()=>{
+        articleRef.value.loadArticle()
+      })
+    }
 
     return {
       ...toRefs(state),
+      articleRef,
+      edit,
       load,
       articleListRest,
       syncArticleList,

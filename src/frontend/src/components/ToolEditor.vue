@@ -3,7 +3,7 @@
     <el-card class="box-card">
       <template #header>
         <div class="card-header menu-bar-user">
-          <menu-bar class="" :editor="editor"/>
+          <menu-bar @save="save" :editor="editor"/>
           <el-tooltip class="item" effect="dark" :content="saveStatus.message" placement="left">
             <el-icon :class="saveStatus.icon" :color="saveStatus.color" :size="26">
               <loading v-if="saveStatus.unsaved"/>
@@ -35,7 +35,7 @@ import CodeBlockComponent from './editor/CodeBlockComponent.vue'
 import MenuBar from './editor/MenuBar.vue'
 
 import lowlight from 'lowlight'
-import {defineComponent, onMounted, onUnmounted, provide, reactive, ref, toRefs, watch} from 'vue'
+import {defineComponent, onMounted, onUnmounted, provide, reactive, ref, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
 import axios from "axios";
 import {router} from '@/routes'
@@ -58,7 +58,7 @@ export default defineComponent({
     EditorContent,
   },
 
-  setup(prop,context) {
+  setup(prop, context) {
 
     const articleId = () => {
       if (typeof router.currentRoute.value.params.id != "undefined") {
@@ -79,10 +79,10 @@ export default defineComponent({
     })
     provide('select-value', selectValue)
 
-    watch([switchStatus], () => {
-      save()
-    })
-
+    // watch([switchStatus], () => {
+    //   save()
+    // })
+    //
     const state = reactive({
       saveStatus: {
         icon: "el-icon-success",
@@ -127,6 +127,29 @@ export default defineComponent({
       });
     };
 
+    // 文章加密状态
+    // eslint-disable-next-line
+    const enum SWITCH_ENCRYPT_STATUS {
+      // 密文
+      // eslint-disable-next-line
+      Encrypt = 1,
+      // 明文
+      // eslint-disable-next-line
+      Plaintext = 2,
+    }
+
+    // 文章发布状态
+    // eslint-disable-next-line
+    const enum SWITCH_PUBLISH_STATUS {
+      // 私有
+      // eslint-disable-next-line
+      Private = 1,
+      // 公开
+      // eslint-disable-next-line
+      Public = 2,
+    }
+
+
     const save = () => {
       stateUnsaved()
       let json = editor.getJSON()
@@ -154,8 +177,8 @@ export default defineComponent({
           "title": title,
           "intro": intro,
           "content": content,
-          "is_encrypt": switchStatus.encrypt ? 2 : 1,
-          "is_state": switchStatus.publish ? 2 : 1,
+          "is_encrypt": switchStatus.encrypt ? SWITCH_ENCRYPT_STATUS.Encrypt : SWITCH_ENCRYPT_STATUS.Plaintext,
+          "is_state": switchStatus.publish ? SWITCH_PUBLISH_STATUS.Public : SWITCH_PUBLISH_STATUS.Private,
         }
       }).then((response: any) => {
         if (id == 0) {
@@ -188,7 +211,7 @@ export default defineComponent({
       Typography,
     ];
 
-    onMounted(() => {
+    const loadArticle = () => {
       let id: number = articleId()
       if (id > 0) {
         axios('/admin/article', {
@@ -199,14 +222,24 @@ export default defineComponent({
           }
         }).then((response: any) => {
           editor.commands.setContent(`<h2>${response.data.title}</h2>\n${response.data.content}`)
-          switchStatus.publish = response.data.is_state == 2
-          switchStatus.encrypt = response.data.is_encrypt == 2
+          switchStatus.publish = response.data.is_state == SWITCH_PUBLISH_STATUS.Public
+          switchStatus.encrypt = response.data.is_encrypt == SWITCH_ENCRYPT_STATUS.Encrypt
           selectValue.topic = response.data.topics
           selectValue.tag = response.data.tags
         }).catch((error: any) => {
           stateSaveFail(error.response.data.message)
         })
+      } else {
+        editor.commands.setContent('<h2>此行为标题，固定样式为H2</h2>\r<p>此行为简介，可自定义文本格式</p>')
+        switchStatus.publish = false
+        switchStatus.encrypt = false
+        selectValue.topic = []
+        selectValue.tag = []
       }
+    }
+
+    onMounted(() => {
+      loadArticle()
     })
 
     let timer: any = null;
@@ -219,7 +252,7 @@ export default defineComponent({
         clearTimeout(timer)
         timer = setTimeout(() => {
           save()
-        }, 3000)
+        }, 2000)
       },
     })
 
@@ -230,6 +263,8 @@ export default defineComponent({
     return {
       ...toRefs(state),
       editor,
+      loadArticle,
+      save,
     }
   },
 })

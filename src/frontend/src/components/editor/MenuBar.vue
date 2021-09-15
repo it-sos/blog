@@ -10,11 +10,13 @@
           class="menu-opt-item"
           v-model="switchStatus.publish"
           active-text="公开"
+          @change="save"
           :loading="switchLoading.publishLoading"></el-switch>
       <el-switch
           class="menu-opt-item"
           v-model="switchStatus.encrypt"
           active-text="加密"
+          @change="save"
           :loading="switchLoading.encryptLoading"
           :beforeChange="encryptBeforeChange"></el-switch>
       <el-select
@@ -85,7 +87,7 @@ export default defineComponent({
     },
   },
 
-  setup() {
+  setup(prop, context) {
 
     const articleId = () => {
       if (typeof router.currentRoute.value.params.id != "undefined") {
@@ -450,7 +452,13 @@ export default defineComponent({
       changeCore(v, topicOld, CATEGORY_TYPE.Topic)
     }
 
+    // 状态按钮发生变更时执行保存
+    const save = () => {
+      context.emit("save")
+    }
+
     return {
+      save,
       changeTag,
       changeTopic,
       switchStatus,

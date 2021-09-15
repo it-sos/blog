@@ -160,6 +160,7 @@ func (a articleService) SaveArticle(vo vo.ArticleParamsVO) (id uint, err error) 
 		Intro:     vo.Intro,
 		IsState:   vo.IsState,
 		IsEncrypt: vo.IsEncrypt,
+		IsDel:     repositories.NotDeleted,
 	}
 
 	if vo.Id > 0 {

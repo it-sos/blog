@@ -36,5 +36,5 @@ func TestArticleRepository_UpdateTrans(t *testing.T) {
 }
 
 func Test_articleRepository_TitleExists(t *testing.T) {
-	t.Log(RArticle.TitleExists("hellos"))
+	t.Log(RArticle.TitleExists("此行为标题，固定样式为H2"))
 }
