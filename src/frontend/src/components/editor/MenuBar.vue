@@ -301,16 +301,15 @@ export default defineComponent({
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputValue: getLabel(type, id),
-      })
-          .then(({value}) => {
-            updateCategory(type, id, value)
-          })
-          .catch(() => {
-            ElMessage({
-              type: 'info',
-              message: '取消输入',
-            });
+      }).then(({value}) => {
+          updateCategory(type, id, value)
+        })
+        .catch(() => {
+          ElMessage({
+            type: 'info',
+            message: '取消输入',
           });
+        });
     }
 
     // 右键菜单逻辑处理

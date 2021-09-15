@@ -79,10 +79,6 @@ export default defineComponent({
     })
     provide('select-value', selectValue)
 
-    // watch([switchStatus], () => {
-    //   save()
-    // })
-    //
     const state = reactive({
       saveStatus: {
         icon: "el-icon-success",

@@ -6,7 +6,7 @@
           <div class="card-header">
             <el-input
                 placeholder="请输入内容"
-                v-model="keyword"
+                v-model.trim="keyword"
                 class="input-with-select"
             >
               <template #prefix>
@@ -18,7 +18,8 @@
         <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
              v-infinite-scroll="load">
           <div v-bind:key="art.id" v-for="art in article" class="text item dirs">
-            <el-link href="javascript:void(0);" @click="edit(art.id)" v-right-click="rightMenuFunc('article', art.id)"><span
+            <el-link href="javascript:void(0);" @click="edit(art.id)"
+                     v-right-click="rightMenuFunc('article', art.id)"><span
                 v-html="art.title_match ? art.title_match : art.title"></span></el-link>
             <el-tag style="margin-left:0.3rem;" effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
           </div>
@@ -26,7 +27,7 @@
       </el-card>
     </el-aside>
     <el-main>
-      <tool-editor ref="articleRef" @syncArticleList="syncArticleList" />
+      <tool-editor ref="articleRef" @syncArticleList="syncArticleList"/>
     </el-main>
   </el-container>
   <right-menu @trigger="rightMenuTrigger"/>
@@ -35,7 +36,7 @@
 
 import ToolEditor from '../components/ToolEditor.vue'
 
-import {defineComponent, provide, reactive, ref, toRefs} from 'vue'
+import {defineComponent, provide, reactive, ref, toRefs, watch} from 'vue'
 import {ElMessage, ElMessageBox} from "element-plus";
 import axios from "axios";
 import {router} from "@/routes";
@@ -69,6 +70,12 @@ export default defineComponent({
       noMore: ref(false),
       article: ref<ArticleList[]>([]),
     });
+
+    let timer: any = null
+    watch(() => state.keyword, () => {
+      clearTimeout(timer)
+      timer = setTimeout(articleListRest, 1000)
+    })
 
     const load = () => {
       if (state.noMore) {
@@ -118,7 +125,7 @@ export default defineComponent({
         })
       }
       // 新增
-      else if(type == OPT_TYPE.Add) {
+      else if (type == OPT_TYPE.Add) {
         state.article.unshift({
           id: id,
           title: title,
@@ -147,7 +154,7 @@ export default defineComponent({
           });
           if (articleId() == id) {
             router.push('/e/')
-            setTimeout(()=>{
+            setTimeout(() => {
               articleRef.value.loadArticle()
             })
           }
@@ -201,13 +208,13 @@ export default defineComponent({
       switch (type) {
         case 'article_add':
           router.push('/e/')
-          setTimeout(()=>{
+          setTimeout(() => {
             articleRef.value.loadArticle()
           })
           break;
-        // case 'article_edit':
-        //   router.push('/e/'+rightMenu.id)
-        //   break;
+          // case 'article_edit':
+          //   router.push('/e/'+rightMenu.id)
+          //   break;
         case 'article_delete':
           deleteConfirm(rightMenu.id)
           break;
@@ -215,8 +222,8 @@ export default defineComponent({
     }
     const articleRef = ref();
     const edit = (id: number) => {
-      router.push('/e/'+id)
-      setTimeout(()=>{
+      router.push('/e/' + id)
+      setTimeout(() => {
         articleRef.value.loadArticle()
       })
     }
@@ -226,7 +233,6 @@ export default defineComponent({
       articleRef,
       edit,
       load,
-      articleListRest,
       syncArticleList,
       rightMenu,
       rightMenuFunc,
