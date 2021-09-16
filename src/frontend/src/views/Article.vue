@@ -52,55 +52,74 @@
 
 <script lang="ts">
 
-import {Vue} from "vue-class-component";
+// import {Editor, EditorContent, Extensions, VueNodeViewRenderer} from '@tiptap/vue-3'
+// import Document from '@tiptap/extension-document'
+// import StarterKit from '@tiptap/starter-kit'
+// import Highlight from '@tiptap/extension-highlight'
+// import Paragraph from '@tiptap/extension-paragraph'
+// import Text from '@tiptap/extension-text'
+// import Typography from '@tiptap/extension-typography'
+// import TaskList from '@tiptap/extension-task-list'
+// import TaskItem from '@tiptap/extension-task-item'
+// import TextAlign from '@tiptap/extension-text-align'
+// import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
+// import Underline from '@tiptap/extension-underline'
+// import Subscript from '@tiptap/extension-subscript'
+// import Superscript from '@tiptap/extension-superscript'
+// import CodeBlockComponent from './editor/CodeBlockComponent.vue'
 
-export default class Article extends Vue {
-  prev_title: string = ""
-  next_title: string = ""
-  prev_title_link: string = ""
-  next_title_link: string = ""
-  title: string = ""
-  duration: string = ""
-  article_content: string = ""
-  topics: any[] = []
-  tags: any[] = []
-  article: any = {}
-  tagList: any[] = []
-  topicList: any[] = []
+import {defineComponent, reactive, ref, toRefs} from "vue";
+import axios from "axios";
+import {router} from "@/routes";
 
-  mounted() {
-    let title: string = this.$route.params.title.toString();
-    document.title = "详情：" + decodeURIComponent(title)
-    this.content()
-  }
+export default defineComponent({
 
-  content() {
-    this.$http.get('/article/content', {params: {title: decodeURIComponent(this.$route.params.title.toString())}}).then((response) => {
-      this.article = response.data
-      this.prev_title = "已经是顶部了"
-      this.next_title = "已经是底部了"
-      this.prev_title_link = "javascript:void(0);"
-      this.next_title_link = "javascript:void(0);"
-      if (this.article.navigations.prev_title) {
-        this.prev_title = this.article.navigations.prev_title
-        this.prev_title_link = '/a/' + encodeURIComponent(this.prev_title)
+  setup() {
+    let state = reactive({
+      prev_title: ref<string>(),
+      next_title: ref<string>(),
+      prev_title_link: ref<string>(),
+      next_title_link: ref<string>(),
+      title: ref<string>(),
+      duration: ref<string>(),
+      article_content: ref<string>(),
+      topics: ref<any[]>(),
+      tags: ref<any[]>(),
+      tagList: ref<any[]>(),
+      topicList: ref<any[]>(),
+    })
+
+    document.title = "详情：" + decodeURIComponent(router.currentRoute.value.params.title.toString())
+
+    axios.get('/article/content', {params: {title: decodeURIComponent(router.currentRoute.value.params.title.toString())}}).then((response) => {
+      let article = response.data
+      state.prev_title = "已经是顶部了"
+      state.next_title = "已经是底部了"
+      state.prev_title_link = "javascript:void(0);"
+      state.next_title_link = "javascript:void(0);"
+      if (article.navigations.prev_title) {
+        state.prev_title = article.navigations.prev_title
+        state.prev_title_link = '/a/' + encodeURIComponent(article.navigations.prev_title)
       }
-      if (this.article.navigations.next_title) {
-        this.next_title = this.article.navigations.next_title
-        this.next_title_link = '/a/' + encodeURIComponent(this.next_title)
+      if (article.navigations.next_title) {
+        state.next_title = article.navigations.next_title
+        state.next_title_link = '/a/' + encodeURIComponent(article.navigations.next_title)
       }
-      this.article_content = this.article.article_content.data
-      this.topics = this.article.article.topics
-      this.tags = this.article.article.tags
-      this.title = this.article.article.article.title
-      this.duration = this.article.article.duration
-      this.topicList = this.article.topics;
-      this.tagList = this.article.tags;
+      state.article_content = article.article_content.data
+      state.topics = article.article.topics
+      state.tags = article.article.tags
+      state.title = article.article.article.title
+      state.duration = article.article.duration
+      state.topicList = article.topics;
+      state.tagList = article.tags;
     }).catch((error) => {
       console.log(error)
     })
+    return {
+      ...toRefs(state)
+    }
   }
-}
+})
 </script>
 
 <style scoped>
