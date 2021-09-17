@@ -1,55 +1,65 @@
 <template>
-  <el-container>
-    <el-main>
-      <el-row class="nav">
-        <el-col :span="12">
-          <el-link :href="prev_title_link">上一篇：{{ prev_title }}</el-link>
-        </el-col>
-        <el-col :span="12" align="right">
-          <el-link :href="next_title_link">下一篇：{{ next_title }}</el-link>
-        </el-col>
-      </el-row>
-      <div class="box">
-        <div class="title">
-          <el-link :href="'/a/'+encodeURIComponent(title)"><h2>{{ title }}</h2></el-link>
-          <el-tag effect="plain" type="danger" size="small">{{ duration }}</el-tag>
-        </div>
-        <div class="description">
-          <editor-content :editor="editor"/>
-        </div>
-        <el-row class="link">
-          <el-col :span="12">
-            <p v-bind:key="idx" v-for="(topic,idx) in topics">来自：{{ topic }} 专题</p>
-          </el-col>
-          <el-col :span="12" align="right" class="tag">
-            <el-tag effect="plain" v-bind:key="idx" v-for="(tag, idx) in tags">{{ tag }}</el-tag>
-          </el-col>
-        </el-row>
-      </div>
-    </el-main>
-  </el-container>
-  <el-aside class="hidden-xs-only">
-    <el-card class="box-card" v-bind:key="idx" v-for="(topic,idx) in topicList">
-      <template #header>
-        <div class="card-header">
-          <span>{{ topic.title }} 专题</span>
-        </div>
-      </template>
-      <div v-bind:key="idx" v-for="(art, idx) in topic.article" class="text item">
-        <el-link :href="'/a/'+encodeURIComponent(art.title)">{{ art.title + ' （' + art.access_times + '）' }}</el-link>
-      </div>
-    </el-card>
-    <el-card class="box-card" v-bind:key="idx" v-for="(tag, idx) in tagList">
-      <template #header>
-        <div class="card-header">
-          <span>{{ tag.title }} 标签</span>
-        </div>
-      </template>
-      <div v-bind:key="idx" v-for="(art, idx) in tag.article" class="text item">
-        <el-link :href="'/a/'+encodeURIComponent(art.title)">{{ art.title + ' （' + art.access_times + '）' }}</el-link>
-      </div>
-    </el-card>
-  </el-aside>
+  <el-skeleton :rows="17" :loading="loading" animated>
+    <template #default>
+      <el-container>
+        <el-main>
+          <el-row class="nav">
+            <el-col :span="12">
+              <el-link :href="prev_title_link">上一篇：{{ prev_title }}</el-link>
+            </el-col>
+            <el-col :span="12" align="right">
+              <el-link :href="next_title_link">下一篇：{{ next_title }}</el-link>
+            </el-col>
+          </el-row>
+          <div class="box">
+            <div class="title">
+              <el-link :href="'/a/'+encodeURIComponent(title)"><h2>{{ title }}</h2></el-link>
+              <el-tag effect="plain" type="danger" size="small">{{ duration }}</el-tag>
+            </div>
+            <div class="description">
+              <editor-content :editor="editor"/>
+            </div>
+            <el-row class="link">
+              <el-col :span="12">
+                <p v-bind:key="idx" v-for="(topic,idx) in topics">来自：{{ topic }} 专题</p>
+              </el-col>
+              <el-col :span="12" align="right" class="tag">
+                <el-tag effect="plain" v-bind:key="idx" v-for="(tag, idx) in tags">{{ tag }}</el-tag>
+              </el-col>
+            </el-row>
+          </div>
+        </el-main>
+      </el-container>
+      <el-aside class="hidden-xs-only">
+        <el-card class="box-card" v-bind:key="idx" v-for="(topic,idx) in topicList">
+          <template #header>
+            <div class="card-header">
+              <span>{{ topic.title }} 专题</span>
+            </div>
+          </template>
+          <div v-bind:key="idx" v-for="(art, idx) in topic.article" class="text item">
+            <el-link :href="'/a/'+encodeURIComponent(art.title)">{{
+                art.title + ' （' + art.access_times + '）'
+              }}
+            </el-link>
+          </div>
+        </el-card>
+        <el-card class="box-card" v-bind:key="idx" v-for="(tag, idx) in tagList">
+          <template #header>
+            <div class="card-header">
+              <span>{{ tag.title }} 标签</span>
+            </div>
+          </template>
+          <div v-bind:key="idx" v-for="(art, idx) in tag.article" class="text item">
+            <el-link :href="'/a/'+encodeURIComponent(art.title)">{{
+                art.title + ' （' + art.access_times + '）'
+              }}
+            </el-link>
+          </div>
+        </el-card>
+      </el-aside>
+    </template>
+  </el-skeleton>
 </template>
 
 <script lang="ts">
@@ -80,6 +90,7 @@ export default defineComponent({
       tags: ref<any[]>(),
       tagList: ref<any[]>(),
       topicList: ref<any[]>(),
+      loading: true,
     })
 
     document.title = "详情：" + decodeURIComponent(router.currentRoute.value.params.title.toString())
@@ -94,7 +105,6 @@ export default defineComponent({
     onUnmounted(() => {
       if (editor) editor.destroy();
     })
-
     axios.get('/article/content', {params: {title: decodeURIComponent(router.currentRoute.value.params.title.toString())}}).then((response) => {
       let article = response.data
       state.prev_title = "已经是顶部了"
@@ -115,8 +125,9 @@ export default defineComponent({
       state.tags = article.article.tags
       state.title = article.article.article.title
       state.duration = article.article.duration
-      state.topicList = article.topics;
-      state.tagList = article.tags;
+      state.topicList = article.topics
+      state.tagList = article.tags
+      state.loading = false
     }).catch((error) => {
       console.log(error)
     })

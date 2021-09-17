@@ -49,7 +49,7 @@ if [ ! -e "$config/config.yaml" ]; then
   echo "<<<<<<<<<<<<<<"
   echo "Please modify the configuration file and execute again: $config/config.yaml"
   echo ">>>>>>>>>>>>>>"
-  cp $basedir/../config.yaml $config/config.yaml
+  cp $basedir/../src/backend/config.yaml $config/config.yaml
 fi
 
 options="deploy_full | deploy_go_and_vue | deploy_linux_go | deploy_vue | deploy_supervisor | deploy_views | deploy_config | restart_supervisor | restart_nginx | build_darwin | build_windows"
@@ -82,6 +82,7 @@ AskPassword=$(cat <<-EOF
 expect {
   "*请输入密码*" { send "$PASSWORD\r" }
   "*password*" { send "$PASSWORD\r" }
+  "*yes/no*" { send "yes\r" }
   "*#|*$" { send "\r" }
   "sftp>" { send "\r" }
   eof { send_tty "eof, will exit.\n"; exit }
@@ -116,6 +117,7 @@ if { "$JUMP_HOST_NAME" == "" } {
   spawn sftp $JUMP_HOST_NAME
 }
 
+$AskPassword
 $AskPassword
 
 expect "sftp>"

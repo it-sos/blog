@@ -15,6 +15,7 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import CodeBlockComponent from "@/components/editor/CodeBlockComponent.vue";
 import lowlight from "lowlight";
 
+// eslint-disable-next-line
 const CodeBlock = CodeBlockLowlight
     .extend({
         addNodeView() {
