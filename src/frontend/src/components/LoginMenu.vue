@@ -5,34 +5,30 @@
   </span>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item icon="el-icon-plus">黄金糕</el-dropdown-item>
-        <el-dropdown-item>狮子头</el-dropdown-item>
-        <el-dropdown-item>螺蛳粉</el-dropdown-item>
-        <el-dropdown-item disabled>双皮奶</el-dropdown-item>
-        <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
+        <el-dropdown-item icon="el-icon-document-add"><router-link to="/e">创建文章</router-link></el-dropdown-item>
+        <el-dropdown-item icon="el-icon-edit" disabled>编辑文章</el-dropdown-item>
+        <el-dropdown-item icon="el-icon-lock" disabled>内容加密（未激活）</el-dropdown-item>
+        <el-dropdown-item divided>小鹿 [退出]</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import {defineComponent} from 'vue'
+export default defineComponent({
   name: "LoginMenu",
-  data() {
-    return {
-      active: false
+  setup() {
+    let active :boolean = false
+    const visibleChange = (isFold: boolean) => {
+      active = isFold
     }
-  },
-  methods: {
-    visibleChange(isFold) {
-      if (isFold) {
-        this.active = true
-      } else {
-        this.active = false
-      }
+    return {
+      active,
+      visibleChange,
     }
   }
-}
+})
 </script>
 
 <style scoped>

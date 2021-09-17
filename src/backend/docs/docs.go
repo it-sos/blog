@@ -24,6 +24,640 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/article": {
+            "get": {
+                "description": "查询文章及相关信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "查询文章及相关信息",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文章id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "文章详情VO",
+                        "schema": {
+                            "$ref": "#/definitions/vo.ArticleEditVO"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "保存文章",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "保存文章",
+                "parameters": [
+                    {
+                        "description": "文章相关内容",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.ArticleParamsVO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "文章id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "删除文章",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "删除文章",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文章id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/articles": {
+            "get": {
+                "description": "查询文章列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "查询文章列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "关键词",
+                        "name": "keyword",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页条数",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "文章列表VO",
+                        "schema": {
+                            "$ref": "#/definitions/vo.ArticleListVO"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/category/bindartcount": {
+            "get": {
+                "description": "查询绑定的文章条数",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "查询绑定的文章条数",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "分类id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "绑定文章条数",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/category/bindtag": {
+            "post": {
+                "description": "绑定标签与文章",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "绑定标签与文章",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "专题id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "文章id",
+                        "name": "aid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/category/bindtopic": {
+            "post": {
+                "description": "绑定专题与文章",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "绑定专题与文章",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "专题id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "文章id",
+                        "name": "aid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/category/relations": {
+            "delete": {
+                "description": "通过文章id和分类id解除绑定关系",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "解除绑定关系",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "类别id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "文章id",
+                        "name": "aid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/category/tag": {
+            "put": {
+                "description": "更新标签",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "更新标签",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "标签id",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "标签名称",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "新增标签",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "新增标签",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "标签名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "专题id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "删除标签",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "删除标签",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "标签id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/category/tags": {
+            "get": {
+                "description": "查询标签列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "查询标签列表",
+                "responses": {
+                    "200": {
+                        "description": "标签列表",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/datamodels.Category"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/category/topic": {
+            "put": {
+                "description": "更新专题",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "更新专题",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "专题id",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "专题名称",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "新增专题",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "新增专题",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "专题名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "专题id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "通过专题id删除专题",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "删除专题",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "专题id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/category/topics": {
+            "get": {
+                "description": "返回专题列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "博客后台接口"
+                ],
+                "summary": "查询专题列表",
+                "responses": {
+                    "200": {
+                        "description": "专题列表",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/datamodels.Category"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Errors"
+                        }
+                    }
+                }
+            }
+        },
         "/article/content": {
             "get": {
                 "description": "文章内容详情",
@@ -79,6 +713,12 @@ var doc = `{
                 ],
                 "summary": "首页文章列表",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "关键词",
+                        "name": "keyword",
+                        "in": "query"
+                    },
                     {
                         "type": "integer",
                         "description": "页码",
@@ -164,8 +804,16 @@ var doc = `{
                     "description": "简介",
                     "type": "string"
                 },
+                "intro_match": {
+                    "description": "匹配简介",
+                    "type": "string"
+                },
                 "is_del": {
                     "description": "0未删除；1已删除",
+                    "type": "integer"
+                },
+                "is_encrypt": {
+                    "description": "状态1明文；2密文",
                     "type": "integer"
                 },
                 "is_state": {
@@ -174,6 +822,10 @@ var doc = `{
                 },
                 "title": {
                     "description": "标题",
+                    "type": "string"
+                },
+                "title_match": {
+                    "description": "匹配标题",
                     "type": "string"
                 },
                 "uid": {
@@ -199,10 +851,45 @@ var doc = `{
                 }
             }
         },
+        "datamodels.Category": {
+            "type": "object",
+            "properties": {
+                "ctime": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "id": {
+                    "description": "分类表ID",
+                    "type": "integer",
+                    "readOnly": true,
+                    "example": 1
+                },
+                "info": {
+                    "description": "简介",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "专题/标签名称",
+                    "type": "string"
+                },
+                "pid": {
+                    "description": "父编号",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "类型1标签；2专题",
+                    "type": "integer"
+                },
+                "utime": {
+                    "type": "string",
+                    "readOnly": true
+                }
+            }
+        },
         "errors.Errors": {
             "type": "object",
             "properties": {
-                "errCode": {
+                "code": {
                     "type": "integer",
                     "example": 4000000
                 },
@@ -231,11 +918,11 @@ var doc = `{
                     "description": "文章信息",
                     "$ref": "#/definitions/vo.ArticleVO"
                 },
-                "articleContent": {
+                "article_content": {
                     "description": "文章内容",
                     "$ref": "#/definitions/datamodels.ArticleContent"
                 },
-                "navigation": {
+                "navigations": {
                     "description": "导航",
                     "$ref": "#/definitions/vo.NavigationVO"
                 },
@@ -252,6 +939,96 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/vo.TopicVO"
                     }
+                }
+            }
+        },
+        "vo.ArticleEditVO": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "文章内容",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "intro": {
+                    "description": "文章简介",
+                    "type": "string"
+                },
+                "is_encrypt": {
+                    "description": "是否加密1明文2密文",
+                    "type": "integer"
+                },
+                "is_state": {
+                    "description": "状态1私有2公开",
+                    "type": "integer"
+                },
+                "tags": {
+                    "description": "标签ID列表",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "title": {
+                    "description": "文章标题",
+                    "type": "string"
+                },
+                "topics": {
+                    "description": "专题ID列表",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "vo.ArticleListVO": {
+            "type": "object",
+            "properties": {
+                "duration": {
+                    "description": "持续时间",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                },
+                "title_match": {
+                    "description": "匹配的title",
+                    "type": "string"
+                }
+            }
+        },
+        "vo.ArticleParamsVO": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "文章内容",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "intro": {
+                    "description": "文章简介",
+                    "type": "string"
+                },
+                "is_encrypt": {
+                    "description": "是否加密1明文2密文",
+                    "type": "integer"
+                },
+                "is_state": {
+                    "description": "状态1私有2公开",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "文章标题",
+                    "type": "string"
                 }
             }
         },
@@ -282,11 +1059,11 @@ var doc = `{
         "vo.NavigationVO": {
             "type": "object",
             "properties": {
-                "nextTitle": {
+                "next_title": {
                     "description": "下一文章title",
                     "type": "string"
                 },
-                "prevTitle": {
+                "prev_title": {
                     "description": "上一文章title",
                     "type": "string"
                 }
@@ -339,11 +1116,11 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "生产：https://product.com 测试：http://test.com:9090 开发：http://localhost:9090",
+	Host:        "localhost:8090",
 	BasePath:    "",
 	Schemes:     []string{},
 	Title:       "api",
-	Description: "鹏sir笔记接口",
+	Description: "鹏sir笔记接口\\n环境信息：\\n生产：https://product.com\\n测试：http://test.com:8090\\n开发：http://localhost:8090",
 }
 
 type s struct{}

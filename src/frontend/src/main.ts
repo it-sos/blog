@@ -5,6 +5,9 @@ import 'element-plus/lib/theme-chalk/display.css'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import { router } from './routes'
+import RightClick from './plugins/vue3-right-click-menu-element-plus'
+
+
 import App from './App.vue'
 
 if (process.env.NODE_ENV === "production") {
@@ -15,8 +18,11 @@ if (process.env.NODE_ENV === "production") {
 
 const app = createApp(App)
 app.use(ElementPlus)
+    .use(RightClick)
     .use(router)
     .use(VueAxios, axios)
 
-app.mount('#app')
+app.config.globalProperties.axios=axios
+app.config.unwrapInjectedRef = true
 
+app.mount('#app')

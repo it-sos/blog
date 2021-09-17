@@ -9,7 +9,7 @@ const routes = [
     { path: '/:keyword', component: Home },
     { path: '/a/:title', component: Article },
     { path: '/e/', component: Story },
-    { path: '/e/:title', component: Story },
+    { path: '/e/:id', component: Story },
 ]
 
 export const router = createRouter({

@@ -3,7 +3,7 @@
     <el-main>
       <div class="box" v-bind:key="idx" v-for="(art, idx) in article">
         <div class="title">
-          <el-link :href="'/a/'+escape(art.article.title)"><h2
+          <el-link :href="'/a/'+encodeURIComponent(art.article.title)"><h2
               v-html="art.article.title_match ? art.article.title_match : art.article.title"></h2></el-link>
           <el-tag effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
         </div>
@@ -33,7 +33,7 @@
         </div>
       </template>
       <div v-bind:key="idx" v-for="(r, idx) in rank" class="text item">
-        <el-link :href="'/a/'+escape(r.title)">{{ r.title }}（{{ r.access_times }}）</el-link>
+        <el-link :href="'/a/'+encodeURIComponent(r.title)">{{ r.title }}（{{ r.access_times }}）</el-link>
       </div>
     </el-card>
   </el-aside>
@@ -41,16 +41,19 @@
 
 <script lang="ts">
 
-import {Vue} from "vue-class-component";
+import {defineComponent} from 'vue'
 
-export default class Home extends Vue {
-  page: number = 0
-  size: number = 10
-  article: any = []
-  rank: any = []
-  noMore: boolean = false
-  loading: boolean = false
-  errorMsg: boolean = false
+export default defineComponent({
+  data() {
+    let page: number = 0
+    let size: number = 10
+    let article: any = []
+    let rank: any = []
+    let noMore: boolean = false
+    let loading: boolean = false
+    let errorMsg: boolean = false
+    return {page, size, article, rank, noMore, loading, errorMsg}
+  },
 
   created() {
     this.$watch(
@@ -63,71 +66,65 @@ export default class Home extends Vue {
         // 此时 data 已经被 observed 了
         {immediate: true}
     )
-  }
+  },
 
   mounted(): void {
-    document.title = "YuPengSir Blog"
+    document.title = "yupeng-sir-blog"
     this.ranks()
-  }
+  },
 
-  private defaults(): void {
-    this.errorMsg = false
-    this.noMore = false
-    this.page = 0
-    this.article = []
-  }
+  methods: {
+    ranks(): void {
+      this.$http.get('/article/rank').then((response) => {
+        this.rank = response.data
+      }).catch((error) => {
+        this.loading = false
+        console.log(error)
+      })
+    },
 
-  private escape(str: string): string {
-    return encodeURIComponent(str)
-  }
+    defaults(): void {
+      this.errorMsg = false
+      this.noMore = false
+      this.page = 0
+      this.article = []
+    },
 
-  private unscape(str: string): string {
-    return decodeURIComponent(str)
-  }
-
-  private ranks(): void {
-    this.$http.get('/article/rank').then((response) => {
-      this.rank = response.data
-    }).catch((error) => {
-      this.loading = false
-      console.log(error)
-    })
-  }
-
-  load(): void {
-    if (this.noMore || this.errorMsg) {
-      return
-    }
-    this.loading = true
-    this.page++
-
-    var keyword = this.$route.params.keyword
-    if (keyword) {
-      keyword = this.unscape(keyword.toString())
-    }
-
-    this.$http.get('/article/list', {
-      params: {
-        "page": this.page,
-        "size": this.size,
-        "keyword": keyword
-      }
-    }).then((response) => {
-      this.loading = false
-      if (response.data.length === 0) {
-        this.noMore = true
+    load(): void {
+      if (this.noMore || this.errorMsg) {
         return
       }
-      response.data.forEach((v: any) => {
-        this.article.push(v)
+      this.loading = true
+      this.page++
+
+      let keyword = this.$route.params.keyword;
+      if (keyword) {
+        keyword = decodeURIComponent(keyword.toString())
+      }
+
+      this.$http.get('/article/list', {
+        params: {
+          "page": this.page,
+          "size": this.size,
+          "keyword": keyword
+        }
+      }).then((response) => {
+        this.loading = false
+        if (response.data.length === 0) {
+          this.noMore = true
+          return
+        }
+        response.data.forEach((v: any) => {
+          this.article.push(v)
+        })
+      }).catch((error) => {
+        console.log(error)
+        this.loading = false
+        this.errorMsg = true
       })
-    }).catch((error) => {
-      console.log(error)
-      this.loading = false
-      this.errorMsg = true
-    })
-  }
-}
+    }
+  },
+})
 </script>
 
 <style scoped>

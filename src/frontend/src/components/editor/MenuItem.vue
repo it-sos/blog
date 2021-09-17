@@ -5,7 +5,7 @@
       @click="action"
       :title="title"
   >
-    <i class="fas fa-camera"></i>
+  <i :class="icon"></i>
   </button>
 </template>
 
@@ -41,6 +41,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .menu-item {
+  margin-top: 0.15rem;
+  margin-bottom: 0.15rem;
   width: 1.75rem;
   height: 1.75rem;
   color: #0D0D0D;
@@ -50,16 +52,10 @@ export default defineComponent({
   margin-right: 0.25rem;
   border:1px solid #eaeaea;
 
-svg {
-  width: 100%;
-  height: 100%;
-  fill: currentColor;
-}
-
-&.is-active,
-&:hover {
-   color: #FFF;
-   background-color: #0D0D0D;
- }
+  &.is-active,
+  &:hover {
+     color: #FFF;
+     background-color: #0D0D0D;
+  }
 }
 </style>

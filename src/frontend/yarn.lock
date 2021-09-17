@@ -1083,6 +1083,18 @@
   dependencies:
     prosemirror-inputrules "^1.1.3"
 
+"@tiptap/extension-code-block-lowlight@^2.0.0-beta.34":
+  version "2.0.0-beta.34"
+  resolved "https://registry.nlark.com/@tiptap/extension-code-block-lowlight/download/@tiptap/extension-code-block-lowlight-2.0.0-beta.34.tgz#453d44ba233251208a66cc2b42140a17cf27848d"
+  integrity sha1-RT1EuiMyUSCKZswrQhQKF88nhI0=
+  dependencies:
+    "@tiptap/extension-code-block" "^2.0.0-beta.17"
+    "@types/lowlight" "^0.0.3"
+    lowlight "^1.20.0"
+    prosemirror-model "^1.14.3"
+    prosemirror-state "^1.3.4"
+    prosemirror-view "^1.19.0"
+
 "@tiptap/extension-code-block@^2.0.0-beta.17":
   version "2.0.0-beta.17"
   resolved "https://registry.nlark.com/@tiptap/extension-code-block/download/@tiptap/extension-code-block-2.0.0-beta.17.tgz#b12ab35561da08b359f4d8dced2b8c30eb62fcdb"
@@ -1184,6 +1196,33 @@
   resolved "https://registry.nlark.com/@tiptap/extension-strike/download/@tiptap/extension-strike-2.0.0-beta.17.tgz#2280ea4e8c50189c2729814d2ae484e58c712a36"
   integrity sha1-IoDqToxQGJwnKYFNKuSE5YxxKjY=
 
+"@tiptap/extension-subscript@^2.0.0-beta.4":
+  version "2.0.0-beta.4"
+  resolved "https://registry.nlark.com/@tiptap/extension-subscript/download/@tiptap/extension-subscript-2.0.0-beta.4.tgz#07907df58695eb02bf6904d2c3635111003b30fd"
+  integrity sha1-B5B99YaV6wK/aQTSw2NREQA7MP0=
+
+"@tiptap/extension-superscript@^2.0.0-beta.4":
+  version "2.0.0-beta.4"
+  resolved "https://registry.nlark.com/@tiptap/extension-superscript/download/@tiptap/extension-superscript-2.0.0-beta.4.tgz#16906d71dd8f9892101cf792f42005f8cd404516"
+  integrity sha1-FpBtcd2PmJIQHPeS9CAF+M1ARRY=
+
+"@tiptap/extension-task-item@^2.0.0-beta.17":
+  version "2.0.0-beta.17"
+  resolved "https://registry.nlark.com/@tiptap/extension-task-item/download/@tiptap/extension-task-item-2.0.0-beta.17.tgz#e4e010c321b8f9aa5f49847c48e4e3a0695a47a9"
+  integrity sha1-5OAQwyG4+apfSYR8SOTjoGlaR6k=
+  dependencies:
+    prosemirror-inputrules "^1.1.3"
+
+"@tiptap/extension-task-list@^2.0.0-beta.17":
+  version "2.0.0-beta.17"
+  resolved "https://registry.nlark.com/@tiptap/extension-task-list/download/@tiptap/extension-task-list-2.0.0-beta.17.tgz#c0f40325abf1b6a23868e72ab32f9724a8b42a7b"
+  integrity sha1-wPQDJavxtqI4aOcqsy+XJKi0Kns=
+
+"@tiptap/extension-text-align@^2.0.0-beta.22":
+  version "2.0.0-beta.22"
+  resolved "https://registry.nlark.com/@tiptap/extension-text-align/download/@tiptap/extension-text-align-2.0.0-beta.22.tgz#32b41f63fdcbd36baa4e690e384bd8e3a5040cd4"
+  integrity sha1-MrQfY/3L02uqTmkOOEvY46UEDNQ=
+
 "@tiptap/extension-text@^2.0.0-beta.13":
   version "2.0.0-beta.13"
   resolved "https://registry.nlark.com/@tiptap/extension-text/download/@tiptap/extension-text-2.0.0-beta.13.tgz#da0af8d9a3f149d20076e15d88c6af21fb6d940f"
@@ -1195,6 +1234,11 @@
   integrity sha1-9Y0TUj/q5+Veb64qUSC8g7bg2f8=
   dependencies:
     prosemirror-inputrules "^1.1.3"
+
+"@tiptap/extension-underline@^2.0.0-beta.16":
+  version "2.0.0-beta.16"
+  resolved "https://registry.nlark.com/@tiptap/extension-underline/download/@tiptap/extension-underline-2.0.0-beta.16.tgz#b610c85f122b5f67919651107e8906c19cff1b75"
+  integrity sha1-thDIXxIrX2eRllEQfokGwZz/G3U=
 
 "@tiptap/starter-kit@^2.0.0-beta.90":
   version "2.0.0-beta.90"
@@ -1329,6 +1373,11 @@
   version "7.0.9"
   resolved "https://registry.nlark.com/@types/json-schema/download/@types/json-schema-7.0.9.tgz#97edc9037ea0c38585320b28964dde3b39e4660d"
   integrity sha1-l+3JA36gw4WFMgsolk3eOznkZg0=
+
+"@types/lowlight@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.nlark.com/@types/lowlight/download/@types/lowlight-0.0.3.tgz#433b03dd63894dde17860063f4c90a688431194b"
+  integrity sha1-QzsD3WOJTd4XhgBj9MkKaIQxGUs=
 
 "@types/mime@^1":
   version "1.3.2"
@@ -4088,6 +4137,13 @@ fastq@^1.6.0:
   dependencies:
     reusify "^1.0.4"
 
+fault@^1.0.0:
+  version "1.0.4"
+  resolved "https://registry.npm.taobao.org/fault/download/fault-1.0.4.tgz?cache=0&sync_timestamp=1616840635435&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ffault%2Fdownload%2Ffault-1.0.4.tgz#eafcfc0a6d214fc94601e170df29954a4f842f13"
+  integrity sha1-6vz8Cm0hT8lGAeFw3ymVSk+ELxM=
+  dependencies:
+    format "^0.2.0"
+
 faye-websocket@^0.11.3:
   version "0.11.4"
   resolved "https://registry.nlark.com/faye-websocket/download/faye-websocket-0.11.4.tgz?cache=0&sync_timestamp=1621894499766&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ffaye-websocket%2Fdownload%2Ffaye-websocket-0.11.4.tgz#7f0d9275cfdd86a1c963dc8b65fcc451edcbb1da"
@@ -4231,6 +4287,11 @@ form-data@~2.3.2:
     asynckit "^0.4.0"
     combined-stream "^1.0.6"
     mime-types "^2.1.12"
+
+format@^0.2.0:
+  version "0.2.2"
+  resolved "https://registry.npm.taobao.org/format/download/format-0.2.2.tgz#d6170107e9efdc4ed30c9dc39016df942b5cb58b"
+  integrity sha1-1hcBB+nv3E7TDJ3DkBbflCtctYs=
 
 forwarded@0.2.0:
   version "0.2.0"
@@ -4588,7 +4649,7 @@ hex-color-regex@^1.1.0:
   resolved "https://registry.npm.taobao.org/hex-color-regex/download/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha1-TAb8y0YC/iYCs8k9+C1+fb8aio4=
 
-highlight.js@^10.7.1:
+highlight.js@^10.7.1, highlight.js@~10.7.0:
   version "10.7.3"
   resolved "https://registry.nlark.com/highlight.js/download/highlight.js-10.7.3.tgz#697272e3991356e40c3cac566a74eef681756531"
   integrity sha1-aXJy45kTVuQMPKxWanTu9oF1ZTE=
@@ -5516,6 +5577,14 @@ lower-case@^2.0.2:
   integrity sha1-b6I3xj29xKgsoP2ILkci3F5jTig=
   dependencies:
     tslib "^2.0.3"
+
+lowlight@1.20.0, lowlight@^1.20.0:
+  version "1.20.0"
+  resolved "https://registry.nlark.com/lowlight/download/lowlight-1.20.0.tgz#ddb197d33462ad0d93bf19d17b6c301aa3941888"
+  integrity sha1-3bGX0zRirQ2TvxnRe2wwGqOUGIg=
+  dependencies:
+    fault "^1.0.0"
+    highlight.js "~10.7.0"
 
 lru-cache@^4.0.1, lru-cache@^4.1.2:
   version "4.1.5"
@@ -6827,6 +6896,15 @@ prosemirror-view@^1.0.0, prosemirror-view@^1.1.0, prosemirror-view@^1.18.11:
   version "1.18.11"
   resolved "https://registry.nlark.com/prosemirror-view/download/prosemirror-view-1.18.11.tgz#1a839508e7cb6d500a95512af8079661f9e36034"
   integrity sha1-GoOVCOfLbVAKlVEq+AeWYfnjYDQ=
+  dependencies:
+    prosemirror-model "^1.14.3"
+    prosemirror-state "^1.0.0"
+    prosemirror-transform "^1.1.0"
+
+prosemirror-view@^1.19.0:
+  version "1.19.0"
+  resolved "https://registry.nlark.com/prosemirror-view/download/prosemirror-view-1.19.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fprosemirror-view%2Fdownload%2Fprosemirror-view-1.19.0.tgz#f030b610213bc8627c027886e40e2e61d7ad3b40"
+  integrity sha1-8DC2ECE7yGJ8AniG5A4uYdetO0A=
   dependencies:
     prosemirror-model "^1.14.3"
     prosemirror-state "^1.0.0"

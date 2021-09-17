@@ -26,11 +26,16 @@ type CategoryCmd interface {
 	Get() string
 	Set(v string)
 	Exists() bool
+	Remove() bool
 }
 
 type categoryCmd struct {
 	k  string
 	db redis.GoLibRedis
+}
+
+func (a *categoryCmd) Remove() bool {
+	return a.db.HDel(context.Background(), categoryRoot, a.k).Val() > 0
 }
 
 func (a *categoryCmd) Exists() bool {

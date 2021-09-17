@@ -19,6 +19,7 @@ import (
 	"gitee.com/itsos/golibs/v2/utils/validate"
 	"gitee.com/itsos/studynotes/caches"
 	"gitee.com/itsos/studynotes/datamodels"
+	"gitee.com/itsos/studynotes/errors"
 	"gitee.com/itsos/studynotes/models/vo"
 	"gitee.com/itsos/studynotes/repositories"
 	"golang.org/x/net/context"
@@ -28,26 +29,6 @@ import (
 	"strings"
 	"time"
 )
-
-type ArticleService interface {
-	// GetRank 获取前访问前50的文章列表
-	GetRank(isLogin bool) []vo.ArticleAccessTimesVO
-	// GetListPage 获取最新文章列表
-	GetListPage(isLogin bool, page int, size int, keyword string) []vo.ArticleVO
-	// GetContent 获取文章详情
-	GetContent(isLogin bool, title string) vo.ArticleContentVO
-}
-
-var SArticle ArticleService = &articleService{
-	article:     repositories.RArticle,
-	content:     repositories.RArticleContent,
-	accessTimes: caches.CAccessTimes}
-
-type articleService struct {
-	article     repositories.ArticleRepository
-	content     repositories.ArticleContentRepository
-	accessTimes caches.AccessTimes
-}
 
 // es 搜索返回数据结构
 type (
@@ -79,6 +60,129 @@ type (
 	}
 )
 
+// ArticleService 标记为「后台」的方法按登录状态下的逻辑处理
+type ArticleService interface {
+	// GetRank 获取前访问前50的文章列表
+	GetRank(isLogin bool) []vo.ArticleAccessTimesVO
+	// GetListPage 获取最新文章列表
+	GetListPage(isLogin bool, page int, size int, keyword string) []vo.ArticleVO
+	// GetContent 获取文章详情
+	GetContent(isLogin bool, title string) vo.ArticleContentVO
+
+	// SaveArticle 保存文章「后台」
+	SaveArticle(vo vo.ArticleParamsVO) (id uint, err error)
+	// DeleteArticle 删除文章&内容「后台」
+	DeleteArticle(id uint) error
+	// GetArticleAndContent 查询文章及相关信息「后台」
+	GetArticleAndContent(id uint) (art vo.ArticleEditVO, err error)
+	// GetArticleList 获取文章列表 [后台]
+	GetArticleList(page int, size int, keyword string) []vo.ArticleListVO
+}
+
+var SArticle ArticleService = &articleService{
+	article:     repositories.RArticle,
+	content:     repositories.RArticleContent,
+	accessTimes: caches.CAccessTimes}
+
+type articleService struct {
+	article     repositories.ArticleRepository
+	content     repositories.ArticleContentRepository
+	accessTimes caches.AccessTimes
+}
+
+// GetArticleList 获取文章列表 [后台]
+func (a articleService) GetArticleList(page int, size int, keyword string) []vo.ArticleListVO {
+	article := a.getListPage(true, page, size, keyword)
+	articleVO := make([]vo.ArticleListVO, 0)
+	if len(article) > 0 {
+		for _, v := range article {
+			articleVO = append(articleVO, vo.ArticleListVO{
+				Id:         v.Id,
+				Title:      v.Title,
+				TitleMatch: v.TitleMatch,
+				Duration:   utils.TimeDuration(v.Utime),
+			})
+		}
+	}
+	return articleVO
+}
+
+func (a articleService) GetArticleAndContent(id uint) (info vo.ArticleEditVO, err error) {
+	article, has := a.article.GetInfoById(id)
+	if !has {
+		err = errors.Error("article_notfound_err")
+		return
+	}
+	content, _ := a.content.Select(&datamodels.ArticleContent{
+		Aid: article.Id,
+	})
+
+	// 解密处理
+	if article.IsEncrypt == repositories.IsEncrypt {
+		// todo 通过用户私钥解密 intro、content 字段
+	}
+
+	info = vo.ArticleEditVO{
+		Id:        id,
+		Title:     article.Title,
+		Intro:     article.Intro,
+		IsState:   article.IsState,
+		IsEncrypt: article.IsEncrypt,
+	}
+
+	info.Content = html.UnescapeString(content.Data)
+	info.Topics, info.Tags = SCategory.GetTopicAndTag(id)
+	return info, nil
+}
+
+func (a articleService) SaveArticle(vo vo.ArticleParamsVO) (id uint, err error) {
+	// 验证标题是否存在
+	if a.article.TitleExists(vo.Title) {
+		var title string
+		if vo.Id > 0 {
+			info, _ := a.article.GetInfoById(vo.Id)
+			title = info.Title
+		}
+		if vo.Id < 1 || title != "" && title != vo.Title {
+			err = errors.Error("article_exists_err")
+			return
+		}
+	}
+	vo.Content = html.EscapeString(vo.Content)
+	vo.Intro = html.EscapeString(vo.Intro)
+
+	if vo.IsEncrypt == repositories.IsEncrypt {
+		// todo  此处通过公钥加密处理 vo.Content,vo.Intro
+	}
+
+	article := datamodels.Article{
+		Title:     vo.Title,
+		Intro:     vo.Intro,
+		IsState:   vo.IsState,
+		IsEncrypt: vo.IsEncrypt,
+		IsDel:     repositories.NotDeleted,
+	}
+
+	if vo.Id > 0 {
+		// 更新
+		a.article.UpdateTrans(vo.Id, &article, vo.Content)
+	} else {
+		// 新增
+		vo.Id = a.article.InsertTrans(&article, vo.Content)
+	}
+	id = vo.Id
+	return
+}
+
+func (a articleService) DeleteArticle(id uint) (err error) {
+	caches.CCategoryRel.Id(id, repositories.CategoryTypeTag)
+	caches.CCategoryRel.Id(id, repositories.CategoryTypeTopic)
+	if !a.article.SoftDelete(id) {
+		err = errors.Error("article_remove_err")
+	}
+	return
+}
+
 func (a articleService) GetRank(isLogin bool) []vo.ArticleAccessTimesVO {
 	// 获取访问量的前50条
 	rank := a.accessTimes.Rank(50)
@@ -86,37 +190,7 @@ func (a articleService) GetRank(isLogin bool) []vo.ArticleAccessTimesVO {
 }
 
 func (a articleService) GetListPage(isLogin bool, page int, size int, keyword string) []vo.ArticleVO {
-	page = validate.IntRange(page, 1, 100000)
-	size = validate.IntRange(size, 1, 100000)
-	offset := (page - 1) * size
-
-	var article []datamodels.Article
-	if keyword != "" {
-		es := a.search(isLogin, keyword, offset, size)
-		for _, v := range es.Hits.SubHits {
-			var titleMatch, introMatch string
-			if len(v.Highlight.Title) > 0 {
-				titleMatch = v.Highlight.Title[0]
-			}
-			if len(v.Highlight.Intro) > 0 {
-				introMatch = v.Highlight.Intro[0]
-			}
-			id, _ := strconv.Atoi(v.Id)
-			article = append(article, datamodels.Article{
-				Id:         uint(id),
-				Title:      v.Source.Title,
-				TitleMatch: titleMatch,
-				Intro:      v.Source.Intro,
-				IntroMatch: introMatch,
-				IsState:    v.Source.IsState,
-				Utime:      v.Source.Utime,
-				Ctime:      v.Source.Ctime,
-			})
-		}
-	} else {
-		article = a.article.SelectMany(a.getAuthorize(isLogin), offset, size)
-	}
-
+	article := a.getListPage(isLogin, page, size, keyword)
 	articleVO := make([]vo.ArticleVO, 0)
 	if len(article) > 0 {
 		for _, v := range article {
@@ -157,22 +231,20 @@ func (a articleService) getTopicAndTagArticle(isLogin bool, id uint) (topics []v
 	topic, tag := SCategory.GetTopicAndTag(id)
 
 	for _, v := range topic {
-		cid, _ := strconv.Atoi(v)
 		topics = append(
 			topics,
 			vo.TopicVO{
-				Title:   SCategory.GetNameById(uint(cid)),
-				Article: a.getArticleList(isLogin, SCategory.GetArticleListIds(uint(cid))),
+				Title:   SCategory.GetNameById(v),
+				Article: a.getArticleList(isLogin, SCategory.GetArticleListIds(v)),
 			},
 		)
 	}
 	for _, v := range tag {
-		cid, _ := strconv.Atoi(v)
 		tags = append(
 			tags,
 			vo.TagVO{
-				Title:   SCategory.GetNameById(uint(cid)),
-				Article: a.getArticleList(isLogin, SCategory.GetArticleListIds(uint(cid))),
+				Title:   SCategory.GetNameById(v),
+				Article: a.getArticleList(isLogin, SCategory.GetArticleListIds(v)),
 			},
 		)
 	}
@@ -263,4 +335,39 @@ func (a articleService) search(isLogin bool, keyword string, offset, size int) *
 		print(err.Error() + res.String())
 	}
 	return esResultDTO
+}
+
+// 获取文章列表（分页）
+func (a articleService) getListPage(isLogin bool, page int, size int, keyword string) []datamodels.Article {
+	page = validate.IntRange(page, 1, 100000)
+	size = validate.IntRange(size, 1, 100000)
+	offset := (page - 1) * size
+
+	var article []datamodels.Article
+	if keyword != "" {
+		es := a.search(isLogin, keyword, offset, size)
+		for _, v := range es.Hits.SubHits {
+			var titleMatch, introMatch string
+			if len(v.Highlight.Title) > 0 {
+				titleMatch = v.Highlight.Title[0]
+			}
+			if len(v.Highlight.Intro) > 0 {
+				introMatch = v.Highlight.Intro[0]
+			}
+			id, _ := strconv.Atoi(v.Id)
+			article = append(article, datamodels.Article{
+				Id:         uint(id),
+				Title:      v.Source.Title,
+				TitleMatch: titleMatch,
+				Intro:      v.Source.Intro,
+				IntroMatch: introMatch,
+				IsState:    v.Source.IsState,
+				Utime:      v.Source.Utime,
+				Ctime:      v.Source.Ctime,
+			})
+		}
+	} else {
+		article = a.article.SelectMany(a.getAuthorize(isLogin), offset, size)
+	}
+	return article
 }

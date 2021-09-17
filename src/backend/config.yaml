@@ -14,7 +14,7 @@ sock: /tmp/studynotes.sock
 
 # swagger wiki 服务端口
 swagger:
-  port: 9090
+  port: 9099
 
 mysql:
   master:
@@ -22,7 +22,7 @@ mysql:
     password: mysql123
     host: 127.0.0.1
     port: 3306
-    database: yupengsir_prod
+    database: study_notes
     charset: utf8mb4
 
 redis:

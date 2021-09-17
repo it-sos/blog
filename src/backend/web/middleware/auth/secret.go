@@ -1,6 +1,6 @@
 /*
    Copyright (c) [2021] IT.SOS
-   kn is licensed under Mulan PSL v2.
+   study-notes is licensed under Mulan PSL v2.
    You can use this software according to the terms and conditions of the Mulan PSL v2.
    You may obtain a copy of Mulan PSL v2 at:
             http://license.coscl.org.cn/MulanPSL2
@@ -8,16 +8,17 @@
    See the Mulan PSL v2 for more details.
 */
 
-package tests
+package auth
 
 import (
-	"gitee.com/itsos/studynotes/web/bootstrap"
 	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/sessions"
 )
 
-func App(cfg bootstrap.Configurator) *iris.Application {
-	app := bootstrap.New("", "")
-	app.Bootstrap()
-	app.Configure(cfg)
-	return app.Application
+func Secret(ctx iris.Context) {
+	if auth, _ := sessions.Get(ctx).GetBoolean("authenticated"); auth {
+		ctx.StatusCode(iris.StatusForbidden)
+		return
+	}
+	ctx.Next()
 }

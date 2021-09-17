@@ -1,5 +1,5 @@
 {
-  "name": "study-notes-vue",
+  "name": "yupeng-sir-blog",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,13 +9,21 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "@tiptap/extension-code-block-lowlight": "^2.0.0-beta.34",
     "@tiptap/extension-highlight": "^2.0.0-beta.15",
+    "@tiptap/extension-subscript": "^2.0.0-beta.4",
+    "@tiptap/extension-superscript": "^2.0.0-beta.4",
+    "@tiptap/extension-task-item": "^2.0.0-beta.17",
+    "@tiptap/extension-task-list": "^2.0.0-beta.17",
+    "@tiptap/extension-text-align": "^2.0.0-beta.22",
     "@tiptap/extension-typography": "^2.0.0-beta.13",
+    "@tiptap/extension-underline": "^2.0.0-beta.16",
     "@tiptap/starter-kit": "^2.0.0-beta.90",
     "@tiptap/vue-3": "^2.0.0-beta.48",
     "axios": "^0.21.1",
     "core-js": "^3.8.3",
     "element-plus": "^1.0.2-beta.70",
+    "lowlight": "1.20.0",
     "node-sass": "^6.0.1",
     "sass-loader": "^12.1.0",
     "vue": "^3.0.4",

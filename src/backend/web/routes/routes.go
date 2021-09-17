@@ -13,6 +13,8 @@ package routes
 import (
 	"gitee.com/itsos/studynotes/web/bootstrap"
 	"gitee.com/itsos/studynotes/web/controllers"
+	"gitee.com/itsos/studynotes/web/controllers/admin"
+	"gitee.com/itsos/studynotes/web/middleware/auth"
 	"github.com/kataras/iris/v12/mvc"
 	"time"
 )
@@ -22,6 +24,14 @@ func Configure(b *bootstrap.Bootstrapper) {
 		b.Party("/"),
 		func(app *mvc.Application) {
 			app.Handle(new(controllers.IndexController))
+		},
+	).Register(b.Sessions.Start, time.Now())
+
+	mvc.Configure(
+		b.Party("/admin", auth.Secret),
+		func(app *mvc.Application) {
+			app.Handle(new(admin.ArticleController)).
+				Handle(new(admin.CategoryController))
 		},
 	).Register(b.Sessions.Start, time.Now())
 }

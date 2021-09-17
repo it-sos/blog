@@ -26,3 +26,15 @@ func TestArticleRepository_Select(t *testing.T) {
 	state := []uint8{IsStatePublic, IsStatePrivate}
 	t.Log(RArticle.Select(state, &datamodels.Article{}))
 }
+
+func TestArticleRepository_InsertTrans(t *testing.T) {
+	t.Log(RArticle.InsertTrans(&datamodels.Article{Title: "hello"}, "hello world."))
+}
+
+func TestArticleRepository_UpdateTrans(t *testing.T) {
+	RArticle.UpdateTrans(1, &datamodels.Article{Title: "hello"}, "hello man.")
+}
+
+func Test_articleRepository_TitleExists(t *testing.T) {
+	t.Log(RArticle.TitleExists("此行为标题，固定样式为H2"))
+}

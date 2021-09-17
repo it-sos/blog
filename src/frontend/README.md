@@ -1,4 +1,4 @@
-# study-notes-vue
+# study-notes
 
 ## Project setup
 ```

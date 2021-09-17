@@ -13,6 +13,36 @@ package vo
 import "gitee.com/itsos/studynotes/datamodels"
 
 type (
+	// ArticleEditVO 后台文章详情
+	ArticleEditVO struct {
+		Id        uint   `json:"id"`
+		Title     string `json:"title"`      // 文章标题
+		Intro     string `json:"intro"`      // 文章简介
+		Content   string `json:"content"`    // 文章内容
+		IsState   uint8  `json:"is_state"`   // 状态1私有2公开
+		IsEncrypt uint8  `json:"is_encrypt"` // 是否加密1明文2密文
+		Tags      []uint `json:"tags"`       // 标签ID列表
+		Topics    []uint `json:"topics"`     // 专题ID列表
+	}
+
+	// ArticleListVO 后台文章列表
+	ArticleListVO struct {
+		Id         uint   `json:"id"`
+		Title      string `json:"title"`       // 标题
+		TitleMatch string `json:"title_match"` // 匹配的title
+		Duration   string `json:"duration"`    // 持续时间
+	}
+
+	// ArticleParamsVO 后台文章详情
+	ArticleParamsVO struct {
+		Id        uint   `json:"id"`
+		Title     string `json:"title"`      // 文章标题
+		Intro     string `json:"intro"`      // 文章简介
+		Content   string `json:"content"`    // 文章内容
+		IsState   uint8  `json:"is_state"`   // 状态1私有2公开
+		IsEncrypt uint8  `json:"is_encrypt"` // 是否加密1明文2密文
+	}
+
 	// ArticleVO 首页文章列表vo
 	ArticleVO struct {
 		Article  datamodels.Article `json:"article"`

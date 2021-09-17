@@ -16,12 +16,20 @@ import (
 )
 
 type Errors struct {
-	ErrCode int    `json:"errCode" example:"4000000"`
+	Code    int    `json:"code" example:"4000000"`
 	Message string `json:"message"`
 }
 
 var errCodeList = map[string]Errors{
-	"param_err": {4002001, "参数异常"},
+	"param_err":            {4020001, "参数异常"},
+	"article_exists_err":   {4001001, "文章标题已存在"},
+	"article_notfound_err": {4001002, "该文章不存在"},
+	"article_remove_err":   {4001003, "文章移除失败"},
+	"topic_exists_err":     {4002001, "专题已存在"},
+	"topic_remove_err":     {4002002, "专题移除失败"},
+	"tag_exists_err":       {4003001, "标签已存在"},
+	"tag_remove_err":       {4003002, "标签移除失败"},
+	"unbind_err":           {4004001, "解绑操作失败"},
 }
 
 func Error(key string) error {

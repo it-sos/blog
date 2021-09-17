@@ -106,7 +106,7 @@ func (b *Bootstrapper) SetupErrorHandlers() {
 		}
 
 		err := iris.Map{
-			"errCode": res.GetErrCode(),
+			"code":    res.GetErrCode(),
 			"message": res.GetMessage(),
 		}
 		ctx.ViewData("Err", err)
@@ -146,14 +146,6 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 
 	// 设置错误捕获
 	b.SetupErrorHandlers()
-
-	b.Use(func(ctx *context.Context) {
-		// 设置操作时重置session时间
-		b.Sessions.ShiftExpiration(ctx)
-		// 设置允许跨域访问
-		ctx.Header("Access-Control-Allow-Origin", "*")
-		ctx.Next()
-	})
 
 	// static files
 	//b.Favicon(StaticAssets + Favicon)
