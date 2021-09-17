@@ -15,7 +15,7 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import CodeBlockComponent from "@/components/editor/CodeBlockComponent.vue";
 import lowlight from "lowlight";
 
-let CodeBlock = CodeBlockLowlight
+const CodeBlock = CodeBlockLowlight
     .extend({
         addNodeView() {
             return VueNodeViewRenderer(CodeBlockComponent)

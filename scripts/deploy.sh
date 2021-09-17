@@ -135,7 +135,9 @@ PROJECT=$basedir/run/$PROJECT_NAME
 
 build() {
   mkdir -p $basedir/run
-  CGO_ENABLED=0 GOOS=$1 go build -v -o $PROJECT $basedir/../cmd/$PROJECT_NAME"_sock/"
+  cd $basedir/../src/backend
+  CGO_ENABLED=0 GOOS=$1 go build -v -o $PROJECT cmd/$PROJECT_NAME"_sock/"
+  cd -
 }
 
 run() {
@@ -157,7 +159,7 @@ run() {
   "deploy_views")
     # 上送静态模板
     remoteShell "mkdir -p $GO_PROJ_DIST/web && rm -rf $GO_PROJ_DIST/web/*"
-    remoteSftp "-r $basedir/../web/views" $GO_PROJ_DIST/web
+    remoteSftp "-r $basedir/../src/backend/web/views" $GO_PROJ_DIST/web
   ;;
   "deploy_supervisor")
     echo "deploy supervisor start"
@@ -192,9 +194,9 @@ run() {
   ;;
   "deploy_vue")
     # vue构建与上送
-    cd $basedir/../static && npm run build && cd -
+    cd $basedir/../src/frontend/ && npm run build && cd -
     remoteShell "mkdir -p $STATIC_PROJ_DIST && rm -rf $STATIC_PROJ_DIST/*"
-    remoteSftp "-r $basedir/../static/dist/*" $STATIC_PROJ_DIST
+    remoteSftp "-r $basedir/../src/frontend/dist/*" $STATIC_PROJ_DIST
   ;;
   "deploy_linux_go")
     # 构建 go
