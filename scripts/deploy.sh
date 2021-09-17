@@ -7,7 +7,7 @@ if [ ! -x "/usr/bin/expect" ]; then
   exit 1
 fi
 
-basedir=$(dirname $0)
+basedir=$(cd "$(dirname "$0")" && pwd)
 config=$basedir/config
 
 is_exit=0
@@ -136,7 +136,7 @@ PROJECT=$basedir/run/$PROJECT_NAME
 build() {
   mkdir -p $basedir/run
   cd $basedir/../src/backend/cmd/$PROJECT_NAME"_sock/"
-  CGO_ENABLED=0 GOOS=$1 go build -v -o $PROJECT 
+  CGO_ENABLED=0 GOOS=$1 go build -v -o $PROJECT
   cd -
 }
 
