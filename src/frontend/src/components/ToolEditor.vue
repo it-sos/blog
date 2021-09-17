@@ -40,6 +40,7 @@ import {ElMessage} from 'element-plus'
 import axios from "axios";
 import {router} from '@/routes'
 import {Loading} from '@element-plus/icons'
+import utils from '../common/utils'
 
 const CodeBlock = CodeBlockLowlight
     .extend({
@@ -59,13 +60,6 @@ export default defineComponent({
   },
 
   setup(prop, context) {
-
-    const articleId = () => {
-      if (typeof router.currentRoute.value.params.id != "undefined") {
-        return parseInt(router.currentRoute.value.params.id.toString())
-      }
-      return 0
-    }
 
     const switchStatus = reactive({
       publish: ref(false),
@@ -161,7 +155,7 @@ export default defineComponent({
           json.content[1].content[0].text != "") {
         intro = json.content[1].content[0].text
       }
-      let id: number = articleId()
+      let id: number = utils.getArticleId()
       axios('/admin/article', {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -208,7 +202,7 @@ export default defineComponent({
     ];
 
     const loadArticle = () => {
-      let id: number = articleId()
+      let id: number = utils.getArticleId()
       if (id > 0) {
         axios('/admin/article', {
           method: "get",

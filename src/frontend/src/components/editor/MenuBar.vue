@@ -66,6 +66,7 @@ import {defineComponent, inject, provide, reactive, ref, toRefs, watch} from 'vu
 import {ElMessage, ElMessageBox} from 'element-plus'
 import axios from "axios";
 import {router} from "@/routes";
+import utils from "@/common/utils";
 
 // eslint-disable-next-line
 const enum CATEGORY_TYPE {
@@ -88,13 +89,6 @@ export default defineComponent({
   },
 
   setup(prop, context) {
-
-    const articleId = () => {
-      if (typeof router.currentRoute.value.params.id != "undefined") {
-        return parseInt(router.currentRoute.value.params.id.toString())
-      }
-      return 0
-    }
 
     let switchStatus = reactive({
       encrypt: ref(false),
@@ -352,7 +346,7 @@ export default defineComponent({
 
     // 绑定分类（专题/标签）
     const bindCategory = (type: CATEGORY_TYPE, id: number) => {
-      let aid = articleId()
+      let aid = utils.getArticleId()
       if (aid == 0) {
         ElMessage.warning('绑定文章失败，需要先保存文章')
         return
@@ -376,7 +370,7 @@ export default defineComponent({
 
     // 解绑分类（专题/标签）
     const unbindCategory = (type: CATEGORY_TYPE, id: number) => {
-      let aid = articleId()
+      let aid = utils.getArticleId()
       if (aid == 0) {
         ElMessage.warning('解除绑定文章失败，需要先保存文章')
         return
