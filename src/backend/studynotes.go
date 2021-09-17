@@ -33,7 +33,7 @@ func Listen() {
 }
 
 // ListenSock socket 方式
-// socat -d -d TCP-LISTEN:8080,fork,bind=127.0.0.1 UNIX:/tmp/studynote.sock
+// socat -d -d TCP-LISTEN:8080,fork,bind=127.0.0.1 UNIX:/tmp/studynotes.sock
 // curl http://localhost:8080
 func ListenSock() {
 	app := NewApp()

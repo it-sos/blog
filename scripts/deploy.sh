@@ -135,8 +135,8 @@ PROJECT=$basedir/run/$PROJECT_NAME
 
 build() {
   mkdir -p $basedir/run
-  cd $basedir/../src/backend
-  CGO_ENABLED=0 GOOS=$1 go build -v -o $PROJECT cmd/$PROJECT_NAME"_sock/"
+  cd $basedir/../src/backend/cmd/$PROJECT_NAME"_sock/"
+  CGO_ENABLED=0 GOOS=$1 go build -v -o $PROJECT 
   cd -
 }
 
