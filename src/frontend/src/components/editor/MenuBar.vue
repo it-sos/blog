@@ -65,7 +65,6 @@ import MenuItem from './MenuItem.vue'
 import {defineComponent, inject, provide, reactive, ref, toRefs, watch} from 'vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import axios from "axios";
-import {router} from "@/routes";
 import utils from "@/common/utils";
 
 // eslint-disable-next-line
@@ -231,15 +230,15 @@ export default defineComponent({
         cancelButtonText: '取消',
         type: 'warning',
       })
-      .then(() => {
-        removeCategory(type, id)
-      })
-      .catch(() => {
-        ElMessage({
-          type: 'info',
-          message: '已取消移除',
-        });
-      });
+          .then(() => {
+            removeCategory(type, id)
+          })
+          .catch(() => {
+            ElMessage({
+              type: 'info',
+              message: '已取消移除',
+            });
+          });
     }
 
     // 更新分类名称操作
@@ -296,14 +295,14 @@ export default defineComponent({
         cancelButtonText: '取消',
         inputValue: getLabel(type, id),
       }).then(({value}) => {
-          updateCategory(type, id, value)
-        })
-        .catch(() => {
-          ElMessage({
-            type: 'info',
-            message: '取消输入',
+        updateCategory(type, id, value)
+      })
+          .catch(() => {
+            ElMessage({
+              type: 'info',
+              message: '取消输入',
+            });
           });
-        });
     }
 
     // 右键菜单逻辑处理

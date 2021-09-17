@@ -40,6 +40,7 @@ import {defineComponent, provide, reactive, ref, toRefs, watch} from 'vue'
 import {ElMessage, ElMessageBox} from "element-plus";
 import axios from "axios";
 import {router} from "@/routes";
+import utils from "@/common/utils";
 
 interface ArticleList {
   id?: number
@@ -55,13 +56,6 @@ export default defineComponent({
 
   setup() {
     document.title = "editing"
-
-    const articleId = () => {
-      if (typeof router.currentRoute.value.params.id != "undefined") {
-        return parseInt(router.currentRoute.value.params.id.toString())
-      }
-      return 0
-    }
 
     const state = reactive({
       keyword: ref(""),
@@ -152,7 +146,8 @@ export default defineComponent({
             type: 'success',
             message: '删除成功!',
           });
-          if (articleId() == id) {
+
+          if (utils.getArticleId() == id) {
             router.push('/e/')
             setTimeout(() => {
               articleRef.value.loadArticle()

@@ -17,39 +17,15 @@
 </template>
 
 <script lang="ts">
-import {Editor, EditorContent, Extensions, VueNodeViewRenderer} from '@tiptap/vue-3'
-import Document from '@tiptap/extension-document'
-import StarterKit from '@tiptap/starter-kit'
-import Highlight from '@tiptap/extension-highlight'
-import Paragraph from '@tiptap/extension-paragraph'
-import Text from '@tiptap/extension-text'
-import Typography from '@tiptap/extension-typography'
-import TaskList from '@tiptap/extension-task-list'
-import TaskItem from '@tiptap/extension-task-item'
-import TextAlign from '@tiptap/extension-text-align'
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import Underline from '@tiptap/extension-underline'
-import Subscript from '@tiptap/extension-subscript'
-import Superscript from '@tiptap/extension-superscript'
-import CodeBlockComponent from './editor/CodeBlockComponent.vue'
-import MenuBar from './editor/MenuBar.vue'
-
-import lowlight from 'lowlight'
+import {Editor, EditorContent} from '@tiptap/vue-3'
+import MenuBar from '@/components/editor/MenuBar.vue'
 import {defineComponent, onMounted, onUnmounted, provide, reactive, ref, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
 import axios from "axios";
 import {router} from '@/routes'
 import {Loading} from '@element-plus/icons'
-import utils from '../common/utils'
-
-const CodeBlock = CodeBlockLowlight
-    .extend({
-      addNodeView() {
-        return VueNodeViewRenderer(CodeBlockComponent)
-      },
-    })
-    .configure({lowlight})
-
+import utils from '@/common/utils'
+import extensions from "@/common/tiptap_extensions";
 
 export default defineComponent({
 
@@ -182,24 +158,6 @@ export default defineComponent({
         stateSaveFail(error.response.data.message)
       })
     }
-
-    let extensions: Extensions = [
-      Document,
-      Paragraph,
-      Text,
-      Underline,
-      Subscript,
-      Superscript,
-      CodeBlock,
-      TaskList,
-      TaskItem,
-      StarterKit,
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-      }),
-      Highlight,
-      Typography,
-    ];
 
     const loadArticle = () => {
       let id: number = utils.getArticleId()
