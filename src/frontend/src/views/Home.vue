@@ -41,9 +41,14 @@
 
 <script lang="ts">
 
-import {defineComponent} from 'vue'
+import {defineComponent, inject, ref} from 'vue'
 
 export default defineComponent({
+  setup() {
+    let article = inject("article-id", {id: ref<number>()})
+    article.id = ref(0)
+  },
+
   data() {
     let page: number = 0
     let size: number = 10
