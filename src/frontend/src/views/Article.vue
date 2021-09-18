@@ -65,7 +65,7 @@
 <script lang="ts">
 
 import {Editor, EditorContent} from '@tiptap/vue-3'
-import {defineComponent, onUnmounted, reactive, ref, toRefs} from "vue";
+import {defineComponent, inject, onUnmounted, reactive, ref, toRefs} from "vue";
 import axios from "axios";
 import {router} from "@/routes";
 import extensions from "@/common/tiptap_extensions";
@@ -93,6 +93,8 @@ export default defineComponent({
       loading: true,
     })
 
+    let article_state = inject("article-id", {id: ref<number>()})
+
     document.title = "详情：" + decodeURIComponent(router.currentRoute.value.params.title.toString())
 
 
@@ -107,6 +109,7 @@ export default defineComponent({
     })
     axios.get('/article/content', {params: {title: decodeURIComponent(router.currentRoute.value.params.title.toString())}}).then((response) => {
       let article = response.data
+      article_state.id = article.article.article.id
       state.prev_title = "已经是顶部了"
       state.next_title = "已经是底部了"
       state.prev_title_link = "javascript:void(0);"

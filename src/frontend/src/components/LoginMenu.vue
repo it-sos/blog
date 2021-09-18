@@ -5,8 +5,12 @@
   </span>
     <template #dropdown>
       <el-dropdown-menu class="login-menu">
-        <el-dropdown-item icon="el-icon-document-add"><router-link to="/e">创建文章</router-link></el-dropdown-item>
-        <el-dropdown-item icon="el-icon-edit" disabled>编辑文章</el-dropdown-item>
+        <el-dropdown-item icon="el-icon-document-add">
+          <router-link to="/e/">创建文章</router-link>
+        </el-dropdown-item>
+        <el-dropdown-item icon="el-icon-edit">
+          <router-link :to="'/e/'+article.id">编辑文章</router-link>
+        </el-dropdown-item>
         <el-dropdown-item icon="el-icon-lock" disabled>内容加密（未激活）</el-dropdown-item>
         <el-dropdown-item divided>小鹿 [退出]</el-dropdown-item>
       </el-dropdown-menu>
@@ -15,15 +19,18 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, inject, ref} from 'vue'
+
 export default defineComponent({
   name: "LoginMenu",
   setup() {
-    let active :boolean = false
+    let active: boolean = false
     const visibleChange = (isFold: boolean) => {
       active = isFold
     }
+    let article = inject("article-id", {id: ref<number>()})
     return {
+      article,
       active,
       visibleChange,
     }
@@ -33,7 +40,7 @@ export default defineComponent({
 
 <style scoped>
 .login-menu a {
-  color:#606266;
+  color: #606266;
   text-decoration: none;
 }
 </style>

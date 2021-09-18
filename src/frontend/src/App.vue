@@ -2,14 +2,18 @@
   <div class="common-layout">
     <el-container style="min-height:600px;">
       <el-header>
-        <el-row type="flex" class="row-bg" justify="space-between"  align="middle">
+        <el-row type="flex" class="row-bg" justify="space-between" align="middle">
           <el-col :span="6">
             <router-link to="/">
               <el-image style="width: 104px; height: 24px; border-radius: 4px;" src="/logo.png" fit="fill"></el-image>
             </router-link>
           </el-col>
-          <el-col :span="6" align="center"><Search/></el-col>
-          <el-col :span="6" align="right"><LoginMenu/></el-col>
+          <el-col :span="6" align="center">
+            <Search/>
+          </el-col>
+          <el-col :span="6" align="right">
+            <LoginMenu/>
+          </el-col>
         </el-row>
       </el-header>
       <el-container>
@@ -22,13 +26,16 @@
 
 <script lang="ts">
 
-import {defineComponent} from 'vue'
+import {defineComponent, provide, reactive, ref} from 'vue'
 
 import Search from "./components/Search.vue"
 import LoginMenu from "./components/LoginMenu.vue"
 
 export default defineComponent({
-  components: {Search, LoginMenu}
+  components: {Search, LoginMenu},
+  setup() {
+    provide("article-id", reactive({id: ref<number>()}))
+  }
 })
 
 </script>
