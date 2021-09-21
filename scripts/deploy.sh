@@ -52,7 +52,15 @@ if [ ! -e "$config/config.yaml" ]; then
   cp $basedir/../src/backend/config.yaml $config/config.yaml
 fi
 
-options="deploy_full | deploy_go_and_vue | deploy_linux_go | deploy_vue | deploy_supervisor | deploy_views | deploy_config | restart_supervisor | restart_nginx | build_darwin | build_windows"
+options="{full|go_and_vue|go|vue|supervisor|views|config|restart_supervisor|restart_nginx|build_darwin|build_windows
+full: supervisor、go、vue的编译、安装与部署
+go_and_vue: go、vue构建与部署
+go: go的构建
+vue: vue的构建
+supervisor: supervisor的安装检测与配置更新
+build_darwin: 构建基于mac os的可运行go程序
+build_windows: 构建基于windows的可运行go程序
+"
 if [ $is_exit -eq 1 ]; then
   echo "Usage: $0 $options"
   exit 1
@@ -144,26 +152,26 @@ build() {
 
 run() {
   case $1 in
-  "deploy_full")
+  "full")
     # 全量部署包含 supervisor / go / vue 服务与应用
-    run deploy_supervisor
-    run deploy_go_and_vue
+    run supervisor
+    run go_and_vue
   ;;
-  "deploy_go_and_vue")
+  "go_and_vue")
     # 部署 go / vue 资源，并重启相关服务
-    run deploy_linux_go
-    run deploy_views
-    run deploy_config
+    run go
+    run views
+    run config
     run restart_supervisor
-    run deploy_vue
+    run vue
     run restart_nginx
   ;;
-  "deploy_views")
+  "views")
     # 上送静态模板
     remoteShell "mkdir -p $GO_PROJ_DIST/web && rm -rf $GO_PROJ_DIST/web/*"
     remoteSftp "-r $basedir/../src/backend/web/views" $GO_PROJ_DIST/web
   ;;
-  "deploy_supervisor")
+  "supervisor")
     echo "deploy supervisor start"
     # 检查 supervisor 是否安装
     ok=$(remoteShell "which supervisorctl && echo {succ}")
@@ -188,19 +196,19 @@ run() {
     # 重启 nginx
     remoteShell "sudo systemctl restart nginx" "-t"
   ;;
-  "deploy_config")
+  "config")
     # 上送配置文件
     remoteSftp $config/config.yaml /tmp/config.yaml
     # 转移至项目目录
     remoteShell "mkdir -p $GO_PROJ_DIST && mv /tmp/config.yaml $GO_PROJ_DIST/config.yaml"
   ;;
-  "deploy_vue")
+  "vue")
     # vue构建与上送
     cd $basedir/../src/frontend/ && npm run build && cd -
     remoteShell "mkdir -p $STATIC_PROJ_DIST && rm -rf $STATIC_PROJ_DIST/*"
     remoteSftp "-r $basedir/../src/frontend/dist/*" $STATIC_PROJ_DIST
   ;;
-  "deploy_linux_go")
+  "go")
     # 构建 go
     build linux
     # 不管目录是否存在仍创建
