@@ -120,7 +120,7 @@ export default defineComponent({
       stateUnsaved()
       let json = editor.getJSON()
       if (json.content[0].type != 'heading' || json.content[0].attrs.level != 2) {
-        stateSaveFail("请设置h2开头的标题名称，可通过点击【H】图标进行设置！", 'warning', 0)
+        stateSaveFail("请设置h2开头的标题名称，可通过点击【H】图标进行设置！", 'warning')
         return
       }
       let title: string = json.content[0].content[0].text
@@ -130,6 +130,10 @@ export default defineComponent({
       if (typeof json.content[1].content != "undefined" &&
           json.content[1].content[0].text != "") {
         intro = json.content[1].content[0].text
+      }
+      if (intro.length > 255) {
+        stateSaveFail(`第二行简介超过最大长度255，当前长度：${intro.length}！`, 'warning')
+        return
       }
       let id: number = utils.getArticleId()
       axios('/admin/article', {
