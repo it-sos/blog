@@ -27,20 +27,19 @@
       </el-card>
     </el-aside>
     <el-main>
-      <tool-editor ref="articleRef" @syncArticleList="syncArticleList"/>
+      <tool-editor @syncArticleList="syncArticleList"/>
     </el-main>
   </el-container>
   <right-menu @trigger="rightMenuTrigger"/>
 </template>
 <script lang="ts">
 
-import ToolEditor from '../components/ToolEditor.vue'
-
 import {defineComponent, provide, reactive, ref, toRefs, watch} from 'vue'
 import {ElMessage, ElMessageBox} from "element-plus";
 import axios from "axios";
 import {router} from "@/routes";
 import utils from "@/common/utils";
+import ToolEditor from "@/components/ToolEditor.vue";
 
 interface ArticleList {
   id?: number
@@ -149,9 +148,6 @@ export default defineComponent({
 
           if (utils.getArticleId() == id) {
             router.push('/e/')
-            setTimeout(() => {
-              articleRef.value.loadArticle()
-            })
           }
         }).catch((error: any) => {
           ElMessage.warning(error.response.data.message)
@@ -203,9 +199,6 @@ export default defineComponent({
       switch (type) {
         case 'article_add':
           router.push('/e/')
-          setTimeout(() => {
-            articleRef.value.loadArticle()
-          })
           break;
           // case 'article_edit':
           //   router.push('/e/'+rightMenu.id)
@@ -215,17 +208,12 @@ export default defineComponent({
           break;
       }
     }
-    const articleRef = ref();
     const edit = (id: number) => {
       router.push('/e/' + id)
-      setTimeout(() => {
-        articleRef.value.loadArticle()
-      })
     }
 
     return {
       ...toRefs(state),
-      articleRef,
       edit,
       load,
       syncArticleList,

@@ -19,7 +19,7 @@
 <script lang="ts">
 import {Editor, EditorContent} from '@tiptap/vue-3'
 import MenuBar from '@/components/editor/MenuBar.vue'
-import {defineComponent, onMounted, onUnmounted, provide, reactive, ref, toRefs} from 'vue'
+import {defineComponent, onMounted, onUnmounted, provide, reactive, ref, toRefs, watch} from 'vue'
 import {ElMessage} from 'element-plus'
 import axios from "axios";
 import {router} from '@/routes'
@@ -115,7 +115,6 @@ export default defineComponent({
       Public = 2,
     }
 
-
     const save = () => {
       stateUnsaved()
       let json = editor.getJSON()
@@ -194,10 +193,13 @@ export default defineComponent({
       loadArticle()
     })
 
+    watch(() => router.currentRoute.value.params.id, () => {
+      loadArticle()
+    })
+
     let timer: any = null;
     let editor: any = new Editor({
       injectCSS: true,
-      content: '<h2>此行为标题，固定样式为H2</h2>\r<p>此行为简介，可自定义文本格式</p>',
       extensions: extensions,
       onUpdate() {
         stateUnsaved()

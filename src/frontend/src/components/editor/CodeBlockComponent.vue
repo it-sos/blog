@@ -35,7 +35,7 @@ export default {
   computed: {
     selectedLanguage: {
       get() {
-        return this.node.attrs.language
+        return this.node.attrs.language.split(" ")[0]
       },
       set(language) {
         this.updateAttributes({ language })
