@@ -151,7 +151,6 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 	//b.Favicon(StaticAssets + Favicon)
 	router.DefaultDirOptions.IndexName = "/index.html"
 	b.HandleDir("public", iris.Dir(StaticAssets), router.DefaultDirOptions)
-
 	b.Use(recover.New())
 	b.Use(logger.New())
 	b.Use(b.Sessions.Handler())

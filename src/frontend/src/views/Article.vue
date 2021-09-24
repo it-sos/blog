@@ -1,5 +1,5 @@
 <template>
-  <el-skeleton :rows="17" :loading="loading" animated>
+  <el-skeleton :rows="10" :loading="loading" animated>
     <template #default>
       <el-container>
         <el-main>
