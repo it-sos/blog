@@ -1,4 +1,16 @@
 <template>
+  <el-dialog
+      v-model="fileUpload.show"
+      width="22%"
+      title="文件管理">
+    <upload/>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="fileUpload.show = false">Cancel</el-button>
+        <el-button @click="fileUpload.show = false" type="primary">Confirm</el-button>
+      </span>
+    </template>
+  </el-dialog>
   <div>
     <right-menu @trigger="rightMenuTrigger"/>
     <template v-for="(item, index) in items">
@@ -66,6 +78,7 @@ import {defineComponent, inject, provide, reactive, ref, toRefs, watch} from 'vu
 import {ElMessage, ElMessageBox} from 'element-plus'
 import axios from "axios";
 import utils from "@/common/utils";
+import Upload from "@/components/editor/Upload.vue";
 
 // eslint-disable-next-line
 const enum CATEGORY_TYPE {
@@ -78,7 +91,10 @@ const enum CATEGORY_TYPE {
 export default defineComponent({
   components: {
     MenuItem,
+    Upload
   },
+
+  emits: ["save"],
 
   props: {
     editor: {
@@ -88,7 +104,6 @@ export default defineComponent({
   },
 
   setup(prop, context) {
-
     let switchStatus = reactive({
       encrypt: ref(false),
       publish: ref(false),
@@ -449,8 +464,176 @@ export default defineComponent({
       context.emit("save")
     }
 
+    // 文件
+    let fileUpload = reactive({show: ref<boolean>(false)})
+
+    const items = [
+        {
+          icon: 'fas fa-bold',
+          title: 'Bold',
+          action: () => prop.editor.chain().focus().toggleBold().run(),
+          isActive: () => prop.editor.isActive('bold'),
+        },
+        {
+          icon: 'fas fa-italic',
+          title: 'Italic',
+          action: () => prop.editor.chain().focus().toggleItalic().run(),
+          isActive: () => prop.editor.isActive('italic'),
+        },
+        {
+          icon: 'fas fa-strikethrough',
+          title: 'Strike',
+          action: () => prop.editor.chain().focus().toggleStrike().run(),
+          isActive: () => prop.editor.isActive('strike'),
+        },
+        {
+          icon: 'fas fa-underline',
+          title: 'Underline',
+          action: () => prop.editor.chain().focus().toggleUnderline().run(),
+          isActive: () => prop.editor.isActive('underline'),
+        },
+        {
+          icon: 'fas fa-subscript',
+          title: 'Subscript',
+          action: () => prop.editor.chain().focus().toggleSubscript().run(),
+          isActive: () => prop.editor.isActive('subscript'),
+        },
+        {
+          icon: 'fas fa-superscript',
+          title: 'Superscript',
+          action: () => prop.editor.chain().focus().toggleSuperscript().run(),
+          isActive: () => prop.editor.isActive('superscript'),
+        },
+        {
+          icon: 'fas fa-lightbulb',
+          title: 'Highlight',
+          action: () => prop.editor.chain().focus().toggleHighlight().run(),
+          isActive: () => prop.editor.isActive('highlight'),
+        },
+        {
+          type: 'divider',
+        },
+        {
+          icon: 'fas fa-align-left',
+          title: 'left',
+          action: () => prop.editor.chain().focus().setTextAlign('left').run(),
+          isActive: () => prop.editor.isActive({textAlign: 'left'}),
+        },
+        {
+          icon: 'fas fa-align-center',
+          title: 'left',
+          action: () => prop.editor.chain().focus().setTextAlign('center').run(),
+          isActive: () => prop.editor.isActive({textAlign: 'center'}),
+        },
+        {
+          icon: 'fas fa-align-right',
+          title: 'right',
+          action: () => prop.editor.chain().focus().setTextAlign('right').run(),
+          isActive: () => prop.editor.isActive({textAlign: 'right'}),
+        },
+        {
+          icon: 'fas fa-align-justify',
+          title: 'justify',
+          action: () => prop.editor.chain().focus().setTextAlign('justify').run(),
+          isActive: () => prop.editor.isActive({textAlign: 'justify'}),
+        },
+        {
+          type: 'divider',
+        },
+        {
+          icon: 'fas fa-heading',
+          title: 'Heading',
+          action: () => prop.editor.chain().focus().toggleHeading({level: 2}).run(),
+          isActive: () => prop.editor.isActive('heading', {level: 2}),
+        },
+        {
+          icon: 'fas fa-paragraph',
+          title: 'Paragraph',
+          action: () => prop.editor.chain().focus().setParagraph().run(),
+          isActive: () => prop.editor.isActive('paragraph'),
+        },
+        {
+          icon: 'fas fa-list-ul',
+          title: 'Bullet List',
+          action: () => prop.editor.chain().focus().toggleBulletList().run(),
+          isActive: () => prop.editor.isActive('bulletList'),
+        },
+        {
+          icon: 'fas fa-list-ol',
+          title: 'Ordered List',
+          action: () => prop.editor.chain().focus().toggleOrderedList().run(),
+          isActive: () => prop.editor.isActive('orderedList'),
+        },
+        {
+          icon: 'fas fa-tasks',
+          title: 'Task List',
+          action: () => prop.editor.chain().focus().toggleTaskList().run(),
+          isActive: () => prop.editor.isActive('taskList'),
+        },
+        {
+          icon: 'fas fa-terminal',
+          title: 'Code Block',
+          action: () => prop.editor.chain().focus().toggleCodeBlock().run(),
+          isActive: () => prop.editor.isActive('codeBlock'),
+        },
+        {
+          type: 'divider',
+        },
+        {
+          icon: 'fas fa-quote-right',
+          title: 'Blockquote',
+          action: () => prop.editor.chain().focus().toggleBlockquote().run(),
+          isActive: () => prop.editor.isActive('blockquote'),
+        },
+        {
+          icon: 'fas fa-minus',
+          title: 'Horizontal Rule',
+          action: () => prop.editor.chain().focus().setHorizontalRule().run(),
+        },
+      {
+        icon: 'fas fa-upload',
+        title: 'Upload',
+        action: () => {
+          fileUpload.show  = true
+          // prop.editor.chain().focus().setImage({ src: url }).run()
+        },
+      },
+      {
+        type: 'divider',
+      },
+      {
+        icon: 'fas fa-level-down-alt',
+        title: 'Hard Break',
+        action: () => prop.editor.chain().focus().setHardBreak().run(),
+      },
+      {
+        icon: 'fas fa-eraser',
+        title: 'Clear Format',
+        action: () => prop.editor.chain()
+            .focus()
+            .clearNodes()
+            .unsetAllMarks()
+            .run(),
+      },
+      {
+        type: 'divider',
+      },
+      {
+        icon: 'fas fa-undo',
+        title: 'Undo',
+        action: () => prop.editor.chain().focus().undo().run(),
+      },
+      {
+        icon: 'fas fa-redo',
+        title: 'Redo',
+        action: () => prop.editor.chain().focus().redo().run(),
+      },
+    ]
+
     return {
       save,
+      items,
+      fileUpload,
       changeTag,
       changeTopic,
       switchStatus,
@@ -463,165 +646,6 @@ export default defineComponent({
       rightMenuTrigger,
     }
 
-  },
-
-  data() {
-    return {
-      items: [
-        {
-          icon: 'fas fa-bold',
-          title: 'Bold',
-          action: () => this.editor.chain().focus().toggleBold().run(),
-          isActive: () => this.editor.isActive('bold'),
-        },
-        {
-          icon: 'fas fa-italic',
-          title: 'Italic',
-          action: () => this.editor.chain().focus().toggleItalic().run(),
-          isActive: () => this.editor.isActive('italic'),
-        },
-        {
-          icon: 'fas fa-strikethrough',
-          title: 'Strike',
-          action: () => this.editor.chain().focus().toggleStrike().run(),
-          isActive: () => this.editor.isActive('strike'),
-        },
-        {
-          icon: 'fas fa-underline',
-          title: 'Underline',
-          action: () => this.editor.chain().focus().toggleUnderline().run(),
-          isActive: () => this.editor.isActive('underline'),
-        },
-        {
-          icon: 'fas fa-subscript',
-          title: 'Subscript',
-          action: () => this.editor.chain().focus().toggleSubscript().run(),
-          isActive: () => this.editor.isActive('subscript'),
-        },
-        {
-          icon: 'fas fa-superscript',
-          title: 'Superscript',
-          action: () => this.editor.chain().focus().toggleSuperscript().run(),
-          isActive: () => this.editor.isActive('superscript'),
-        },
-        {
-          icon: 'fas fa-lightbulb',
-          title: 'Highlight',
-          action: () => this.editor.chain().focus().toggleHighlight().run(),
-          isActive: () => this.editor.isActive('highlight'),
-        },
-        {
-          type: 'divider',
-        },
-        {
-          icon: 'fas fa-align-left',
-          title: 'left',
-          action: () => this.editor.chain().focus().setTextAlign('left').run(),
-          isActive: () => this.editor.isActive({textAlign: 'left'}),
-        },
-        {
-          icon: 'fas fa-align-center',
-          title: 'left',
-          action: () => this.editor.chain().focus().setTextAlign('center').run(),
-          isActive: () => this.editor.isActive({textAlign: 'center'}),
-        },
-        {
-          icon: 'fas fa-align-right',
-          title: 'right',
-          action: () => this.editor.chain().focus().setTextAlign('right').run(),
-          isActive: () => this.editor.isActive({textAlign: 'right'}),
-        },
-        {
-          icon: 'fas fa-align-justify',
-          title: 'justify',
-          action: () => this.editor.chain().focus().setTextAlign('justify').run(),
-          isActive: () => this.editor.isActive({textAlign: 'justify'}),
-        },
-        {
-          type: 'divider',
-        },
-        {
-          icon: 'fas fa-heading',
-          title: 'Heading',
-          action: () => this.editor.chain().focus().toggleHeading({level: 2}).run(),
-          isActive: () => this.editor.isActive('heading', {level: 2}),
-        },
-        {
-          icon: 'fas fa-paragraph',
-          title: 'Paragraph',
-          action: () => this.editor.chain().focus().setParagraph().run(),
-          isActive: () => this.editor.isActive('paragraph'),
-        },
-        {
-          icon: 'fas fa-list-ul',
-          title: 'Bullet List',
-          action: () => this.editor.chain().focus().toggleBulletList().run(),
-          isActive: () => this.editor.isActive('bulletList'),
-        },
-        {
-          icon: 'fas fa-list-ol',
-          title: 'Ordered List',
-          action: () => this.editor.chain().focus().toggleOrderedList().run(),
-          isActive: () => this.editor.isActive('orderedList'),
-        },
-        {
-          icon: 'fas fa-tasks',
-          title: 'Task List',
-          action: () => this.editor.chain().focus().toggleTaskList().run(),
-          isActive: () => this.editor.isActive('taskList'),
-        },
-        {
-          icon: 'fas fa-terminal',
-          title: 'Code Block',
-          action: () => this.editor.chain().focus().toggleCodeBlock().run(),
-          isActive: () => this.editor.isActive('codeBlock'),
-        },
-        {
-          type: 'divider',
-        },
-        {
-          icon: 'fas fa-quote-right',
-          title: 'Blockquote',
-          action: () => this.editor.chain().focus().toggleBlockquote().run(),
-          isActive: () => this.editor.isActive('blockquote'),
-        },
-        {
-          icon: 'fas fa-minus',
-          title: 'Horizontal Rule',
-          action: () => this.editor.chain().focus().setHorizontalRule().run(),
-        },
-        {
-          type: 'divider',
-        },
-        {
-          icon: 'fas fa-level-down-alt',
-          title: 'Hard Break',
-          action: () => this.editor.chain().focus().setHardBreak().run(),
-        },
-        {
-          icon: 'fas fa-eraser',
-          title: 'Clear Format',
-          action: () => this.editor.chain()
-              .focus()
-              .clearNodes()
-              .unsetAllMarks()
-              .run(),
-        },
-        {
-          type: 'divider',
-        },
-        {
-          icon: 'fas fa-undo',
-          title: 'Undo',
-          action: () => this.editor.chain().focus().undo().run(),
-        },
-        {
-          icon: 'fas fa-redo',
-          title: 'Redo',
-          action: () => this.editor.chain().focus().redo().run(),
-        },
-      ],
-    }
   },
 })
 </script>

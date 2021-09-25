@@ -34,3 +34,7 @@ redis:
 # es配置
 es:
   - http://localhost:9200
+
+# 文件存储目录
+storage:
+  file: /tmp/files

@@ -154,6 +154,7 @@ export default defineComponent({
 }
 
 .description {
+  word-break: break-word;
   padding-top: 30px;
   color: #606266;
 }
