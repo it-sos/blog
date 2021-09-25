@@ -46,6 +46,8 @@ export default defineComponent({
     const selectValue = reactive({
       topic: [],
       tag: [],
+      topicOld: [],
+      tagOld: [],
     })
     provide('select-value', selectValue)
 
@@ -175,8 +177,8 @@ export default defineComponent({
           editor.commands.setContent(`<h2>${response.data.title}</h2>\n${response.data.content}`)
           switchStatus.publish = response.data.is_state == SWITCH_PUBLISH_STATUS.Public
           switchStatus.encrypt = response.data.is_encrypt == SWITCH_ENCRYPT_STATUS.Encrypt
-          selectValue.topic = response.data.topics
-          selectValue.tag = response.data.tags
+          selectValue.topic = selectValue.topicOld = response.data.topics
+          selectValue.tag = selectValue.tagOld = response.data.tags
         }).catch((error: any) => {
           stateSaveFail(error.response.data.message)
         })
@@ -184,8 +186,8 @@ export default defineComponent({
         editor.commands.setContent('<h2>此行为标题，固定样式为H2</h2>\r<p>此行为简介，可自定义文本格式</p>')
         switchStatus.publish = false
         switchStatus.encrypt = false
-        selectValue.topic = []
-        selectValue.tag = []
+        selectValue.topic = selectValue.topicOld = []
+        selectValue.tag = selectValue.tagOld = []
       }
     }
 

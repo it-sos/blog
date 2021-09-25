@@ -62,7 +62,7 @@
 <script lang="ts">
 import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
-import {defineComponent, inject, provide, reactive, ref, toRefs, watch} from 'vue'
+import {defineComponent, inject, provide, reactive, ref, toRefs} from 'vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import axios from "axios";
 import utils from "@/common/utils";
@@ -117,8 +117,10 @@ export default defineComponent({
     })
 
     let selectValue = reactive({
-      topic: [0],
-      tag: [0],
+      topic: ref<number[]>([]),
+      tag: ref<number[]>([]),
+      topicOld: ref<number[]>([]),
+      tagOld: ref<number[]>([]),
     })
     selectValue = inject("select-value", selectValue)
 
@@ -200,14 +202,14 @@ export default defineComponent({
         responseType: "json",
       }).then(() => {
         if (type == CATEGORY_TYPE.Tag) {
-          tagOld = selectValue.tag = selectValue.tag.filter((v: any) => {
+          selectValue.tagOld = selectValue.tag = selectValue.tag.filter((v: any) => {
             return v != id
           })
           selectStatus.tagOptions = selectStatus.tagOptions.filter((v: any) => {
             return v.value != id
           })
         } else {
-          topicOld = selectValue.topic = selectValue.topic.filter((v: any) => {
+          selectValue.topicOld = selectValue.topic = selectValue.topic.filter((v: any) => {
             return v != id
           })
           selectStatus.topicOptions = selectStatus.topicOptions.filter((v: any) => {
@@ -357,10 +359,10 @@ export default defineComponent({
       }).then(() => {
         if (type == CATEGORY_TYPE.Tag) {
           selectValue.tag.push(id)
-          tagOld = selectValue.tag
+          selectValue.tagOld = selectValue.tag
         } else {
           selectValue.topic.push(id)
-          topicOld = selectValue.topic
+          selectValue.topicOld = selectValue.topic
         }
       }).catch((error: any) => {
         ElMessage.warning(error.response.data.message)
@@ -379,11 +381,11 @@ export default defineComponent({
         responseType: "json",
       }).then(() => {
         if (type == CATEGORY_TYPE.Tag) {
-          tagOld = selectValue.tag = selectValue.tag.filter((v: any) => {
+          selectValue.tagOld = selectValue.tag = selectValue.tag.filter((v: any) => {
             return v != id
           })
         } else {
-          topicOld = selectValue.topic = selectValue.topic.filter((v: any) => {
+          selectValue.topicOld = selectValue.topic = selectValue.topic.filter((v: any) => {
             return v != id
           })
         }
@@ -391,18 +393,6 @@ export default defineComponent({
         ElMessage.warning(error.response.data.message)
       })
     }
-
-    // 赋初始值，用于辨别新增还是移除
-    let tagOld: number[] = []
-    let topicOld: number[] = []
-    let init = false
-    watch(selectValue, (_, o) => {
-      if (!init) {
-        tagOld = o.tag
-        topicOld = o.topic
-      }
-      init = true
-    })
 
     // 专题/标签发生变更时的处理逻辑（新增、绑定、解绑）
     const changeCore = (v: any, old: any, type: CATEGORY_TYPE) => {
@@ -436,12 +426,12 @@ export default defineComponent({
 
     // 标签发生变更时触发
     const changeTag = (v: any) => {
-      changeCore(v, tagOld, CATEGORY_TYPE.Tag)
+      changeCore(v, selectValue.tagOld, CATEGORY_TYPE.Tag)
     }
 
     // 专题发生变更时触发
     const changeTopic = (v: any) => {
-      changeCore(v, topicOld, CATEGORY_TYPE.Topic)
+      changeCore(v, selectValue.topicOld, CATEGORY_TYPE.Topic)
     }
 
     // 状态按钮发生变更时执行保存
