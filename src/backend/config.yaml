@@ -35,6 +35,9 @@ redis:
 es:
   - http://localhost:9200
 
-# 文件存储目录
-storage:
-  file: /tmp/files
+# minio
+minio:
+  endpoint: "127.0.0.1:9000"
+  access_key_id: "testtest"
+  secret_access_key: "testtest"
+  use_ssl: false

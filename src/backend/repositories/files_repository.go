@@ -19,7 +19,9 @@ type FilesRepository interface {
 	// Insert 新增
 	Insert(p *datamodels.Files) (id uint)
 	// Delete 删除
-	Delete(id uint) bool
+	Delete(fileName string) bool
+	// ExistName 名称存在性判断
+	ExistName(aid uint, name string) bool
 	// SelectManyByAid 查询多条
 	SelectManyByAid(aid uint) []datamodels.Files
 }
@@ -45,12 +47,21 @@ func (c filesRepository) SelectManyByAid(aid uint) (results []datamodels.Files) 
 	return
 }
 
-func (c filesRepository) Delete(id uint) bool {
-	affected, err := c.db.ID(id).Delete(new(datamodels.Category))
+func (c filesRepository) Delete(fileName string) bool {
+	affected, err := c.db.Where("file=?", fileName).Delete(new(datamodels.Files))
 	if err != nil {
 		panic(err)
 	}
 	return affected > 0
+}
+
+func (c filesRepository) ExistName(aid uint, name string) bool {
+	file := datamodels.Files{Name: name, Aid: aid}
+	isExits, err := c.db.Exist(&file)
+	if err != nil {
+		panic(err)
+	}
+	return isExits
 }
 
 var RFiles FilesRepository = &filesRepository{mysql.NewMysql()}

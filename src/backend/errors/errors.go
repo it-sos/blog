@@ -30,6 +30,7 @@ var errCodeList = map[string]Errors{
 	"tag_exists_err":       {4003001, "标签已存在"},
 	"tag_remove_err":       {4003002, "标签移除失败"},
 	"unbind_err":           {4004001, "解绑操作失败"},
+	"read_file_err":        {4004002, "读取文件内容失败"},
 }
 
 func Error(key string) error {

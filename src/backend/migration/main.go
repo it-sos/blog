@@ -26,6 +26,7 @@ func main() {
 		}
 	}
 	tables := []interface{}{
+		new(datamodels.Files),
 		new(datamodels.Article),
 		new(datamodels.ArticleContent),
 		new(datamodels.Category),
