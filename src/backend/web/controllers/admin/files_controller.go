@@ -15,6 +15,7 @@ import (
 	"gitee.com/itsos/studynotes/services"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/sessions"
+	"log"
 	"time"
 )
 
@@ -26,38 +27,38 @@ type FilesController struct {
 
 // DeleteFiles
 // @Tags 博客后台接口
-// @Summary 删除文章
-// @Description 删除文章
+// @Summary 删除资源文件
+// @Description 删除资源文件
 // @Accept json
 // @Produce json
-// @Param id query integer true "文章id"
+// @Param media query string true "文章资源"
 // @Success 200 {string} string ""
 // @Failure 400 {object} errors.Errors "error"
-// @Router /admin/article [delete]
-func (c *FilesController) DeleteFiles() {
-	//id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
-	//services.SFiles.DeleteFiles(uint(id))
+// @Router /admin/files [delete]
+func (c *FilesController) DeleteFiles() error {
+	media := c.Ctx.URLParam("media")
+	return services.SFiles.RemoveFile(media)
 }
 
 // PostFiles
 // @Tags 博客后台接口
 // @Summary 保存文件
-// @Description 保存文章
+// @Description 保存文件
 // @Accept  multipart/form-data
-// @Produce plain
+// @Produce json
 // @Param file formData file true "request file data"
 // @Param aid query integer true "文章id"
 // @Success 200 {integer} integer "文章id"
 // @Failure 400 {object} errors.Errors "error"
-// @Router /admin/article [post]
+// @Router /admin/files [post]
 func (c *FilesController) PostFiles() (file string, err error) {
+	_, b, errs := c.Ctx.FormFile("file")
+	if errs != nil {
+		err = errs
+	}
+	log.Print(b.Filename)
 	return "", nil
-	//body, _ := c.Ctx.GetBody()
-	//article := new(vo.FilesParamsVO)
-	//if err = json.NewDecoder(bytes.NewBuffer(body)).Decode(&article); err != nil {
-	//	return
-	//}
-	//return services.SFiles.SaveFiles(*article)
+	//return services.SFiles.UploadFile()
 }
 
 // GetFiles

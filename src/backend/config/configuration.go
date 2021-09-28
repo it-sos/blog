@@ -12,6 +12,7 @@ package config
 
 import (
 	"gitee.com/itsos/golibs/v2/config"
+	"gitee.com/itsos/golibs/v2/utils/reflects"
 	"github.com/spf13/viper"
 	"reflect"
 )
@@ -53,18 +54,7 @@ func covertConfiguration() *Configuration {
 		Configuration: config.Config,
 	}
 	t := reflect.ValueOf(c).Elem()
-	for i := 0; i < t.NumField(); i++ {
-		f := t.Type().Field(i)
-		if f.Type.Name() != "string" {
-			continue
-		}
-		tag := f.Tag.Get("yaml")
-		s := t.FieldByName(f.Name)
-		if !s.CanSet() {
-			panic("not set value.")
-		}
-		s.SetString(tag)
-	}
+	reflects.TagToValueFlip(t, reflects.YAML)
 	return c
 }
 

@@ -3,7 +3,7 @@ module gitee.com/itsos/studynotes
 go 1.15
 
 require (
-	gitee.com/itsos/golibs/v2 v2.0.2
+	gitee.com/itsos/golibs/v2 v2.0.3
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/andybalholm/brotli v1.0.2 // indirect
 	github.com/elastic/go-elasticsearch/v7 v7.13.1 // indirect
@@ -23,7 +23,7 @@ require (
 	github.com/klauspost/compress v1.11.13 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.9 // indirect; indirec
-	github.com/minio/minio-go/v7 v7.0.14 // indirect
+	github.com/minio/minio-go/v7 v7.0.14
 	github.com/nats-io/nats-server/v2 v2.2.5 // indirect
 	github.com/onsi/gomega v1.12.0 // indirect
 	github.com/sergi/go-diff v1.2.0 // indirect
