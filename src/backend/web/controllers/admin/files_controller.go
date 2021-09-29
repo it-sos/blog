@@ -12,10 +12,11 @@ package admin
 
 import (
 	"gitee.com/itsos/studynotes/datamodels"
+	"gitee.com/itsos/studynotes/models/vo"
 	"gitee.com/itsos/studynotes/services"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/sessions"
-	"log"
+	"strconv"
 	"time"
 )
 
@@ -47,18 +48,18 @@ func (c *FilesController) DeleteFiles() error {
 // @Accept  multipart/form-data
 // @Produce json
 // @Param file formData file true "request file data"
-// @Param aid query integer true "文章id"
-// @Success 200 {integer} integer "文章id"
+// @Param aid formData integer true "文章id"
+// @Success 200 {object} vo.FileVO "文件vo"
 // @Failure 400 {object} errors.Errors "error"
 // @Router /admin/files [post]
-func (c *FilesController) PostFiles() (file string, err error) {
-	_, b, errs := c.Ctx.FormFile("file")
+func (c *FilesController) PostFiles() (file vo.FileVO, err error) {
+	_, f, errs := c.Ctx.FormFile("file")
 	if errs != nil {
 		err = errs
+		return
 	}
-	log.Print(b.Filename)
-	return "", nil
-	//return services.SFiles.UploadFile()
+	aid, _ := strconv.Atoi(c.Ctx.FormValue("aid"))
+	return services.SFiles.UploadFile(uint(aid), f)
 }
 
 // GetFiles

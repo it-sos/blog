@@ -6,12 +6,10 @@ require (
 	gitee.com/itsos/golibs/v2 v2.0.3
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/andybalholm/brotli v1.0.2 // indirect
-	github.com/elastic/go-elasticsearch/v7 v7.13.1 // indirect
 	github.com/flosch/pongo2/v4 v4.0.2 // indirect
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
-	github.com/goinggo/mapstructure v0.0.0-20140717182941-194205d9b4a9 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.1.5 // indirect
 	github.com/gorilla/securecookie v1.1.1

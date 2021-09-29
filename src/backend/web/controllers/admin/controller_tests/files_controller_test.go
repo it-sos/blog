@@ -16,9 +16,17 @@ func TestFilesController_Files(t *testing.T) {
 
 	t.Run("上传文件", func(t *testing.T) {
 		f, _ := os.Create(png)
-		defer f.Close()
+		defer func(f *os.File) {
+			err := f.Close()
+			if err != nil {
+
+			}
+		}(f)
 		decoded, _ := base64.StdEncoding.DecodeString(pngData)
-		f.Write(decoded)
+		_, err := f.Write(decoded)
+		if err != nil {
+			return
+		}
 
 		r := e.POST("/admin/files").
 			WithMultipart().
@@ -28,5 +36,6 @@ func TestFilesController_Files(t *testing.T) {
 			}).
 			Expect().Status(iris.StatusOK)
 		t.Log(r.Body())
+		os.Remove(png)
 	})
 }

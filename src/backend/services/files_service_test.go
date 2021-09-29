@@ -11,16 +11,38 @@
 package services
 
 import (
+	"encoding/base64"
+	"mime/multipart"
+	"os"
 	"testing"
 )
 
 func Test_filesService_GetFileListByAid(t *testing.T) {
 	t.Run("upload file", func(t *testing.T) {
-		SFiles.UploadFile(1, "a.txt", "/tmp/a.txt")
+		png := "/tmp/john.png"
+		pngData := "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFElEQVQImWMQFRX9Lyoq+p8BxgAAJ04E+dJh/q8AAAAASUVORK5CYII="
+		f, _ := os.Create(png)
+		defer func(f *os.File) {
+			err := f.Close()
+			if err != nil {
+
+			}
+		}(f)
+		decoded, _ := base64.StdEncoding.DecodeString(pngData)
+		_, err := f.Write(decoded)
+		if err != nil {
+			return
+		}
+		file := &multipart.FileHeader{
+			Filename: "a.txt",
+			Size:     int64(len(decoded)),
+		}
+
+		t.Log(SFiles.UploadFile(1, file))
 	})
 
 	t.Run("read file", func(t *testing.T) {
-		t.Log(SFiles.GetFile("2021928/RR4lNC5CK4zXm52p.txt"))
+		t.Log(SFiles.GetFile("2021928/RR4lNC5CK4zXm52p.png"))
 		//t.Log(router.TypeByFilename("helloworld.txt"))
 		//SFiles.GetFileListByAid(1)
 	})

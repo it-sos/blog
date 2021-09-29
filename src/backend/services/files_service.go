@@ -18,10 +18,13 @@ import (
 	"gitee.com/itsos/golibs/v2/utils"
 	"gitee.com/itsos/studynotes/datamodels"
 	"gitee.com/itsos/studynotes/errors"
+	"gitee.com/itsos/studynotes/models/vo"
 	"gitee.com/itsos/studynotes/repositories"
 	"github.com/minio/minio-go/v7"
 	"io"
 	"log"
+	"mime"
+	"mime/multipart"
 	"path/filepath"
 	"time"
 )
@@ -40,7 +43,7 @@ type FilesService interface {
 	// RemoveFile 移除文件
 	RemoveFile(fileName string) error
 	// UploadFile 上传文件
-	UploadFile(aid uint, name, addr string) (file string, err error)
+	UploadFile(aid uint, file *multipart.FileHeader) (fileVO vo.FileVO, err error)
 	// GetStorageName 获取存储地址
 	GetStorageName(ext string) string
 }
@@ -56,10 +59,9 @@ func (f filesService) GetFile(fileName string) ([]byte, string, error) {
 		log.Fatalln(err)
 		return nil, "", errors.Error("read_file_err")
 	}
-	s, _ := object.Stat()
 	buf := bytes.NewBuffer(nil)
 	io.Copy(buf, object)
-	return buf.Bytes(), s.ContentType, nil
+	return buf.Bytes(), mime.TypeByExtension(filepath.Ext(fileName)), nil
 }
 
 func (f filesService) GetStorageName(ext string) string {
@@ -81,9 +83,9 @@ func (f filesService) RemoveFile(fileName string) error {
 	return err
 }
 
-func (f filesService) UploadFile(aid uint, name, addr string) (fileName string, err error) {
+func (f filesService) UploadFile(aid uint, file *multipart.FileHeader) (fileVO vo.FileVO, err error) {
 	// 存储地址
-	fileName = f.GetStorageName(filepath.Ext(name))
+	fileName := f.GetStorageName(filepath.Ext(file.Filename))
 	ctx := context.Background()
 	err = minio2.NewMinio().MakeBucket(ctx, bucketName, minio.MakeBucketOptions{Region: location})
 	if err != nil {
@@ -97,17 +99,22 @@ func (f filesService) UploadFile(aid uint, name, addr string) (fileName string, 
 	} else {
 		log.Printf("Successfully created %s\n", bucketName)
 	}
-
-	_, err = minio2.NewMinio().FPutObject(ctx, bucketName, fileName, addr, minio.PutObjectOptions{})
+	fo, _ := file.Open()
+	_, err = minio2.NewMinio().PutObject(ctx, bucketName, fileName, fo, file.Size, minio.PutObjectOptions{})
 	if err != nil {
 		log.Fatalln(err)
 	} else {
 		if f.file.Insert(&datamodels.Files{
 			Aid:  aid,
-			Name: name,
+			Name: file.Filename,
 			File: fileName,
 		}) < 1 {
 			f.RemoveFile(fileName)
+		} else {
+			fileVO = vo.FileVO{
+				FileMedia: fileName,
+				FileName:  file.Filename,
+			}
 		}
 	}
 	return
