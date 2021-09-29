@@ -43,13 +43,26 @@ type FilesService interface {
 	// RemoveFile 移除文件
 	RemoveFile(fileName string) error
 	// UploadFile 上传文件
-	UploadFile(aid uint, file *multipart.FileHeader) (fileVO vo.FileVO, err error)
+	UploadFile(file *multipart.FileHeader) (fileVO vo.FileVO, err error)
+	// RelFileAndArticle 关联文章与文件记录
+	RelFileAndArticle(aid uint, name, media string) (err error)
 	// GetStorageName 获取存储地址
 	GetStorageName(ext string) string
 }
 
 type filesService struct {
 	file repositories.FilesRepository
+}
+
+func (f filesService) RelFileAndArticle(aid uint, name, media string) (err error) {
+	if f.file.Insert(&datamodels.Files{
+		Aid:  aid,
+		Name: name,
+		File: media,
+	}) < 1 {
+		err = f.RemoveFile(media)
+	}
+	return
 }
 
 func (f filesService) GetFile(fileName string) ([]byte, string, error) {
@@ -83,7 +96,7 @@ func (f filesService) RemoveFile(fileName string) error {
 	return err
 }
 
-func (f filesService) UploadFile(aid uint, file *multipart.FileHeader) (fileVO vo.FileVO, err error) {
+func (f filesService) UploadFile(file *multipart.FileHeader) (fileVO vo.FileVO, err error) {
 	// 存储地址
 	fileName := f.GetStorageName(filepath.Ext(file.Filename))
 	ctx := context.Background()
@@ -104,17 +117,9 @@ func (f filesService) UploadFile(aid uint, file *multipart.FileHeader) (fileVO v
 	if err != nil {
 		log.Fatalln(err)
 	} else {
-		if f.file.Insert(&datamodels.Files{
-			Aid:  aid,
-			Name: file.Filename,
-			File: fileName,
-		}) < 1 {
-			f.RemoveFile(fileName)
-		} else {
-			fileVO = vo.FileVO{
-				FileMedia: fileName,
-				FileName:  file.Filename,
-			}
+		fileVO = vo.FileVO{
+			FileMedia: fileName,
+			FileName:  file.Filename,
 		}
 	}
 	return

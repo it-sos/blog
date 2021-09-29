@@ -1,7 +1,7 @@
 <template>
   <el-upload
       class="upload-demo"
-      action="https://jsonplaceholder.typicode.com/posts/"
+      :action="action"
       :on-preview="handlePreview"
       :on-remove="handleRemove"
       :file-list="fileList"
@@ -16,29 +16,74 @@
   </el-upload>
 </template>
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, onMounted, ref} from "vue";
+import axios from "axios";
+import utils from "@/common/utils";
+import {ElMessage} from "element-plus";
+
+
+interface FileList {
+  name?: string
+  file?: string
+}
+
+interface FileListVO {
+  name?: string
+  url?: string
+}
 
 export default defineComponent({
   setup() {
+    let id: number = utils.getArticleId()
+    let action = `${axios.defaults.baseURL}/admin/files`
+    let fileList = ref<FileListVO[]>([])
+    onMounted(() => {
+      axios.get('/admin/files', {
+        responseType: "json",
+        params: {
+          aid: id
+        },
+      }).then((response: any) => {
+        response.data.forEach((v: FileList) => {
+          let file: FileListVO = {
+            name: v.name,
+            url: `/file?media=${v.file}`
+          }
+          fileList.value.push(file)
+        })
+      }).catch((error: any) => {
+        console.log(error)
+      })
+    })
+
     return {
-      fileList: [
-        {
-          name: 'food.pdf',
-          url: 'http://baid.com/pdf',
-        },
-        {
-          name: 'food2.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-        },
-      ],
-      handleRemove(file: any, fileList: any) {
-        console.log(file, fileList)
+      action,
+      fileList,
+      handleRemove(file: any) {
+        axios.delete('/admin/files', {
+          params: {media: file.response.file_media},
+          responseType: "json",
+        }).then((response: any) => {
+          console.log(response)
+        }).catch((error: any) => {
+          ElMessage.warning(error.response.data.message)
+        })
       },
       handlePreview(file: any) {
         console.log(file)
       },
-      handleSuccess(response: any, file: any, fileList: any) {
-        console.log(response, file, fileList)
+      handleSuccess(response: any, file: any) {
+        let data = new FormData()
+        data.append("aid", id.toString())
+        data.append("media", file.response.file_media)
+        data.append("name", file.response.file_name)
+        axios.post('/admin/files/article', data, {
+          responseType: "json",
+        }).then((response: any) => {
+          console.log(response)
+        }).catch((error: any) => {
+          ElMessage.warning(error.response.data.message)
+        })
       }
     }
   },

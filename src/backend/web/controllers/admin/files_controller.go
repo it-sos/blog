@@ -58,8 +58,26 @@ func (c *FilesController) PostFiles() (file vo.FileVO, err error) {
 		err = errs
 		return
 	}
+	return services.SFiles.UploadFile(f)
+}
+
+// PostFilesArticle
+// @Tags 博客后台接口
+// @Summary 关联文件与文章
+// @Description 关联文件与文章
+// @Accept  multipart/form-data
+// @Produce json
+// @Param aid formData integer true "文章id"
+// @Param name formData string true "文件名称"
+// @Param media formData string true "文件标志"
+// @Success 200 {string} string ""
+// @Failure 400 {object} errors.Errors "error"
+// @Router /admin/files/article [post]
+func (c *FilesController) PostFilesArticle() error {
+	name := c.Ctx.FormValue("name")
+	media := c.Ctx.FormValue("media")
 	aid, _ := strconv.Atoi(c.Ctx.FormValue("aid"))
-	return services.SFiles.UploadFile(uint(aid), f)
+	return services.SFiles.RelFileAndArticle(uint(aid), name, media)
 }
 
 // GetFiles
