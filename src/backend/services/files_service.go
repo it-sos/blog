@@ -69,7 +69,7 @@ func (f filesService) GetFile(fileName string) ([]byte, string, error) {
 	ctx := context.Background()
 	object, err := minio2.NewMinio().GetObject(ctx, bucketName, fileName, minio.GetObjectOptions{})
 	if err != nil {
-		log.Fatalln(err)
+		log.Print(err)
 		return nil, "", errors.Error("read_file_err")
 	}
 	buf := bytes.NewBuffer(nil)
@@ -89,7 +89,7 @@ func (f filesService) GetFileListByAid(aid uint) (files []datamodels.Files, err 
 func (f filesService) RemoveFile(fileName string) error {
 	err := minio2.NewMinio().RemoveObject(context.Background(), bucketName, fileName, minio.RemoveObjectOptions{})
 	if err != nil {
-		log.Fatalln(err)
+		log.Print(err)
 	} else {
 		f.file.Delete(fileName)
 	}
@@ -107,7 +107,8 @@ func (f filesService) UploadFile(file *multipart.FileHeader) (fileVO vo.FileVO, 
 		if errBucketExists == nil && exists {
 			log.Printf("We already own %s\n", bucketName)
 		} else {
-			log.Fatalln(err)
+			log.Print(err)
+			return
 		}
 	} else {
 		log.Printf("Successfully created %s\n", bucketName)
@@ -115,7 +116,8 @@ func (f filesService) UploadFile(file *multipart.FileHeader) (fileVO vo.FileVO, 
 	fo, _ := file.Open()
 	_, err = minio2.NewMinio().PutObject(ctx, bucketName, fileName, fo, file.Size, minio.PutObjectOptions{})
 	if err != nil {
-		log.Fatalln(err)
+		log.Print(err)
+		return
 	} else {
 		fileVO = vo.FileVO{
 			FileMedia: fileName,
