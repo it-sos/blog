@@ -90,6 +90,7 @@ func (f filesService) RemoveFile(fileName string) error {
 	err := minio2.NewMinio().RemoveObject(context.Background(), bucketName, fileName, minio.RemoveObjectOptions{})
 	if err != nil {
 		log.Print(err)
+		err = errors.Error("remove_file_err")
 	} else {
 		f.file.Delete(fileName)
 	}
