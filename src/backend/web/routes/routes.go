@@ -23,7 +23,8 @@ func Configure(b *bootstrap.Bootstrapper) {
 	mvc.Configure(
 		b.Party("/"),
 		func(app *mvc.Application) {
-			app.Handle(new(controllers.IndexController))
+			app.Handle(new(controllers.IndexController)).
+				Handle(new(controllers.FilesController))
 		},
 	).Register(b.Sessions.Start, time.Now())
 
@@ -31,6 +32,7 @@ func Configure(b *bootstrap.Bootstrapper) {
 		b.Party("/admin", auth.Secret),
 		func(app *mvc.Application) {
 			app.Handle(new(admin.ArticleController)).
+				Handle(new(admin.FilesController)).
 				Handle(new(admin.CategoryController))
 		},
 	).Register(b.Sessions.Start, time.Now())

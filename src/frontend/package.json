@@ -9,8 +9,11 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "@tiptap/extension-bubble-menu": "^2.0.0-beta.38",
     "@tiptap/extension-code-block-lowlight": "^2.0.0-beta.34",
     "@tiptap/extension-highlight": "^2.0.0-beta.15",
+    "@tiptap/extension-image": "^2.0.0-beta.15",
+    "@tiptap/extension-link": "^2.0.0-beta.20",
     "@tiptap/extension-subscript": "^2.0.0-beta.4",
     "@tiptap/extension-superscript": "^2.0.0-beta.4",
     "@tiptap/extension-task-item": "^2.0.0-beta.17",

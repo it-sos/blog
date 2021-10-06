@@ -34,3 +34,10 @@ redis:
 # es配置
 es:
   - http://localhost:9200
+
+# minio
+minio:
+  endpoint: "127.0.0.1:9000"
+  access_key_id: "testtest"
+  secret_access_key: "testtest"
+  use_ssl: false

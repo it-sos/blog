@@ -3,15 +3,13 @@ module gitee.com/itsos/studynotes
 go 1.15
 
 require (
-	gitee.com/itsos/golibs/v2 v2.0.1
+	gitee.com/itsos/golibs/v2 v2.0.4
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/andybalholm/brotli v1.0.2 // indirect
-	github.com/elastic/go-elasticsearch/v7 v7.13.1 // indirect
 	github.com/flosch/pongo2/v4 v4.0.2 // indirect
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
-	github.com/goinggo/mapstructure v0.0.0-20140717182941-194205d9b4a9 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.1.5 // indirect
 	github.com/gorilla/securecookie v1.1.1
@@ -23,7 +21,9 @@ require (
 	github.com/klauspost/compress v1.11.13 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.9 // indirect; indirec
+	github.com/minio/minio-go/v7 v7.0.14
 	github.com/nats-io/nats-server/v2 v2.2.5 // indirect
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
 	github.com/onsi/gomega v1.12.0 // indirect
 	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/spf13/viper v1.7.1
@@ -36,3 +36,5 @@ require (
 	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22 // indirect
 	golang.org/x/tools v0.1.4 // indirect
 )
+
+replace gitee.com/itsos/golibs/v2 => ../../../golibs

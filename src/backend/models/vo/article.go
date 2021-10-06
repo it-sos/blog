@@ -13,6 +13,12 @@ package vo
 import "gitee.com/itsos/studynotes/datamodels"
 
 type (
+	// FileVO 文件vo
+	FileVO struct {
+		FileName  string `json:"file_name"`  // 文件名称
+		FileMedia string `json:"file_media"` // 文件地址
+	}
+
 	// ArticleEditVO 后台文章详情
 	ArticleEditVO struct {
 		Id        uint   `json:"id"`
