@@ -12,15 +12,20 @@
         </div>
       </template>
       <editor-content :editor="editor"/>
+      <bubble-menu :editor="editor" v-if="editor">
+        <button @click="resizeImage(editor)">
+          设置图像大小
+        </button>
+      </bubble-menu>
     </el-card>
   </div>
 </template>
 
 <script lang="ts">
-import {Editor, EditorContent} from '@tiptap/vue-3'
+import {BubbleMenu, Editor, EditorContent} from '@tiptap/vue-3'
 import MenuBar from '@/components/editor/MenuBar.vue'
 import {defineComponent, onMounted, onUnmounted, provide, reactive, ref, toRefs, watch} from 'vue'
-import {ElMessage} from 'element-plus'
+import {ElMessage, ElMessageBox} from 'element-plus'
 import axios from "axios";
 import {router} from '@/routes'
 import {Loading} from '@element-plus/icons'
@@ -33,6 +38,7 @@ export default defineComponent({
     Loading,
     MenuBar,
     EditorContent,
+    BubbleMenu,
   },
 
   setup(prop, context) {
@@ -131,7 +137,7 @@ export default defineComponent({
         intro = json.content[1].content[0].text
       }
       if (intro.length > 255) {
-        stateSaveFail(`第二行简介超过最大长度255，当前长度：${intro.length}！`, 'warning')
+        stateSaveFail(`第二行是简介超过最大长度255，当前长度：${intro.length}！`, 'warning')
         return
       }
       let id: number = utils.getArticleId()
@@ -197,6 +203,7 @@ export default defineComponent({
       loadArticle()
     })
 
+
     let timer: any = null;
     let editor: any = new Editor({
       injectCSS: true,
@@ -210,14 +217,61 @@ export default defineComponent({
       },
     })
 
+    const resizeImage = (editors: any) => {
+      if (!editors.isActive('image')) {
+        return
+      }
+      let src = editors.getAttributes("image").src
+      let size = ""
+      if (src.indexOf('?') > -1) {
+        let srcs = src.split('?')
+        src = srcs[0]
+        size = srcs[1].split('=')[1]
+      }
+
+      ElMessageBox.prompt('请输入图片尺寸，为空则为原图尺寸，若800x0以高度自适应', '输入尺寸', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValue: size,
+        inputPattern: /^(\d+x\d+)?$/,
+        inputErrorMessage: '无效的尺寸格式，如800x800，800x0',
+      }).then(({value}) => {
+        if (value == null) {
+          editors.commands.updateAttributes('image', {src: `${src}`})
+        } else {
+          editors.commands.updateAttributes('image', {src: `${src}?size=${value}`})
+        }
+      })
+      .catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '取消',
+        })
+      })
+    }
+
+    // let selectionUpdate = (props: any) => {
+    //   if (props.editor.isActive("image")) {
+    //     resizeImage(props)
+    //   }
+    //   console.log(1)
+    // }
+    // editor.on('selectionUpdate', selectionUpdate)
+
     onUnmounted(() => {
       if (editor) editor.destroy();
     })
 
+
+    let tippyOptions = {
+    }
+
     return {
+      tippyOptions,
       ...toRefs(state),
       editor,
       loadArticle,
+      resizeImage,
       save,
     }
   },
@@ -280,6 +334,12 @@ mark {
 img {
   max-width: 100%;
   height: auto;
+
+&
+.ProseMirror-selectednode {
+  outline: 3px solid #68CEF8;
+}
+
 }
 
 pre {
@@ -393,6 +453,10 @@ input[type="checkbox"] {
   margin-bottom: 0.15em;
   border-radius: 2px;
   background-color: var(--color);
+}
+
+a {
+  color: #68CEF8;
 }
 
 }

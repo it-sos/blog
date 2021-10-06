@@ -32,6 +32,7 @@ var errCodeList = map[string]Errors{
 	"unbind_err":           {4004001, "解绑操作失败"},
 	"read_file_err":        {4004002, "读取文件内容失败"},
 	"remove_file_err":      {4004003, "删除文件操作失败"},
+	"resize_img_err":       {4004004, "重置图片大小失败"},
 }
 
 func Error(key string) error {

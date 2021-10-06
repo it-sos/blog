@@ -11,10 +11,12 @@
 package controllers
 
 import (
+	"gitee.com/itsos/golibs/v2/utils/array"
 	"gitee.com/itsos/studynotes/services"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
 	"github.com/kataras/iris/v12/sessions"
+	"strings"
 	"time"
 )
 
@@ -24,19 +26,25 @@ type FilesController struct {
 	Sess      *sessions.Session
 }
 
-// GetFile
+// GetFilesBy
 // @Tags 博客前台接口
 // @Summary 输出文件流
 // @Description 输出文件流图片or视频or其他
 // @Accept json
 // @Produce json
-// @Param media query string true "资源标志"
+// @Param media path string true "资源标志"
+// @Param size query string true "图片大小"
 // @Success 200 {string} string "文件流"
 // @Failure 400 {object} errors.Errors "error"
-// @Router /file [get]
-func (c *FilesController) GetFile() (mvc.Result, error) {
-	media := c.Ctx.URLParam("media")
-	data, contentType, err := services.SFiles.GetFile(media)
+// @Router /files/{media} [get]
+func (c *FilesController) GetFilesBy(media string) (mvc.Result, error) {
+	data, contentType, err := services.SFiles.GetFile(strings.Replace(media, "_", "/", 1))
+	size := c.Ctx.URLParam("size")
+	if size != "" {
+		if ok, _ := array.InArray(contentType, []string{"image/gif", "image/png", "image/jpeg"}); ok {
+			data, err = services.SFiles.ResizeImg(data, contentType, size)
+		}
+	}
 	return mvc.Response{
 		ContentType: contentType,
 		Content:     data,

@@ -1,15 +1,9 @@
 <template>
   <el-dialog
       v-model="fileUpload.show"
-      width="22%"
+      width="30%"
       title="文件管理">
-    <upload/>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="fileUpload.show = false">Cancel</el-button>
-        <el-button @click="fileUpload.show = false" type="primary">Confirm</el-button>
-      </span>
-    </template>
+    <upload @insertDoc="file" />
   </el-dialog>
   <div>
     <right-menu @trigger="rightMenuTrigger"/>
@@ -467,6 +461,21 @@ export default defineComponent({
     // 文件
     let fileUpload = reactive({show: ref<boolean>(false)})
 
+    let file = (name: string, file: string, url: string) => {
+      // console.log(name, file, url)
+      if (file.search(/jpg|jpeg|gif|png|bmp/i) > -1) {
+        prop.editor.chain().focus().setImage({src: url, title: name, alt: name}).run()
+      } else {
+        prop.editor.chain().focus().insertContent(`<a href="${url}" target="_blank">${name}</a>`).run()
+      }
+      // prop.editor
+      //     .chain()
+      //     .focus()
+      //     .extendMarkRange('link')
+      //     .setLink({ href: url })
+      //     .run()
+    }
+
     const items = [
         {
           icon: 'fas fa-bold',
@@ -594,8 +603,18 @@ export default defineComponent({
         icon: 'fas fa-upload',
         title: 'Upload',
         action: () => {
-          fileUpload.show  = true
-          // prop.editor.chain().focus().setImage({ src: url }).run()
+          if (utils.getArticleId() < 1) {
+            save()
+            setTimeout(() => {
+              if (utils.getArticleId() < 1) {
+                ElMessage.warning("保存文章后再试")
+                return
+              }
+              fileUpload.show  = true
+            }, 2000)
+          } else {
+            fileUpload.show  = true
+          }
         },
       },
       {
@@ -631,6 +650,7 @@ export default defineComponent({
     ]
 
     return {
+      file,
       save,
       items,
       fileUpload,

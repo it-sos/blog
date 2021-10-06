@@ -2,6 +2,7 @@ import {Extensions, VueNodeViewRenderer} from "@tiptap/vue-3";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
+import {Link} from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
 import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
@@ -13,7 +14,9 @@ import Highlight from "@tiptap/extension-highlight";
 import Typography from "@tiptap/extension-typography";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import CodeBlockComponent from "@/components/editor/CodeBlockComponent.vue";
+import Image from "@tiptap/extension-image";
 import lowlight from "lowlight";
+import {BubbleMenu} from "@tiptap/extension-bubble-menu";
 
 // eslint-disable-next-line
 const CodeBlock = CodeBlockLowlight
@@ -27,7 +30,9 @@ const CodeBlock = CodeBlockLowlight
 const extensions: Extensions = [
     Document,
     Paragraph,
+    Link,
     Text,
+    Image,
     Underline,
     Subscript,
     Superscript,
@@ -40,5 +45,11 @@ const extensions: Extensions = [
     }),
     Highlight,
     Typography,
+    BubbleMenu.configure({
+        shouldShow: ({ editor, view, state, oldState, from, to }) => {
+            // only show the bubble menu for images and links
+            return editor.isActive('image')
+        },
+    }),
 ];
 export default extensions

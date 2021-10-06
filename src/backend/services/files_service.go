@@ -21,11 +21,18 @@ import (
 	"gitee.com/itsos/studynotes/models/vo"
 	"gitee.com/itsos/studynotes/repositories"
 	"github.com/minio/minio-go/v7"
+	"github.com/nfnt/resize"
+	"image"
+	"image/gif"
+	"image/jpeg"
+	"image/png"
 	"io"
 	"log"
 	"mime"
 	"mime/multipart"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -40,6 +47,8 @@ type FilesService interface {
 	GetFileListByAid(aid uint) (files []datamodels.Files, err error)
 	// GetFile 获取文件数据
 	GetFile(fileName string) ([]byte, string, error)
+	// ResizeImg 设置图片大小
+	ResizeImg(img []byte, contentType, size string) (newImg []byte, err error)
 	// RemoveFile 移除文件
 	RemoveFile(fileName string) error
 	// UploadFile 上传文件
@@ -52,6 +61,27 @@ type FilesService interface {
 
 type filesService struct {
 	file repositories.FilesRepository
+}
+
+func (f filesService) ResizeImg(img []byte, contentType, size string) (newImg []byte, err error) {
+	image, _, err := image.Decode(bytes.NewBuffer(img))
+	if err != nil {
+		err = errors.Error("read_file_err")
+		return
+	}
+	sizes := strings.Split(size, "x")
+	w, _ := strconv.Atoi(sizes[0])
+	h, _ := strconv.Atoi(sizes[1])
+	m := resize.Resize(uint(w), uint(h), image, resize.Lanczos3)
+	buf := bytes.NewBuffer(nil)
+	if contentType == "image/jpeg" {
+		err = jpeg.Encode(buf, m, nil)
+	} else if contentType == "image/gif" {
+		err = gif.Encode(buf, m, nil)
+	} else {
+		err = png.Encode(buf, m)
+	}
+	return buf.Bytes(), nil
 }
 
 func (f filesService) RelFileAndArticle(aid uint, name, media string) (err error) {
