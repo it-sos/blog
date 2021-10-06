@@ -73,44 +73,50 @@ export default defineComponent({
       })
     })
 
+    let removeFile = (file: string) => {
+      axios.delete('/admin/files', {
+        params: {media: file},
+        responseType: "json",
+      }).then(() => {
+        fileList.value = fileList.value.filter((v: FileListVO) => {
+          return v.file != file
+        })
+      }).catch((error: any) => {
+        ElMessage.warning(error.response.data.message)
+      })
+    }
+
     return {
+      removeFile,
       action,
       fileList,
       insertDoc(file: string, name: string) {
         context.emit("insertDoc", name, file, getUrl(file))
-      },
-      removeFile(file: string) {
-        console.log(file, fileList.value)
-        axios.delete('/admin/files', {
-          params: {media: file},
-          responseType: "json",
-        }).then(() => {
-          fileList.value = fileList.value.filter((v: FileListVO) => {
-            return v.file != file
-          })
-        }).catch((error: any) => {
-          ElMessage.warning(error.response.data.message)
-        })
       },
       handleSuccess(response: any, file: any) {
         let data = new FormData()
         data.append("aid", id.toString())
         data.append("media", file.response.file_media)
         data.append("name", file.response.file_name)
-        file.file = file.response.file_media
-        file.url = getUrl(file.response.file_media)
-        let t: FileListVO = {
-          name: file.name,
-          file: file.file,
-          url: file.url,
-        }
-        fileList.value.push(t)
 
         axios.post('/admin/files/article', data, {
           responseType: "json",
         }).then(() => {
+          file.file = file.response.file_media
+          file.url = getUrl(file.response.file_media)
+          let t: FileListVO = {
+            name: file.name,
+            file: file.file,
+            url: file.url,
+          }
+          fileList.value.push(t)
         }).catch((error: any) => {
-          ElMessage.warning(error.response.data.message)
+          if (typeof error.response == 'string') {
+            ElMessage.warning(error.response.data.message)
+          } else {
+            ElMessage.warning('系统异常，关系建立失败')
+          }
+          removeFile(file.file)
         })
       }
     }

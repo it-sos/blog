@@ -1,4 +1,4 @@
-# 环境 dev / test / uat / pre / product
+# 环境 dev / test / uat / pre / prod
 active: dev
 
 # 时区
