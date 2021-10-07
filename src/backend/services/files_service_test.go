@@ -38,7 +38,7 @@ func Test_filesService_GetFileListByAid(t *testing.T) {
 			Size:     int64(len(decoded)),
 		}
 
-		t.Log(SFiles.UploadFile(1, file))
+		t.Log(SFiles.UploadFile(file))
 	})
 
 	t.Run("read file", func(t *testing.T) {

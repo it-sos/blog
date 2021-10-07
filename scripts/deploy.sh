@@ -162,9 +162,7 @@ run() {
     run go
     run views
     run config
-    run restart_supervisor
     run vue
-    run restart_nginx
   ;;
   "views")
     # 上送静态模板
@@ -201,12 +199,14 @@ run() {
     remoteSftp $config/config.yaml /tmp/config.yaml
     # 转移至项目目录
     remoteShell "mkdir -p $GO_PROJ_DIST && mv /tmp/config.yaml $GO_PROJ_DIST/config.yaml"
+    run restart_supervisor
   ;;
   "vue")
     # vue构建与上送
     cd $basedir/../src/frontend/ && npm run build && cd -
     remoteShell "mkdir -p $STATIC_PROJ_DIST && rm -rf $STATIC_PROJ_DIST/*"
     remoteSftp "-r $basedir/../src/frontend/dist/*" $STATIC_PROJ_DIST
+    run restart_nginx
   ;;
   "go")
     # 构建 go
@@ -218,6 +218,7 @@ run() {
     remoteSftp $PROJECT $GO_PROJ_DIST/bin/$PROJ_NAME
     # 创建执行程序软连接
     remoteShell "ln -sf $GO_PROJ_DIST/bin/$PROJ_NAME $GO_PROJ_DIST/bin/$PROJECT_NAME"
+    run restart_supervisor
   ;;
   "build_windows")
     build windows

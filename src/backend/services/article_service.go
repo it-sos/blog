@@ -314,7 +314,7 @@ func (a articleService) search(isLogin bool, keyword string, offset, size int) *
 		newEs.Search.WithSourceExcludes("is_del"),
 		newEs.Search.WithAnalyzer("ik_smart"),
 		// https://lucene.apache.org/core/2_9_4/queryparsersyntax.html
-		newEs.Search.WithQuery(fmt.Sprintf("%s AND is_del:0 AND is_state:(%s)", keyword, isState)),
+		newEs.Search.WithQuery(fmt.Sprintf("%s AND is_del:%d AND is_state:(%s)", keyword, repositories.NotDeleted, isState)),
 		newEs.Search.WithDefaultOperator("and"),
 		newEs.Search.WithBody(&buf),
 		newEs.Search.WithErrorTrace(),
