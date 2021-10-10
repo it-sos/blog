@@ -1188,11 +1188,12 @@
   resolved "https://registry.nlark.com/@tiptap/extension-italic/download/@tiptap/extension-italic-2.0.0-beta.15.tgz#9a81f686cf221110478935596f0b47a76d4c2f45"
   integrity sha1-moH2hs8iERBHiTVZbwtHp21ML0U=
 
-"@tiptap/extension-link@^2.0.0-beta.20":
-  version "2.0.0-beta.20"
-  resolved "https://registry.nlark.com/@tiptap/extension-link/download/@tiptap/extension-link-2.0.0-beta.20.tgz#dbb2aa4f01212bbd0c3fb14b563e28f31140eae2"
-  integrity sha1-27KqTwEhK70MP7FLVj4o8xFA6uI=
+"@tiptap/extension-link@^2.0.0-beta.21":
+  version "2.0.0-beta.21"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-link/download/@tiptap/extension-link-2.0.0-beta.21.tgz#a8c5ab3d54f7390760a8ee5b3459d231aebf6707"
+  integrity sha1-qMWrPVT3OQdgqO5bNFnSMa6/Zwc=
   dependencies:
+    linkifyjs "^3.0.1"
     prosemirror-state "^1.3.4"
 
 "@tiptap/extension-list-item@^2.0.0-beta.14":
@@ -1815,7 +1816,7 @@
 
 "@vue/cli-plugin-babel@~5.0.0":
   version "5.0.0-beta.4"
-  resolved "https://registry.nlark.com/@vue/cli-plugin-babel/download/@vue/cli-plugin-babel-5.0.0-beta.4.tgz#b0bad25eae7545598e5f2f04f1dfe581658994dc"
+  resolved "https://registry.nlark.com/@vue/cli-plugin-babel/download/@vue/cli-plugin-babel-5.0.0-beta.4.tgz?cache=0&sync_timestamp=1631753459559&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40vue%2Fcli-plugin-babel%2Fdownload%2F%40vue%2Fcli-plugin-babel-5.0.0-beta.4.tgz#b0bad25eae7545598e5f2f04f1dfe581658994dc"
   integrity sha1-sLrSXq51RVmOXy8E8d/lgWWJlNw=
   dependencies:
     "@babel/core" "^7.12.16"
@@ -5104,6 +5105,11 @@ lines-and-columns@^1.1.6:
   version "1.1.6"
   resolved "https://registry.npm.taobao.org/lines-and-columns/download/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
+
+linkifyjs@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npmmirror.com/linkifyjs/download/linkifyjs-3.0.1.tgz#fda7b8d399eceef6fd7427f8a6e5d4f962ae74ed"
+  integrity sha1-/ae405ns7vb9dCf4puXU+WKudO0=
 
 loader-runner@^4.1.0, loader-runner@^4.2.0:
   version "4.2.0"

@@ -45,11 +45,6 @@ interface FileListVO {
 
 export default defineComponent({
   setup(prop, context) {
-    let getUrl = (media: string) => {
-      media = media.replace("/", "_")
-      return `${axios.defaults.baseURL}/files/${media}`
-    }
-
     let id: number = utils.getArticleId()
     let action = `${axios.defaults.baseURL}/admin/files`
     let fileList = ref<FileListVO[]>([])
@@ -64,7 +59,7 @@ export default defineComponent({
           let file: FileListVO = {
             name: v.name,
             file: v.file,
-            url: getUrl(v.file)
+            url: utils.getUrl(v.file)
           }
           fileList.value.push(file)
         })
@@ -91,7 +86,7 @@ export default defineComponent({
       action,
       fileList,
       insertDoc(file: string, name: string) {
-        context.emit("insertDoc", name, file, getUrl(file))
+        context.emit("insertDoc", name, file, utils.getUrl(file))
       },
       handleSuccess(response: any, file: any) {
         let data = new FormData()
@@ -103,7 +98,7 @@ export default defineComponent({
           responseType: "json",
         }).then(() => {
           file.file = file.response.file_media
-          file.url = getUrl(file.response.file_media)
+          file.url = utils.getUrl(file.response.file_media)
           let t: FileListVO = {
             name: file.name,
             file: file.file,

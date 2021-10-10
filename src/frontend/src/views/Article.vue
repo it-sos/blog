@@ -68,7 +68,7 @@ import {Editor, EditorContent} from '@tiptap/vue-3'
 import {defineComponent, inject, onUnmounted, reactive, ref, toRefs} from "vue";
 import axios from "axios";
 import {router} from "@/routes";
-import extensions from "@/common/tiptap_extensions";
+import extensions from "@/common/tiptap/tiptap-extensions";
 
 
 export default defineComponent({

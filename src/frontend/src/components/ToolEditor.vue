@@ -30,7 +30,7 @@ import axios from "axios";
 import {router} from '@/routes'
 import {Loading} from '@element-plus/icons'
 import utils from '@/common/utils'
-import extensions from "@/common/tiptap_extensions";
+import extensions from "@/common/tiptap/tiptap-extensions";
 
 export default defineComponent({
 
@@ -279,6 +279,24 @@ export default defineComponent({
   },
 })
 </script>
+<style lang="scss">
+.global-drag-handle {
+  position: absolute;
+  &::after {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     width: 1rem;
+     height: 1.25rem;
+     content: '⠿';
+     font-weight: 700;
+     cursor: grab;
+     background:#0D0D0D10;
+     color: #0D0D0D50;
+     border-radius: 0.25rem;
+   }
+}
+</style>
 <style lang="scss">
 /* Basic editor styles */
 

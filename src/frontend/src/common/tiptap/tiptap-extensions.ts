@@ -17,6 +17,8 @@ import CodeBlockComponent from "@/components/editor/CodeBlockComponent.vue";
 import Image from "@tiptap/extension-image";
 import lowlight from "lowlight";
 import {BubbleMenu} from "@tiptap/extension-bubble-menu";
+// @ts-ignore
+import PasteHandle from './paste-handle'
 
 // eslint-disable-next-line
 const CodeBlock = CodeBlockLowlight
@@ -51,5 +53,6 @@ const extensions: Extensions = [
             return editor.isActive('image')
         },
     }),
+    PasteHandle,
 ];
 export default extensions
