@@ -11,12 +11,12 @@
           </el-tooltip>
         </div>
       </template>
-      <editor-content :editor="editor"/>
-      <bubble-menu :editor="editor" v-if="editor">
+      <bubble-menu :editor="editor" v-show="editor.isActive('image')" v-if="editor">
         <button @click="resizeImage(editor)">
           设置图像大小
         </button>
       </bubble-menu>
+      <editor-content :editor="editor"/>
     </el-card>
   </div>
 </template>
