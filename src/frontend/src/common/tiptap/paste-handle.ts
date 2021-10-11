@@ -1,21 +1,18 @@
-import {Extension} from '@tiptap/core'
+import {Extension, Node} from '@tiptap/core'
 import {Plugin} from 'prosemirror-state'
 // @ts-ignore
 import {serializeForClipboard} from 'prosemirror-view/src/clipboard'
 import axios from "axios";
 import {ElMessage} from "element-plus";
 import utils from "@/common/utils";
-import {Node as ProsemirrorNode} from "prosemirror-model";
 
+// @ts-ignore
 export default Extension.create({
     addProseMirrorPlugins() {
         return [
             new Plugin({
                 props: {
                     handlePaste(view: any, event: any): boolean {
-                        // const transaction = view.state.tr.insertText("hello");
-                        // view.dispatch(transaction)
-                        // return true
                         let hasFiles =
                             event.clipboardData &&
                             event.clipboardData.files &&
@@ -52,15 +49,19 @@ export default Extension.create({
                                         responseType: "json",
                                     }).then(() => {
                                         if (response.data.file_name.search(/jpg|jpeg|gif|png|bmp/i) > -1) {
+                                            // 以图像方式展示
                                             const node = view.state.schema.nodes.image.create({src: utils.getUrl(response.data.file_media), alt: response.data.file_name, title: response.data.file_name});
                                             const transaction = view.state.tr.replaceSelectionWith(node);
                                             view.dispatch(transaction);
                                         } else {
-                                            const node = view.state.schema.nodes.text.create({text:"hell"});
-                                            const transaction = view.state.tr.replaceSelectionWith(node);
+                                            // 非图像以链接方式展示
+                                            const href = utils.getUrl(response.data.file_media)
+                                            const text = response.data.file_name
+                                            const mark = view.state.schema.marks.link.create({ href })
+                                            const from = view.state.selection.from
+                                            const transaction = view.state.tr.insertText(text + ' ')
+                                            transaction.addMark(from, from + text.length, mark)
                                             view.dispatch(transaction);
-                                            // node = view.state.schema.nodes.text.create("hello")
-                                            // node = view.state.schema.nodes.link.create({href:})
                                         }
                                     }).catch((error: any) => {
                                         if (typeof error.response == 'string') {
