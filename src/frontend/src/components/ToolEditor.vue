@@ -205,11 +205,11 @@ export default defineComponent({
       loadArticle()
     })
 
-
     let timer: any = null;
     let editor: any = new Editor({
       injectCSS: true,
-      extensions: extensions,
+      autofocus: true,
+      extensions: extensions.backendExtensions,
       onUpdate() {
         stateUnsaved()
         clearTimeout(timer)

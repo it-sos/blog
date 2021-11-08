@@ -29,7 +29,7 @@ const CodeBlock = CodeBlockLowlight
     })
     .configure({lowlight})
 
-const extensions: Extensions = [
+const common = [
     Document,
     Paragraph,
     Link,
@@ -38,7 +38,6 @@ const extensions: Extensions = [
     Underline,
     Subscript,
     Superscript,
-    CodeBlock,
     TaskList,
     TaskItem,
     StarterKit,
@@ -47,12 +46,26 @@ const extensions: Extensions = [
     }),
     Highlight,
     Typography,
+]
+
+const backendExtensions: Extensions = [
+    ...common,
+    CodeBlock,
     BubbleMenu.configure({
-        shouldShow: ({ editor, view, state, oldState, from, to }) => {
+        shouldShow: ({editor, view, state, oldState, from, to}) => {
             // only show the bubble menu for images and links
             return editor.isActive('image')
         },
     }),
     PasteHandle,
 ];
-export default extensions
+
+const frontendExtensions: Extensions = [
+    CodeBlockLowlight.configure({lowlight}),
+    ...common
+]
+
+export default {
+    backendExtensions,
+    frontendExtensions,
+}
