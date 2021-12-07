@@ -22,7 +22,7 @@ type AccessTimes interface {
 }
 
 type accessTimes struct {
-	db redis.GoLibRedis
+	db redis.GoLibRedisCluster
 }
 
 type AccessTimesCmd interface {
@@ -32,7 +32,7 @@ type AccessTimesCmd interface {
 
 type accessTimesCmd struct {
 	k  string
-	db redis.GoLibRedis
+	db redis.GoLibRedisCluster
 }
 
 func (a *accessTimesCmd) Get() int {
@@ -52,7 +52,7 @@ const root = "access_times_page"
 var ctx = context.Background()
 
 func (a *accessTimes) Id(k uint) AccessTimesCmd {
-	return &accessTimesCmd{fmt.Sprintf(prefixTimes, k), redis.NewRedis()}
+	return &accessTimesCmd{fmt.Sprintf(prefixTimes, k), redis.NewRedisCluster()}
 }
 
 func (a *accessTimes) Rank(num int) []string {
@@ -60,4 +60,4 @@ func (a *accessTimes) Rank(num int) []string {
 }
 
 // CAccessTimes cache文章访问次数
-var CAccessTimes AccessTimes = &accessTimes{redis.NewRedis()}
+var CAccessTimes AccessTimes = &accessTimes{redis.NewRedisCluster()}

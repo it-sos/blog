@@ -3,7 +3,7 @@ module gitee.com/itsos/studynotes
 go 1.15
 
 require (
-	gitee.com/itsos/golibs/v2 v2.0.6
+	gitee.com/itsos/golibs/v2 v2.0.9
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/andybalholm/brotli v1.0.2 // indirect
 	github.com/flosch/pongo2/v4 v4.0.2 // indirect

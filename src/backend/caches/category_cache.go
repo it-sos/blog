@@ -31,7 +31,7 @@ type CategoryCmd interface {
 
 type categoryCmd struct {
 	k  string
-	db redis.GoLibRedis
+	db redis.GoLibRedisCluster
 }
 
 func (a *categoryCmd) Remove() bool {
@@ -57,7 +57,7 @@ const categoryPrefix = "%d"
 const categoryRoot = "category"
 
 func (a *category) Id(k uint) CategoryCmd {
-	return &categoryCmd{fmt.Sprintf(categoryPrefix, k), redis.NewRedis()}
+	return &categoryCmd{fmt.Sprintf(categoryPrefix, k), redis.NewRedisCluster()}
 }
 
 // CCategory cache分类id与分类名

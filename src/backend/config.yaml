@@ -28,8 +28,21 @@ mysql:
 redis:
   host: 127.0.0.1
   port: 6379
+  username:
   password:
   db: 12
+
+# redis 集群配置
+redis_cluster:
+  username:
+  password:
+  hosts:
+    - "127.0.0.1:7001"
+    - "127.0.0.1:7002"
+    - "127.0.0.1:7003"
+    - "127.0.0.1:7004"
+    - "127.0.0.1:7005"
+    - "127.0.0.1:7006"
 
 # es配置
 es:
