@@ -67,16 +67,18 @@
 import {Editor, EditorContent} from '@tiptap/vue-3'
 import {defineComponent, inject, onUnmounted, reactive, ref, toRefs} from "vue";
 import axios from "axios";
-import {router} from "@/routes";
-import extensions from "@/common/tiptap/tiptap-extensions";
+import router from "../routes";
+import {frontendExtensions} from "../common/tiptap/tiptap-extensions";
+import Document from "@tiptap/extension-document";
+import Paragraph from "@tiptap/extension-paragraph";
+import {Link} from "@tiptap/extension-link";
+import Text from "@tiptap/extension-text";
 
 
 export default defineComponent({
-
   components: {
     EditorContent,
   },
-
   setup() {
     let state = reactive({
       prev_title: ref<string>(),
@@ -97,10 +99,14 @@ export default defineComponent({
 
     document.title = "详情：" + decodeURIComponent(router.currentRoute.value.params.title.toString())
 
-
     let editor: any = new Editor({
       injectCSS: true,
-      extensions: extensions.frontendExtensions,
+      extensions: [
+        Document,
+        Paragraph,
+        Link,
+        Text,
+      ],
       editable: false,
     })
 
@@ -122,7 +128,7 @@ export default defineComponent({
         state.next_title = article.navigations.next_title
         state.next_title_link = '/a/' + encodeURIComponent(article.navigations.next_title)
       }
-      // state.article_content = article.article_content.data
+      state.article_content = article.article_content.data
       editor.commands.setContent(article.article_content.data)
       state.topics = article.article.topics
       state.tags = article.article.tags

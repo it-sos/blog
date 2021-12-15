@@ -14,7 +14,6 @@ import (
 	"gitee.com/itsos/studynotes/datamodels"
 	"gitee.com/itsos/studynotes/services"
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/sessions"
 	"strconv"
 	"time"
 )
@@ -22,7 +21,6 @@ import (
 type CategoryController struct {
 	Ctx       iris.Context
 	StartTime time.Time
-	Sess      *sessions.Session
 }
 
 // DeleteCategoryRelations

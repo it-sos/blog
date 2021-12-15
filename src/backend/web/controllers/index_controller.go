@@ -13,7 +13,6 @@ package controllers
 import (
 	"gitee.com/itsos/studynotes/services"
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/sessions"
 	"strconv"
 	"time"
 )
@@ -21,7 +20,6 @@ import (
 type IndexController struct {
 	Ctx       iris.Context
 	StartTime time.Time
-	Sess      *sessions.Session
 }
 
 // GetArticleList
@@ -37,10 +35,10 @@ type IndexController struct {
 // @Failure 400 {object} errors.Errors "error"
 // @Router /article/list [get]
 func (c *IndexController) GetArticleList() interface{} {
-	isLogin, _ := c.Sess.GetBoolean("authenticated")
 	page, _ := strconv.Atoi(c.Ctx.FormValue("page"))
 	size, _ := strconv.Atoi(c.Ctx.FormValue("size"))
 	keyword := c.Ctx.FormValue("keyword")
+	isLogin := services.SAuthService.IsLogin(c.Ctx.GetHeader("token"))
 	return services.SArticle.GetListPage(isLogin, page, size, keyword)
 }
 
@@ -54,7 +52,7 @@ func (c *IndexController) GetArticleList() interface{} {
 // @Failure 400 {object} errors.Errors "error"
 // @Router /article/rank [get]
 func (c *IndexController) GetArticleRank() interface{} {
-	isLogin, _ := c.Sess.GetBoolean("authenticated")
+	isLogin := services.SAuthService.IsLogin(c.Ctx.GetHeader("token"))
 	return services.SArticle.GetRank(isLogin)
 }
 
@@ -69,7 +67,7 @@ func (c *IndexController) GetArticleRank() interface{} {
 // @Failure 400 {object} errors.Errors "error"
 // @Router /article/content [get]
 func (c *IndexController) GetArticleContent() interface{} {
-	isLogin, _ := c.Sess.GetBoolean("authenticated")
 	title := c.Ctx.FormValue("title")
+	isLogin := services.SAuthService.IsLogin(c.Ctx.GetHeader("token"))
 	return services.SArticle.GetContent(isLogin, title)
 }

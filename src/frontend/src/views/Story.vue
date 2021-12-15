@@ -37,9 +37,9 @@
 import {defineComponent, provide, reactive, ref, toRefs, watch} from 'vue'
 import {ElMessage, ElMessageBox} from "element-plus";
 import axios from "axios";
-import {router} from "@/routes";
-import utils from "@/common/utils";
-import ToolEditor from "@/components/ToolEditor.vue";
+import router from "../routes";
+import utils from "../common/utils";
+import ToolEditor from "../components/ToolEditor.vue";
 
 interface ArticleList {
   id?: number

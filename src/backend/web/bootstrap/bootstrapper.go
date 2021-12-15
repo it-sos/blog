@@ -15,18 +15,13 @@ import (
 	"gitee.com/itsos/golibs/v2/global/consts"
 	"gitee.com/itsos/golibs/v2/global/variable"
 	"gitee.com/itsos/studynotes/config"
-	"github.com/gorilla/securecookie"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
 	"github.com/kataras/iris/v12/core/router"
 	"github.com/kataras/iris/v12/hero"
 	"github.com/kataras/iris/v12/middleware/logger"
 	"github.com/kataras/iris/v12/middleware/recover"
-	"github.com/kataras/iris/v12/sessions"
-	"github.com/kataras/iris/v12/sessions/sessiondb/redis"
 	"net"
-	"strconv"
-	"strings"
 	"time"
 )
 
@@ -39,7 +34,7 @@ type Bootstrapper struct {
 	AppName      string
 	AppOwner     string
 	AppSpawnDate time.Time
-	Sessions     *sessions.Sessions
+	//Sessions     *sessions.Sessions
 }
 
 // New returns a new Bootstrapper.
@@ -65,17 +60,17 @@ func (b *Bootstrapper) SetupViews(viewsDir string) {
 		Reload(c.GetActive() != consts.EnvProduct))
 }
 
-func (b *Bootstrapper) SetupSessions(expires time.Duration, cookieHashKey, cookieBlockKey []byte) {
-	b.Sessions = sessions.New(sessions.Config{
-		Cookie:   "SECRET_SESS_COOKIE_" + strings.ToUpper(b.AppName),
-		Expires:  expires,
-		Encoding: securecookie.New(cookieHashKey, cookieBlockKey),
-	})
-	b.Sessions.UseDatabase(redis.New(redis.Config{
-		Addr:     c.GetRedis().GetHost() + ":" + strconv.Itoa(c.GetRedis().GetPort()),
-		Database: strconv.Itoa(c.GetRedis().GetDb()),
-	}))
-}
+//func (b *Bootstrapper) SetupSessions(expires time.Duration, cookieHashKey, cookieBlockKey []byte) {
+//	b.Sessions = sessions.New(sessions.Config{
+//		Cookie:   "SECRET_SESS_COOKIE_" + strings.ToUpper(b.AppName),
+//		Expires:  expires,
+//		Encoding: securecookie.New(cookieHashKey, cookieBlockKey),
+//	})
+//	b.Sessions.UseDatabase(redis.New(redis.Config{
+//		Addr:     c.GetRedis().GetHost() + ":" + strconv.Itoa(c.GetRedis().GetPort()),
+//		Database: strconv.Itoa(c.GetRedis().GetDb()),
+//	}))
+//}
 
 // SetupErrorHandlers `(context.StatusCodeNotSuccessful`,  which defaults to >=400 (but you can change it).
 func (b *Bootstrapper) SetupErrorHandlers() {
@@ -140,9 +135,9 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 	b.SetupViews(variable.BasePath + "/web/views")
 
 	// 设置session
-	hashKey := securecookie.GenerateRandomKey(64)
-	blockKey := securecookie.GenerateRandomKey(32)
-	b.SetupSessions(10*time.Minute, hashKey, blockKey)
+	//hashKey := securecookie.GenerateRandomKey(64)
+	//blockKey := securecookie.GenerateRandomKey(32)
+	//b.SetupSessions(10*time.Minute, hashKey, blockKey)
 
 	// 设置错误捕获
 	b.SetupErrorHandlers()
@@ -153,7 +148,7 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 	b.HandleDir("public", iris.Dir(StaticAssets), router.DefaultDirOptions)
 	b.Use(recover.New())
 	b.Use(logger.New())
-	b.Use(b.Sessions.Handler())
+	//b.Use(b.Sessions.Handler())
 
 	return b
 }

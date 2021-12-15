@@ -15,7 +15,6 @@ import (
 	"gitee.com/itsos/studynotes/services"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
-	"github.com/kataras/iris/v12/sessions"
 	"strings"
 	"time"
 )
@@ -23,7 +22,7 @@ import (
 type FilesController struct {
 	Ctx       iris.Context
 	StartTime time.Time
-	Sess      *sessions.Session
+	//Sess      *sessions.Session
 }
 
 // GetFilesBy

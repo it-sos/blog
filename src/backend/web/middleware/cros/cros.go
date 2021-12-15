@@ -11,17 +11,17 @@ func Configure(b *bootstrap.Bootstrapper) {
 	b.UseGlobal(
 		func(ctx iris.Context) {
 			// 设置允许跨域访问
-			ctx.Header("Access-Control-Allow-Origin", "*")
-			ctx.Header("Access-Control-Allow-Credentials", "true")
-			ctx.Header("Access-Control-Allow-Methods", "*")
-			ctx.Header("Access-Control-Allow-Headers", "Content-Type")
-			ctx.Header("Access-Control-Expose-Headers", "*")
+			//ctx.Header("Access-Control-Allow-Origin", "*")
+			//ctx.Header("Access-Control-Allow-Credentials", "true")
+			//ctx.Header("Access-Control-Allow-Methods", "*")
+			//ctx.Header("Access-Control-Allow-Headers", "Content-Type")
+			//ctx.Header("Access-Control-Expose-Headers", "*")
 
 			// 预检查 options 直接放行
-			if ctx.Method() == "OPTIONS" {
-				ctx.StatusCode(iris.StatusOK)
-				return
-			}
+			//if ctx.Method() == "OPTIONS" {
+			//	ctx.StatusCode(iris.StatusOK)
+			//	return
+			//}
 			ctx.Next()
 		})
 }

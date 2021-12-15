@@ -4,6 +4,7 @@ import {Plugin} from 'prosemirror-state'
 import {serializeForClipboard} from 'prosemirror-view/src/clipboard'
 import axios from "axios";
 import {ElMessage} from "element-plus";
+// @ts-ignore
 import utils from "@/common/utils";
 
 // @ts-ignore

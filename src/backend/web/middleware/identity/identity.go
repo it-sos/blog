@@ -11,7 +11,7 @@ import (
 func New(b *bootstrap.Bootstrapper) iris.Handler {
 	return func(ctx iris.Context) {
 		// 重置 session 未操作计时器，长时不操作 session 自动销毁
-		b.Sessions.ShiftExpiration(ctx)
+		//b.Sessions.ShiftExpiration(ctx)
 
 		// response headers
 		ctx.Header("App-Name", b.AppName)

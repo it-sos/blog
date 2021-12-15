@@ -74,7 +74,7 @@ export default defineComponent({
   },
 
   mounted(): void {
-    document.title = "yupeng-sir-blog"
+    document.title = "YU鹏sir笔记"
     this.ranks()
   },
 

@@ -12,13 +12,12 @@ package auth
 
 import (
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/sessions"
 )
 
 func Secret(ctx iris.Context) {
-	if auth, _ := sessions.Get(ctx).GetBoolean("authenticated"); auth {
-		ctx.StatusCode(iris.StatusForbidden)
-		return
-	}
+	//if auth, _ := sessions.Get(ctx).GetBoolean("authenticated"); auth {
+	ctx.StatusCode(iris.StatusForbidden)
+	//	return
+	//}
 	ctx.Next()
 }

@@ -15,7 +15,6 @@ import (
 	"gitee.com/itsos/studynotes/models/vo"
 	"gitee.com/itsos/studynotes/services"
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/sessions"
 	"strconv"
 	"time"
 )
@@ -23,7 +22,6 @@ import (
 type FilesController struct {
 	Ctx       iris.Context
 	StartTime time.Time
-	Sess      *sessions.Session
 }
 
 // DeleteFiles
