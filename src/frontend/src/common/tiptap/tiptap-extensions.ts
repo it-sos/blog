@@ -13,27 +13,25 @@ import TextAlign from "@tiptap/extension-text-align";
 import Highlight from "@tiptap/extension-highlight";
 import Typography from "@tiptap/extension-typography";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-// import CodeBlockComponent from "../../components/editor/CodeBlockComponent.vue";
+import CodeBlockComponent from "../../components/editor/CodeBlockComponent.vue";
 import Image from "@tiptap/extension-image";
 import lowlight from "lowlight";
 import {BubbleMenu} from "@tiptap/extension-bubble-menu";
-// @ts-ignore
 import PasteHandle from './paste-handle'
 
-// eslint-disable-next-line
-// const CodeBlock = CodeBlockLowlight
-//     .extend({
-//         addNodeView() {
-//             return VueNodeViewRenderer(CodeBlockComponent)
-//         },
-//     })
-//     .configure({lowlight})
+const CustomCodeBlock = CodeBlockLowlight
+    .extend({
+        addNodeView() {
+            return VueNodeViewRenderer(CodeBlockComponent)
+        },
+    })
+    .configure({lowlight})
 
 const common = [
-    Document,
-    Paragraph,
+    // Document,
+    // Paragraph,
     Link,
-    Text,
+    // Text,
     Image,
     Underline,
     Subscript,
@@ -50,8 +48,7 @@ const common = [
 
 export const backendExtensions: Extensions = [
     ...common,
-    // CodeBlock,
-    CodeBlockLowlight.configure({lowlight}),
+    CustomCodeBlock,
     BubbleMenu.configure({
         shouldShow: ({editor, view, state, oldState, from, to}) => {
             // only show the bubble menu for images and links

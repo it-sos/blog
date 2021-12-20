@@ -1,30 +1,36 @@
 <template>
-  <el-container>
-    <el-aside width="200px" class="hidden-xs-only">
-      <el-card class="box-card">
-        <template #header>
-          <div class="card-header">
-            <el-input
-                placeholder="请输入内容"
-                v-model.trim="keyword"
-                class="input-with-select"
-            >
-              <template #prefix>
-                <i class="el-input__icon el-icon-search"></i>
-              </template>
-            </el-input>
-          </div>
-        </template>
-        <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
-             v-infinite-scroll="load">
-          <div v-bind:key="art.id" v-for="art in article" class="text item dirs">
-            <el-link href="javascript:void(0);" @click="edit(art.id)"
-                     v-right-click="rightMenuFunc('article', art.id)"><span
-                v-html="art.title_match ? art.title_match : art.title"></span></el-link>
-            <el-tag style="margin-left:0.3rem;" effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
-          </div>
+  <el-drawer v-model="drawer" :with-header="false">
+    <el-card class="box-card">
+      <template #header>
+        <div class="card-header">
+          <el-input
+              placeholder="请输入内容"
+              v-model.trim="keyword"
+              class="input-with-select"
+          >
+            <template #prefix>
+              <i class="el-input__icon el-icon-search"></i>
+            </template>
+          </el-input>
         </div>
-      </el-card>
+      </template>
+      <div class="infinite-list-wrapper" style="height:400px;overflow-y:auto;overflow-x: hidden;"
+           v-infinite-scroll="load">
+        <div v-bind:key="art.id" v-for="art in article" class="text item dirs">
+          <el-link href="javascript:void(0);" @click="edit(art.id)"
+                   v-right-click="rightMenuFunc('article', art.id)"><span
+              v-html="art.title_match ? art.title_match : art.title"></span></el-link>
+          <el-tag style="margin-left:0.3rem;" effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
+        </div>
+      </div>
+    </el-card>
+  </el-drawer>
+  <el-container>
+    <el-aside width="30px" class="hidden-xs-only">
+      <el-icon style="font-size: 32px;color:#555;cursor:pointer;" @click="drawer = true">
+        <Fold v-if="!drawer"/>
+        <Expand v-else/>
+      </el-icon>
     </el-aside>
     <el-main>
       <tool-editor @syncArticleList="syncArticleList"/>
@@ -40,6 +46,7 @@ import axios from "axios";
 import router from "../routes";
 import utils from "../common/utils";
 import ToolEditor from "../components/ToolEditor.vue";
+import {Expand, Fold, Delete, CirclePlus} from "@element-plus/icons-vue";
 
 interface ArticleList {
   id?: number
@@ -51,6 +58,8 @@ interface ArticleList {
 export default defineComponent({
   components: {
     ToolEditor,
+    Fold,
+    Expand,
   },
 
   setup() {
@@ -168,7 +177,7 @@ export default defineComponent({
       menu: ref({
         'article': [
           {
-            'icon': 'el-icon-document-add',
+            'icon': CirclePlus,
             'title': '新建',
             'command': 'article_add',
           },
@@ -178,7 +187,7 @@ export default defineComponent({
           //   'command': 'article_edit',
           // },
           {
-            'icon': 'el-icon-delete',
+            'icon': Delete,
             'title': '删除',
             'command': 'article_delete',
           },
@@ -214,6 +223,7 @@ export default defineComponent({
 
     return {
       ...toRefs(state),
+      drawer: ref(false),
       edit,
       load,
       syncArticleList,

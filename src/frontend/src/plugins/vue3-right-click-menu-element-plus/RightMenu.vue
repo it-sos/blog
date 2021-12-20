@@ -13,6 +13,7 @@
 <script lang="ts">
 
 import {defineComponent, inject, reactive, ref} from 'vue'
+import {Delete} from "@element-plus/icons-vue"
 
 export default defineComponent({
   name: "RightMenu",
@@ -24,7 +25,7 @@ export default defineComponent({
       active: ref<string>('test'),
       menu: ref({'test':[
           {
-            'icon': 'el-icon-question',
+            'icon': Delete,
             'title': '需要配置 menu 项，以填充更多功能',
             'command': 'demo',
           },
@@ -48,6 +49,7 @@ export default defineComponent({
     }
 
     return {
+      Delete,
       state,
       showMenu,
       hideMenu,

@@ -16,7 +16,7 @@ import (
 
 func Secret(ctx iris.Context) {
 	//if auth, _ := sessions.Get(ctx).GetBoolean("authenticated"); auth {
-	ctx.StatusCode(iris.StatusForbidden)
+	//ctx.StatusCode(iris.StatusForbidden)
 	//	return
 	//}
 	ctx.Next()

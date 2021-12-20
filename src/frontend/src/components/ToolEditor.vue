@@ -28,10 +28,9 @@ import {defineComponent, onMounted, onUnmounted, provide, reactive, ref, toRefs,
 import {ElMessage, ElMessageBox} from 'element-plus'
 import axios from "axios";
 import router from '../routes'
-// @ts-ignore
-import {Loading} from '~/element-plus/icons'
 import utils from '../common/utils'
 import {backendExtensions} from "../common/tiptap/tiptap-extensions";
+import {Loading} from "@element-plus/icons-vue";
 
 export default defineComponent({
 
@@ -210,7 +209,7 @@ export default defineComponent({
     let editor: any = new Editor({
       injectCSS: true,
       autofocus: true,
-      extensions: {backendExtensions},
+      extensions: backendExtensions,
       onUpdate() {
         stateUnsaved()
         clearTimeout(timer)

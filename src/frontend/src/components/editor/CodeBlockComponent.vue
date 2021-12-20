@@ -11,7 +11,7 @@
         {{ language }}
       </option>
     </select>
-    <pre><node-view-content as="code" /></pre>
+    <pre><code><node-view-content /></code></pre>
   </node-view-wrapper>
 </template>
 
@@ -35,9 +35,6 @@ export default {
   computed: {
     selectedLanguage: {
       get() {
-        if (this.node.attrs.language != null) {
-          return this.node.attrs.language.split(" ")[0]
-        }
         return this.node.attrs.language
       },
       set(language) {
@@ -49,17 +46,13 @@ export default {
 </script>
 
 <style lang="scss">
-.ProseMirror {
+.code-block {
+  position: relative;
 
-  .code-block {
-    position: relative;
-
-    select {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-    }
-  }
-
+select {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
 }
 </style>

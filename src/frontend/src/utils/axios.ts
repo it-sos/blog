@@ -1,10 +1,8 @@
 import axios from 'axios'
-import { ElMessage } from 'element-plus'
-import { localGet } from './index'
-// @ts-ignore
+import {ElMessage} from 'element-plus'
+import {localGet} from './index'
 import config from '~/config'
 import router from '../routes';
-
 
 // 这边由于后端没有区分测试和正式，姑且都写成一个接口。
 axios.defaults.baseURL = config[import.meta.env.MODE].baseUrl
@@ -26,7 +24,7 @@ axios.interceptors.response.use((res: HttpResult) => {
     if (res.hasOwnProperty('response')) {
         // 需要登录授权，跳转登录页
         if (res.response.status == 401) {
-            router.push({ path: '/login' })
+            router.push({path: '/login'})
             return
         }
         if (res.response.hasOwnProperty('data')) {

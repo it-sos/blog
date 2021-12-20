@@ -101,12 +101,7 @@ export default defineComponent({
 
     let editor: any = new Editor({
       injectCSS: true,
-      extensions: [
-        Document,
-        Paragraph,
-        Link,
-        Text,
-      ],
+      extensions: frontendExtensions,
       editable: false,
     })
 
