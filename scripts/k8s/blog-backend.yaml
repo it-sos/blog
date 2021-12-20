@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-backend
+  namespace: default
+  labels:
+    app: blog_backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blog_backend
+  template:
+    metadata:
+      labels:
+        app: blog_backend
+    spec:
+      containers:
+      - name: blog-backend
+        image: docker.io/itsos/blog_backend:v1.0.4
+        ports:
+        - containerPort: 9080
+        volumeMounts:
+            - name: config-volume
+              mountPath: /data/config
+              readOnly: true
+      volumes:
+      - name: config-volume
+        configMap:
+            name: blog-backend-config

@@ -8,49 +8,10 @@ if [ ! -x "/usr/bin/expect" ]; then
 fi
 
 basedir=$(cd "$(dirname "$0")" && pwd)
-config=$basedir/config
 
 is_exit=0
 
-# configrc 配置
-if [ ! -e "$config/configrc" ]; then
-  is_exit=1
-  mkdir -p $config
-  echo "<<<<<<<<<<<<<<"
-  echo "Please modify the configuration file and execute again: $config/configrc"
-  echo ">>>>>>>>>>>>>>"
-  cat > $config/configrc <<EOF
-## 常规配置
-# 远程服务器地址
-HOST=host
-# 远程服务器ssh端口
-PORT=port
-# 远程服务器用户
-USER=user
-# 远程服务器密码
-PASSWORD=password
-
-## 如果在 /ssh/ssh/ssh_config 进行过配置且已经公钥授权（无密码登录），此项适用于通过跳板机远程部署
-# 如果此处配置了，将忽略远程服务器地址、端口等配置
-JUMP_HOST_NAME=jump_host_name
-
-# 项目名
-PROJECT_NAME=studynotes
-# 项目远程目录
-GO_PROJ_DIST=/data1/supervisord/study-notes/go
-# 静态资源远程目录
-STATIC_PROJ_DIST=/data1/supervisord/study-notes/html
-EOF
-fi
-
-# config.yaml 配置
-if [ ! -e "$config/config.yaml" ]; then
-  is_exit=1
-  echo "<<<<<<<<<<<<<<"
-  echo "Please modify the configuration file and execute again: $config/config.yaml"
-  echo ">>>>>>>>>>>>>>"
-  cp $basedir/../src/backend/config.yaml $config/config.yaml
-fi
+. $basedir/common.sh
 
 options="{full|go_and_vue|go|vue|supervisor|views|config|restart_supervisor|restart_nginx|build_darwin|build_windows
 full: supervisor、go、vue的编译、安装与部署
@@ -65,9 +26,6 @@ if [ $is_exit -eq 1 ]; then
   echo "Usage: $0 $options"
   exit 1
 fi
-
-# 加载配置
-. $config/configrc
 
 # supervisord.conf 配置
 update_supervisor_config() {
@@ -141,15 +99,6 @@ checkExists() {
   echo $1|grep -ow "{succ}"|wc -l
 }
 
-PROJECT=$basedir/run/$PROJECT_NAME
-
-build() {
-  mkdir -p $basedir/run
-  cd $basedir/../src/backend/cmd/$PROJECT_NAME"_sock/"
-  CGO_ENABLED=0 GOOS=$1 go build -v -o $PROJECT
-  cd -
-}
-
 run() {
   case $1 in
   "full")
@@ -210,7 +159,7 @@ run() {
   ;;
   "go")
     # 构建 go
-    build linux
+    build_sock linux
     # 不管目录是否存在仍创建
     remoteShell "mkdir -p $GO_PROJ_DIST/{bin,logs}"
     # 上送到指定目录
@@ -221,10 +170,10 @@ run() {
     run restart_supervisor
   ;;
   "build_windows")
-    build windows
+    build_sock windows
   ;;
   "build_darwin")
-    build darwin
+    build_sock darwin
   ;;
   *)
     echo "Usage: $0 $options"
