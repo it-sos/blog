@@ -19,34 +19,16 @@ import (
 
 type ConfigurationReadOnly interface {
 	config.ConfigurationReadOnly
-	GetQWidth() int
-	GetQHeight() int
-	GetQBuffer() int64
-	GetQUrl() string
+	GetDemo() int
 }
 
 type Configuration struct {
 	*config.Configuration
-	QWidth  string `yaml:"qrcode.width"`
-	QHeight string `yaml:"qrcode.height"`
-	QBuffer string `yaml:"qrcode.buffer"`
-	QUrl    string `yaml:"qrcode.url"`
+	Demo string `yaml:"demo.demo"`
 }
 
-func (c Configuration) GetQWidth() int {
-	return viper.GetInt(c.QWidth)
-}
-
-func (c Configuration) GetQHeight() int {
-	return viper.GetInt(c.QHeight)
-}
-
-func (c Configuration) GetQBuffer() int64 {
-	return viper.GetInt64(c.QBuffer)
-}
-
-func (c Configuration) GetQUrl() string {
-	return viper.GetString(c.QUrl)
+func (c Configuration) GetDemo() int {
+	return viper.GetInt(c.Demo)
 }
 
 func covertConfiguration() *Configuration {
