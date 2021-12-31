@@ -66,7 +66,6 @@
 
 import {Editor, EditorContent} from '@tiptap/vue-3'
 import {defineComponent, inject, onUnmounted, reactive, ref, toRefs} from "vue";
-import axios from "axios";
 import router from "../routes";
 import {frontendExtensions} from "../common/tiptap/tiptap-extensions";
 import Document from "@tiptap/extension-document";
@@ -80,6 +79,7 @@ export default defineComponent({
     EditorContent,
   },
   setup() {
+    const $axios: any = inject('$axios')
     let state = reactive({
       prev_title: ref<string>(),
       next_title: ref<string>(),
@@ -108,7 +108,7 @@ export default defineComponent({
     onUnmounted(() => {
       if (editor) editor.destroy();
     })
-    axios.get('/article/content', {params: {title: decodeURIComponent(router.currentRoute.value.params.title.toString())}}).then((response) => {
+    $axios.get('/article/content', {params: {title: decodeURIComponent(router.currentRoute.value.params.title.toString())}}).then((response) => {
       let article = response.data
       article_state.id = article.article.article.id
       state.prev_title = "已经是顶部了"
@@ -132,7 +132,7 @@ export default defineComponent({
       state.topicList = article.topics
       state.tagList = article.tags
       state.loading = false
-    }).catch((error) => {
+    }).catch((error: any) => {
       console.log(error)
     })
     return {

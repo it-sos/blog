@@ -40,9 +40,8 @@
 </template>
 <script lang="ts">
 
-import {defineComponent, provide, reactive, ref, toRefs, watch} from 'vue'
+import {defineComponent, inject, provide, reactive, ref, toRefs, watch} from 'vue'
 import {ElMessage, ElMessageBox} from "element-plus";
-import axios from "axios";
 import router from "../routes";
 import utils from "../common/utils";
 import ToolEditor from "../components/ToolEditor.vue";
@@ -64,6 +63,7 @@ export default defineComponent({
 
   setup() {
     document.title = "editing"
+    const $axios: any = inject('$axios')
 
     const state = reactive({
       keyword: ref(""),
@@ -84,10 +84,10 @@ export default defineComponent({
         return
       }
       state.page++
-      axios.get('/admin/articles', {
+      $axios.get('/admin/articles', {
         responseType: "json",
         params: {page: state.page, size: state.size, keyword: state.keyword},
-      }).then((response) => {
+      }).then((response: any) => {
         response.data.forEach((v: ArticleList) => {
           state.article.push(v)
         })
@@ -143,7 +143,7 @@ export default defineComponent({
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        axios.delete('/admin/article', {
+        $axios.delete('/admin/article', {
           responseType: "json",
           params: {id: id},
         }).then(() => {

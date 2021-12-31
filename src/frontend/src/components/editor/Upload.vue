@@ -26,8 +26,7 @@
   </el-upload>
 </template>
 <script lang="ts">
-import {defineComponent, onMounted, ref} from "vue";
-import axios from "axios";
+import {defineComponent, inject, onMounted, ref} from "vue";
 import utils from "@/common/utils";
 import {ElMessage} from "element-plus";
 
@@ -45,11 +44,12 @@ interface FileListVO {
 
 export default defineComponent({
   setup(prop, context) {
+    const $axios: any = inject('$axios')
     let id: number = utils.getArticleId()
-    let action = `${axios.defaults.baseURL}/admin/files`
+    let action = `${$axios.defaults.baseURL}/admin/files`
     let fileList = ref<FileListVO[]>([])
     onMounted(() => {
-      axios.get('/admin/files', {
+      $axios.get('/admin/files', {
         responseType: "json",
         params: {
           aid: id
@@ -69,7 +69,7 @@ export default defineComponent({
     })
 
     let removeFile = (file: string) => {
-      axios.delete('/admin/files', {
+      $axios.delete('/admin/files', {
         params: {media: file},
         responseType: "json",
       }).then(() => {
@@ -94,7 +94,7 @@ export default defineComponent({
         data.append("media", file.response.file_media)
         data.append("name", file.response.file_name)
 
-        axios.post('/admin/files/article', data, {
+        $axios.post('/admin/files/article', data, {
           responseType: "json",
         }).then(() => {
           file.file = file.response.file_media

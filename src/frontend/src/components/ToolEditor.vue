@@ -24,9 +24,8 @@
 <script lang="ts">
 import {BubbleMenu, Editor, EditorContent} from '@tiptap/vue-3'
 import MenuBar from '@/components/editor/MenuBar.vue'
-import {defineComponent, onMounted, onUnmounted, provide, reactive, ref, toRefs, watch} from 'vue'
+import {defineComponent, inject, onMounted, onUnmounted, provide, reactive, ref, toRefs, watch} from 'vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
-import axios from "axios";
 import router from '../routes'
 import utils from '../common/utils'
 import {backendExtensions} from "../common/tiptap/tiptap-extensions";
@@ -42,6 +41,8 @@ export default defineComponent({
   },
 
   setup(prop, context) {
+
+    const $axios: any = inject('$axios')
 
     const switchStatus = reactive({
       publish: ref(false),
@@ -143,7 +144,7 @@ export default defineComponent({
         return
       }
       let id: number = utils.getArticleId()
-      axios('/admin/article', {
+      $axios('/admin/article', {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
@@ -173,7 +174,7 @@ export default defineComponent({
     const loadArticle = () => {
       let id: number = utils.getArticleId()
       if (id > 0) {
-        axios('/admin/article', {
+        $axios('/admin/article', {
           method: "get",
           responseType: "json",
           params: {

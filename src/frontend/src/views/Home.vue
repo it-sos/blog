@@ -41,94 +41,92 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref} from 'vue'
+import {defineComponent, getCurrentInstance, inject, onMounted, reactive, ref, toRefs, watch} from 'vue'
+import router from "../routes";
 
 export default defineComponent({
   setup() {
+    const $axios: any = inject('$axios')
     let article = inject("article-id", {id: ref<number>()})
     article.id = ref(0)
-  },
+    let state = reactive({
+      page: 0,
+      size: 10,
+      article: [],
+      rank: [],
+      noMore: false,
+      loading: false,
+      errorMsg:  false,
+    })
 
-  data() {
-    let page: number = 0
-    let size: number = 10
-    let article: any = []
-    let rank: any = []
-    let noMore: boolean = false
-    let loading: boolean = false
-    let errorMsg: boolean = false
-    return {page, size, article, rank, noMore, loading, errorMsg}
-  },
+    const defaults = () => {
+      document.title = "YU鹏sir笔记"
+      state.errorMsg = false
+      state.noMore = false
+      state.page = 0
+      state.article = []
+    }
 
-  created() {
-    this.$watch(
-        () => this.$route.params.keyword,
-        () => {
-          this.defaults()
-          this.load()
-        },
-        // 组件创建完后获取数据，
-        // 此时 data 已经被 observed 了
-        {immediate: true}
-    )
-  },
-
-  mounted(): void {
-    document.title = "YU鹏sir笔记"
-    this.ranks()
-  },
-
-  methods: {
-    ranks(): void {
-      this.$http.get('/article/rank').then((response) => {
-        this.rank = response.data
-      }).catch((error) => {
-        this.loading = false
-        console.log(error)
-      })
-    },
-
-    defaults(): void {
-      this.errorMsg = false
-      this.noMore = false
-      this.page = 0
-      this.article = []
-    },
-
-    load(): void {
-      if (this.noMore || this.errorMsg) {
+    const load = () => {
+      if (state.noMore || state.errorMsg) {
         return
       }
-      this.loading = true
-      this.page++
+      state.loading = true
+      state.page++
 
-      let keyword = this.$route.params.keyword;
+      let keyword = router.currentRoute.value.params.keyword;
       if (keyword) {
         keyword = decodeURIComponent(keyword.toString())
       }
 
-      this.$http.get('/article/list', {
+      $axios.get('/article/list', {
         params: {
-          "page": this.page,
-          "size": this.size,
+          "page": state.page,
+          "size": state.size,
           "keyword": keyword
         }
-      }).then((response) => {
-        this.loading = false
+      }).then((response: any) => {
+        state.loading = false
         if (response.data.length === 0) {
-          this.noMore = true
+          state.noMore = true
           return
         }
         response.data.forEach((v: any) => {
-          this.article.push(v)
+          state.article.push(v)
         })
-      }).catch((error) => {
+      }).catch((error: any) => {
         console.log(error)
-        this.loading = false
-        this.errorMsg = true
+        state.loading = false
+        state.errorMsg = true
       })
     }
-  },
+
+    watch(() => router.currentRoute.value.params.keyword, () => {
+      defaults()
+      load()
+      ranks()
+    })
+
+    let ranks = () => {
+      $axios.get('/article/rank').then((response: any) => {
+        state.rank = response.data
+      }).catch((error: any) => {
+        state.loading = false
+        console.log(error)
+      })
+    }
+
+    onMounted(() => {
+      defaults()
+      load()
+      ranks()
+    })
+
+    return {
+      ...toRefs(state),
+      load,
+    }
+  }
 })
 </script>
 

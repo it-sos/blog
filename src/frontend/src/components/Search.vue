@@ -7,39 +7,35 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
+import {defineComponent, ref, watch} from 'vue'
+import router from "../routes";
 
 export default defineComponent({
   setup() {
-    return {
-      inputSearch: ref("")
-    }
-  },
-  created() {
-    this.$watch(
-        () => this.$route.params.keyword,
-        () => {
-          if (typeof this.$route.params.keyword == "undefined") {
-            this.inputSearch = ""
-          } else {
-            this.inputSearch = this.$route.params.keyword.toString()
-          }
-        },
-        // 组件创建完后获取数据，
-        // 此时 data 已经被 observed 了
-        { immediate: true }
-    )
-  },
-  methods: {
-    deletes() {
-      if (this.inputSearch === '') {
-        document.title = "yupeng-sir-blog"
-        this.$router.push('/')
+    let inputSearch = ref<string>("")
+    watch(() => router.currentRoute.value.params.keyword, () => {
+      if (typeof router.currentRoute.value.params.keyword == "undefined") {
+        inputSearch.value = ""
+      } else {
+        inputSearch.value = router.currentRoute.value.params.keyword.toString()
       }
-    },
-    search() {
-      document.title = "搜索结果：" + this.inputSearch
-      this.$router.push('/'+encodeURIComponent(this.inputSearch))
+    })
+
+    const deletes = () => {
+      if (inputSearch.value === '') {
+        router.push('/')
+      }
+    }
+
+    const search = () => {
+      document.title = "搜索结果：" + inputSearch.value
+      router.push('/' + encodeURIComponent(inputSearch.value))
+    }
+
+    return {
+      deletes,
+      search,
+      inputSearch
     }
   }
 })

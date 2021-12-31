@@ -70,7 +70,6 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
 import {defineComponent, inject, provide, reactive, ref, toRefs} from 'vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
-import axios from "axios";
 import utils from "@/common/utils";
 import Upload from "@/components/editor/Upload.vue";
 
@@ -98,6 +97,7 @@ export default defineComponent({
   },
 
   setup(prop, context) {
+    const $axios: any = inject('$axios')
     let switchStatus = reactive({
       encrypt: ref(false),
       publish: ref(false),
@@ -135,7 +135,7 @@ export default defineComponent({
 
 
     // 查询专题列表
-    axios('/admin/category/topics', {
+    $axios('/admin/category/topics', {
       method: "get",
       responseType: "json",
     }).then((response: any) => {
@@ -148,7 +148,7 @@ export default defineComponent({
     })
 
     // 查询标签列表
-    axios('/admin/category/tags', {
+    $axios('/admin/category/tags', {
       method: "get",
       responseType: "json",
     }).then((response: any) => {
@@ -206,7 +206,7 @@ export default defineComponent({
 
     // 执行移除分类操作
     const removeCategory = (type: CATEGORY_TYPE, id: number) => {
-      axios.delete(`/admin/category/${type}`, {
+      $axios.delete(`/admin/category/${type}`, {
         params: {id: id},
         responseType: "json",
       }).then(() => {
@@ -257,7 +257,7 @@ export default defineComponent({
       let formData = new FormData();
       formData.append("name", name);
       formData.append("id", id.toString());
-      axios.put(`/admin/category/${type}`, formData, {
+      $axios.put(`/admin/category/${type}`, formData, {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         responseType: "json",
       }).then(() => {
@@ -338,7 +338,7 @@ export default defineComponent({
 
     // 新增分类名（专题/标签）
     const saveCategory = (type: CATEGORY_TYPE, name: string) => {
-      axios(`/admin/category/${type}`, {
+      $axios(`/admin/category/${type}`, {
         method: "post",
         responseType: "json",
         params: {name: name},
@@ -361,7 +361,7 @@ export default defineComponent({
         ElMessage.warning('绑定文章失败，需要先保存文章')
         return
       }
-      axios('/admin/category/bind' + type, {
+      $axios('/admin/category/bind' + type, {
         method: "post",
         responseType: "json",
         params: {id: id, aid: aid},
@@ -385,7 +385,7 @@ export default defineComponent({
         ElMessage.warning('解除绑定文章失败，需要先保存文章')
         return
       }
-      axios.delete('/admin/category/relations', {
+      $axios.delete('/admin/category/relations', {
         params: {id: id, aid: aid},
         responseType: "json",
       }).then(() => {
