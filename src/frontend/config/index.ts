@@ -3,7 +3,7 @@ export default {
         baseUrl: '/api' // 测试接口域名
     },
     "production": {
-        baseUrl: '//www.demo.com/api' // 正式接口域名
+        baseUrl: '//api.itsos.ltd:1025' // 正式接口域名
     }
 }
 
