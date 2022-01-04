@@ -67,6 +67,7 @@
 import {Editor, EditorContent} from '@tiptap/vue-3'
 import {defineComponent, inject, onUnmounted, reactive, ref, toRefs} from "vue";
 import router from "../routes";
+import 'element-plus/theme-chalk/display.css'
 import {frontendExtensions} from "../common/tiptap/tiptap-extensions";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";

@@ -16,6 +16,6 @@ app.use(ElementPlus)
     .use(VueAxios, axios)
 
 app.provide('$axios', axios)
-// app.config.unwrapInjectedRef = true
+app.config.unwrapInjectedRef = true
 
 app.mount('#app')

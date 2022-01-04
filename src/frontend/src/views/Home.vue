@@ -41,7 +41,8 @@
 
 <script lang="ts">
 
-import {defineComponent, getCurrentInstance, inject, onMounted, reactive, ref, toRefs, watch} from 'vue'
+import {defineComponent, inject, onMounted, reactive, ref, toRefs, watch} from 'vue'
+import 'element-plus/theme-chalk/display.css'
 import router from "../routes";
 
 export default defineComponent({
@@ -56,7 +57,7 @@ export default defineComponent({
       rank: [],
       noMore: false,
       loading: false,
-      errorMsg:  false,
+      errorMsg: false,
     })
 
     const defaults = () => {
