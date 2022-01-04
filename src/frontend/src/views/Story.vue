@@ -26,7 +26,7 @@
     </el-card>
   </el-drawer>
   <el-container>
-    <el-aside width="30px" class="hidden-xs-only">
+    <el-aside style="width:30px;padding-top:20px;">
       <el-icon style="font-size: 32px;color:#555;cursor:pointer;" @click="drawer = true">
         <Fold v-if="!drawer"/>
         <Expand v-else/>
