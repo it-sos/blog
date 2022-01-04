@@ -51,3 +51,9 @@ location ^~ /api {
     proxy_temp_file_write_size 64k;
 }
 ```
+
+### 镜像构建
+```shell
+sudo buildkitd --oci-worker=false --containerd-worker=true &
+sh dockerfile.sh 
+```

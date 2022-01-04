@@ -23,13 +23,14 @@ run() {
   "frontend")
     mkdir -p $basedir/run/frontend
     rm -rf $basedir/run/frontend/* $basedir/../src/frontend/dist/*
-    cd $basedir/../src/frontend/ && yarn build && cp -r dist/* $basedir/run/frontend && cd -
+    cd $basedir/../src/frontend/ && yarn install && yarn build && cp -r dist/* $basedir/run/frontend && cd -
     sudo buildctl build \
         --frontend=dockerfile.v0 \
         --local context=. \
         --local dockerfile=$basedir/k8s/frontend/ \
         --output type=image,name=docker.io/itsos/blog-frontend:$version
     sudo ctr -n buildkit i push -u itsos docker.io/itsos/blog-frontend:$version
+    sed -i "s#blog-frontend:v.*#blog-frontend:$version#" $basedir/k8s/blog-frontend.yaml
   ;;
   "build_linux")
     build linux
@@ -42,6 +43,7 @@ run() {
         --local dockerfile=$basedir/k8s/backend/ \
         --output type=image,name=docker.io/itsos/blog-backend:$version
     sudo ctr -n buildkit i push -u itsos docker.io/itsos/blog-backend:$version
+    sed -i "s#blog-backend:v.*#blog-backend:$version#" $basedir/k8s/blog-backend.yaml
   ;;
   "build_windows")
     build windows
