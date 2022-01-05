@@ -5,8 +5,10 @@
         <div class="card-header menu-bar-user">
           <menu-bar @save="save" :editor="editor"/>
           <el-tooltip class="item" effect="dark" :content="saveStatus.message" placement="left">
-            <el-icon :class="saveStatus.icon" :color="saveStatus.color" :size="26">
+            <el-icon :class="saveStatus.icon" :color="saveStatus.color" style="font-size:26px;">
               <loading v-if="saveStatus.unsaved"/>
+              <circle-check-filled v-if="saveStatus.icon==='success'" />
+              <circle-close-filled v-if="saveStatus.icon==='error'"/>
             </el-icon>
           </el-tooltip>
         </div>
@@ -29,12 +31,13 @@ import {ElMessage, ElMessageBox} from 'element-plus'
 import router from '../routes'
 import utils from '../common/utils'
 import {backendExtensions} from "../common/tiptap/tiptap-extensions";
-import {Loading} from "@element-plus/icons-vue";
-
+import {CircleCheckFilled, CircleCloseFilled, Loading} from "@element-plus/icons-vue";
 export default defineComponent({
 
   components: {
     Loading,
+    CircleCheckFilled,
+    CircleCloseFilled,
     MenuBar,
     EditorContent,
     BubbleMenu,
@@ -60,7 +63,7 @@ export default defineComponent({
 
     const state = reactive({
       saveStatus: {
-        icon: "el-icon-success",
+        icon: "success",
         message: "已自动保存",
         color: "#67C23A",
         unsaved: false,
@@ -79,7 +82,7 @@ export default defineComponent({
 
     const stateSaved = () => {
       state.saveStatus = {
-        icon: "el-icon-success",
+        icon: "success",
         message: "已自动保存",
         color: "#67C23A",
         unsaved: false,
@@ -88,7 +91,7 @@ export default defineComponent({
 
     const stateSaveFail = (message?: string, type: 'success' | 'warning' | 'info' | 'error' | '' = "error", duration: number = 3000) => {
       state.saveStatus = {
-        icon: "el-icon-error",
+        icon: "error",
         message: "保存失败." + message,
         color: "#F56C6C",
         unsaved: false,
@@ -129,6 +132,10 @@ export default defineComponent({
       let json = editor.getJSON()
       if (json.content[0].type != 'heading' || json.content[0].attrs.level != 2) {
         stateSaveFail("请设置h2开头的标题名称，可通过点击【H】图标进行设置！", 'warning')
+        return
+      }
+      if (json.content[0].hasOwnProperty("content") == false) {
+        stateSaveFail("标题不能为空！", 'warning')
         return
       }
       let title: string = json.content[0].content[0].text
