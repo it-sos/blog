@@ -12,7 +12,6 @@ require (
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.1.5 // indirect
-	github.com/gorilla/securecookie v1.1.1
 	github.com/iris-contrib/swagger/v12 v12.0.1
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
@@ -23,7 +22,7 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.9 // indirect; indirec
 	github.com/minio/minio-go/v7 v7.0.14
 	github.com/nats-io/nats-server/v2 v2.2.5 // indirect
-	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/onsi/gomega v1.12.0 // indirect
 	github.com/sergi/go-diff v1.2.0 // indirect
 	github.com/spf13/viper v1.7.1

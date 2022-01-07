@@ -13,8 +13,8 @@ func Configure(b *bootstrap.Bootstrapper) {
 			// 设置允许跨域访问
 			ctx.Header("Access-Control-Allow-Origin", "https://itsos.ltd")
 			ctx.Header("Access-Control-Allow-Credentials", "true")
-			ctx.Header("Access-Control-Allow-Methods", "*")
-			ctx.Header("Access-Control-Allow-Headers", "Authorization, Content-Type, Depth,User-Agent, X-File-Size, X-Requested-With, X-Requested-By, If-Modified-Since, X-File-Name, X-File-Type, Cache-Control, Origin, token, x-requested-with, TE")
+			ctx.Header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
+			ctx.Header("Access-Control-Allow-Headers", "Authorization, Content-Type, Depth,User-Agent, X-File-Size, X-Requested-With, X-Requested-By, If-Modified-Since, X-File-Name, X-File-Type, Cache-Control, Origin, token, x-requested-with")
 			ctx.Header("Access-Control-Expose-Headers", "*")
 
 			// 预检查 options 直接放行
