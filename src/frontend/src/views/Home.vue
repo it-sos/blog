@@ -61,7 +61,7 @@ export default defineComponent({
     })
 
     const defaults = () => {
-      document.title = "YU鹏sir笔记"
+      document.title = "IT.SOS 技术笔记"
       state.errorMsg = false
       state.noMore = false
       state.page = 0
