@@ -18,8 +18,8 @@ import (
 	"gitee.com/itsos/golibs/v2/utils"
 	"gitee.com/itsos/golibs/v2/utils/validate"
 	"gitee.com/itsos/studynotes/caches"
+	"gitee.com/itsos/studynotes/cerrors"
 	"gitee.com/itsos/studynotes/datamodels"
-	"gitee.com/itsos/studynotes/errors"
 	"gitee.com/itsos/studynotes/models/vo"
 	"gitee.com/itsos/studynotes/repositories"
 	"golang.org/x/net/context"
@@ -110,7 +110,7 @@ func (a articleService) GetArticleList(page int, size int, keyword string) []vo.
 func (a articleService) GetArticleAndContent(id uint) (info vo.ArticleEditVO, err error) {
 	article, has := a.article.GetInfoById(id)
 	if !has {
-		err = errors.Error("article_notfound_err")
+		err = cerrors.Error("article_notfound_err")
 		return
 	}
 	content, _ := a.content.Select(&datamodels.ArticleContent{
@@ -144,7 +144,7 @@ func (a articleService) SaveArticle(vo vo.ArticleParamsVO) (id uint, err error) 
 			title = info.Title
 		}
 		if vo.Id < 1 || title != "" && title != vo.Title {
-			err = errors.Error("article_exists_err")
+			err = cerrors.Error("article_exists_err")
 			return
 		}
 	}
@@ -178,7 +178,7 @@ func (a articleService) DeleteArticle(id uint) (err error) {
 	caches.CCategoryRel.Id(id, repositories.CategoryTypeTag)
 	caches.CCategoryRel.Id(id, repositories.CategoryTypeTopic)
 	if !a.article.SoftDelete(id) {
-		err = errors.Error("article_remove_err")
+		err = cerrors.Error("article_remove_err")
 	}
 	return
 }

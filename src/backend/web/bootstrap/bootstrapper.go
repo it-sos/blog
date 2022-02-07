@@ -92,7 +92,7 @@ func (b *Bootstrapper) SetupErrorHandlers() {
 
 	b.OnAnyErrorCode(func(ctx iris.Context) {
 		res := errors.Errors{}
-		res.SetErrCode(ctx.GetStatusCode())
+		res.SetCode(ctx.GetStatusCode())
 		res.SetMessage(iris.StatusText(ctx.GetStatusCode()))
 
 		if isOutJson(ctx) {
@@ -101,7 +101,7 @@ func (b *Bootstrapper) SetupErrorHandlers() {
 		}
 
 		err := iris.Map{
-			"code":    res.GetErrCode(),
+			"code":    res.GetCode(),
 			"message": res.GetMessage(),
 		}
 		ctx.ViewData("Err", err)

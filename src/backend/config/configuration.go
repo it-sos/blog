@@ -19,12 +19,18 @@ import (
 
 type ConfigurationReadOnly interface {
 	config.ConfigurationReadOnly
+	GetCryptAesToken() string
 	GetDemo() int
 }
 
 type Configuration struct {
 	*config.Configuration
-	Demo string `yaml:"demo.demo"`
+	CryptAesToken string `yaml:"crypt.aes.token"`
+	Demo          string `yaml:"demo.demo"`
+}
+
+func (c Configuration) GetCryptAesToken() string {
+	return viper.GetString(c.CryptAesToken)
 }
 
 func (c Configuration) GetDemo() int {

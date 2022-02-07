@@ -32,7 +32,7 @@ type CategoryController struct {
 // @Param id query integer true "类别id"
 // @Param aid query integer true "文章id"
 // @Success 200 {string} string "success"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/category/relations [delete]
 func (c *CategoryController) DeleteCategoryRelations() error {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
@@ -48,7 +48,7 @@ func (c *CategoryController) DeleteCategoryRelations() error {
 // @Produce json
 // @Param name query string true "专题名称"
 // @Success 200 {integer} integer "专题id"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/category/topic [post]
 func (c *CategoryController) PostCategoryTopic() (uint, error) {
 	name := c.Ctx.FormValue("name")
@@ -64,7 +64,7 @@ func (c *CategoryController) PostCategoryTopic() (uint, error) {
 // @Param id query integer true "专题id"
 // @Param aid query integer true "文章id"
 // @Success 200 {integer} string ""
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/category/bindtopic [post]
 func (c *CategoryController) PostCategoryBindtopic() {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
@@ -80,7 +80,7 @@ func (c *CategoryController) PostCategoryBindtopic() {
 // @Produce json
 // @Param id query integer true "专题id"
 // @Success 200 {string} string "success"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/category/topic [delete]
 func (c *CategoryController) DeleteCategoryTopic() error {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
@@ -96,7 +96,7 @@ func (c *CategoryController) DeleteCategoryTopic() error {
 // @Param id formData integer true "专题id"
 // @Param name formData string true "专题名称"
 // @Success 200 {string} string "success"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/category/topic [put]
 func (c *CategoryController) PutCategoryTopic() error {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
@@ -111,7 +111,7 @@ func (c *CategoryController) PutCategoryTopic() error {
 // @Accept json
 // @Produce json
 // @Success 200 {object} []datamodels.Category "专题列表"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/category/topics [get]
 func (c *CategoryController) GetCategoryTopics() []datamodels.Category {
 	return services.SCategory.GetTopicList()
@@ -125,7 +125,7 @@ func (c *CategoryController) GetCategoryTopics() []datamodels.Category {
 // @Produce plain
 // @Param name query integer true "标签名称"
 // @Success 200 {integer} integer "专题id"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/category/tag [post]
 func (c *CategoryController) PostCategoryTag() (uint, error) {
 	name := c.Ctx.FormValue("name")
@@ -141,7 +141,7 @@ func (c *CategoryController) PostCategoryTag() (uint, error) {
 // @Param id query integer true "专题id"
 // @Param aid query integer true "文章id"
 // @Success 200 {integer} string ""
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/category/bindtag [post]
 func (c *CategoryController) PostCategoryBindtag() {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
@@ -157,7 +157,7 @@ func (c *CategoryController) PostCategoryBindtag() {
 // @Produce json
 // @Param id query integer true "标签id"
 // @Success 200 {string} string "success"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/category/tag [delete]
 func (c *CategoryController) DeleteCategoryTag() error {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
@@ -173,7 +173,7 @@ func (c *CategoryController) DeleteCategoryTag() error {
 // @Param id formData integer true "标签id"
 // @Param name formData string true "标签名称"
 // @Success 200 {string} string "success"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/category/tag [put]
 func (c *CategoryController) PutCategoryTag() error {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
@@ -188,7 +188,7 @@ func (c *CategoryController) PutCategoryTag() error {
 // @Accept json
 // @Produce json
 // @Success 200 {object} []datamodels.Category "标签列表"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/category/tags [get]
 func (c *CategoryController) GetCategoryTags() []datamodels.Category {
 	return services.SCategory.GetTagList()
@@ -202,7 +202,7 @@ func (c *CategoryController) GetCategoryTags() []datamodels.Category {
 // @Produce plain
 // @Param id query integer true "分类id"
 // @Success 200 {integer} integer "绑定文章条数"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/category/bindartcount [get]
 func (c *CategoryController) GetCategoryBindartcount() uint {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))

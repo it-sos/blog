@@ -56,7 +56,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -94,7 +94,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -130,7 +130,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -181,7 +181,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -219,7 +219,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -264,7 +264,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -309,7 +309,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -354,7 +354,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -399,7 +399,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -435,7 +435,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -471,7 +471,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -503,7 +503,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -548,7 +548,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -584,7 +584,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -620,7 +620,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -652,7 +652,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -693,7 +693,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -747,7 +747,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -779,7 +779,7 @@ var doc = `{
                     "400": {
                         "description": "error",
                         "schema": {
-                            "$ref": "#/definitions/errors.Errors"
+                            "$ref": "#/definitions/cerrors.Errors"
                         }
                     }
                 }
@@ -886,7 +886,7 @@ var doc = `{
                 }
             }
         },
-        "errors.Errors": {
+        "cerrors.Errors": {
             "type": "object",
             "properties": {
                 "code": {

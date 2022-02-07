@@ -12,8 +12,8 @@ package services
 
 import (
 	"gitee.com/itsos/studynotes/caches"
+	"gitee.com/itsos/studynotes/cerrors"
 	"gitee.com/itsos/studynotes/datamodels"
-	"gitee.com/itsos/studynotes/errors"
 	"gitee.com/itsos/studynotes/repositories"
 	"strconv"
 )
@@ -84,7 +84,7 @@ func (c categoryService) Unbind(id uint, aid uint) (err error) {
 		Aid: aid,
 	})
 	if !caches.CCategoryRel.Id(aid, res.Type).Remove(id) {
-		err = errors.Error("unbind_err")
+		err = cerrors.Error("unbind_err")
 	} else {
 		c.cyr.DeleteByAidAndCid(aid, id)
 	}
@@ -97,7 +97,7 @@ func (c categoryService) GetBindArtCount(id uint) uint {
 
 func (c categoryService) NewTopic(name string) (id uint, err error) {
 	if c.cy.ExistName(name, repositories.CategoryTypeTopic) {
-		err = errors.Error("topic_exists_err")
+		err = cerrors.Error("topic_exists_err")
 		return
 	}
 	id = c.cy.Insert(&datamodels.Category{
@@ -117,14 +117,14 @@ func (c categoryService) DeleteTopic(id uint) (err error) {
 	// 删除绑定关系
 	c.cyr.DeleteByCid(id)
 	if !c.cy.Delete(id) {
-		return errors.Error("topic_remove_err")
+		return cerrors.Error("topic_remove_err")
 	}
 	return
 }
 
 func (c categoryService) UpdateTopic(id uint, name string) (err error) {
 	if c.cy.ExistName(name, repositories.CategoryTypeTopic) {
-		return errors.Error("topic_exists_err")
+		return cerrors.Error("topic_exists_err")
 	}
 	if c.cy.Update(id, &datamodels.Category{
 		Name: name,
@@ -140,7 +140,7 @@ func (c categoryService) GetTopicList() []datamodels.Category {
 
 func (c categoryService) NewTag(name string) (id uint, err error) {
 	if c.cy.ExistName(name, repositories.CategoryTypeTag) {
-		err = errors.Error("topic_exists_err")
+		err = cerrors.Error("topic_exists_err")
 		return
 	}
 	id = c.cy.Insert(&datamodels.Category{
@@ -160,7 +160,7 @@ func (c categoryService) DeleteTag(id uint) (err error) {
 	// 删除绑定关系
 	c.cyr.DeleteByCid(id)
 	if !c.cy.Delete(id) {
-		err = errors.Error("tag_remove_err")
+		err = cerrors.Error("tag_remove_err")
 		return
 	}
 	return
@@ -168,7 +168,7 @@ func (c categoryService) DeleteTag(id uint) (err error) {
 
 func (c categoryService) UpdateTag(id uint, name string) (err error) {
 	if c.cy.ExistName(name, repositories.CategoryTypeTag) {
-		err = errors.Error("tag_exists_err")
+		err = cerrors.Error("tag_exists_err")
 		return
 	}
 	if c.cy.Update(id, &datamodels.Category{

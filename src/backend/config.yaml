@@ -16,6 +16,12 @@ sock: /tmp/studynotes.sock
 swagger:
   port: 9099
 
+# 秘钥
+crypt:
+  aes:
+    # token生成专用
+    token: 546acca7d02f7ba82460f0b626f37469
+
 mysql:
   master:
     user: root

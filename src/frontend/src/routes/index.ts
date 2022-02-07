@@ -3,9 +3,11 @@ import {createRouter, createWebHistory} from "vue-router";
 const Home = () => import('../views/Home.vue')
 const Article = () => import('../views/Article.vue')
 const Story = () => import('../views/Story.vue')
+const Login = () => import('../views/Login.vue')
 
 const routes = [
     { path: '/', component: Home },
+    { path: '/login', component: Login },
     { path: '/:keyword', component: Home },
     { path: '/a/:title', component: Article },
     { path: '/e/', component: Story },

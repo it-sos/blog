@@ -32,7 +32,7 @@ type IndexController struct {
 // @Param page query integer true "页码"
 // @Param size query integer true "每页条数"
 // @Success 200 {object} []vo.ArticleVO "列表数据"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /article/list [get]
 func (c *IndexController) GetArticleList() interface{} {
 	page, _ := strconv.Atoi(c.Ctx.FormValue("page"))
@@ -49,7 +49,7 @@ func (c *IndexController) GetArticleList() interface{} {
 // @Accept json
 // @Produce json
 // @Success 200 {object} []vo.ArticleAccessTimesVO "列表数据"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /article/rank [get]
 func (c *IndexController) GetArticleRank() interface{} {
 	isLogin := services.SAuthService.IsLogin(c.Ctx.GetHeader("token"))
@@ -64,7 +64,7 @@ func (c *IndexController) GetArticleRank() interface{} {
 // @Produce json
 // @Param title query string true "文章标题"
 // @Success 200 {object} []vo.ArticleContentVO "详情数据"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /article/content [get]
 func (c *IndexController) GetArticleContent() interface{} {
 	title := c.Ctx.FormValue("title")

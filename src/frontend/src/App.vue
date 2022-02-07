@@ -19,7 +19,7 @@
       <el-container>
         <router-view></router-view>
       </el-container>
-      <el-footer style="text-align: center;font-size: 12px; padding:30px 0 60px 0;">Copyright &copy; 鹏sir笔记</el-footer>
+      <el-footer style="text-align: center;font-size: 12px; padding:30px 0 60px 0;">Copyright &copy; IT.SOS 技术笔记</el-footer>
     </el-container>
   </div>
 </template>

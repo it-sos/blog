@@ -32,7 +32,7 @@ type FilesController struct {
 // @Produce json
 // @Param media query string true "文章资源"
 // @Success 200 {string} string ""
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/files [delete]
 func (c *FilesController) DeleteFiles() error {
 	media := c.Ctx.URLParam("media")
@@ -48,7 +48,7 @@ func (c *FilesController) DeleteFiles() error {
 // @Param file formData file true "request file data"
 // @Param aid formData integer true "文章id"
 // @Success 200 {object} vo.FileVO "文件vo"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/files [post]
 func (c *FilesController) PostFiles() (file vo.FileVO, err error) {
 	_, f, errs := c.Ctx.FormFile("file")
@@ -69,7 +69,7 @@ func (c *FilesController) PostFiles() (file vo.FileVO, err error) {
 // @Param name formData string true "文件名称"
 // @Param media formData string true "文件标志"
 // @Success 200 {string} string ""
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/files/article [post]
 func (c *FilesController) PostFilesArticle() error {
 	name := c.Ctx.FormValue("name")
@@ -86,7 +86,7 @@ func (c *FilesController) PostFilesArticle() error {
 // @Produce json
 // @Param aid query integer true "文章id"
 // @Success 200 {object} vo.FilesEditVO "文章详情VO"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/article [get]
 func (c *FilesController) GetFiles() ([]datamodels.Files, error) {
 	aid, _ := c.Ctx.URLParamInt("aid")

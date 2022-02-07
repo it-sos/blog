@@ -34,7 +34,7 @@ type FilesController struct {
 // @Param media path string true "资源标志"
 // @Param size query string true "图片大小"
 // @Success 200 {string} string "文件流"
-// @Failure 400 {object} errors.Errors "error"
+// @Failure 400 {object} cerrors.Errors "error"
 // @Router /files/{media} [get]
 func (c *FilesController) GetFilesBy(media string) (mvc.Result, error) {
 	data, contentType, err := services.SFiles.GetFile(strings.Replace(media, "_", "/", 1))

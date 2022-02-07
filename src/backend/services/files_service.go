@@ -16,8 +16,8 @@ import (
 	"fmt"
 	minio2 "gitee.com/itsos/golibs/v2/db/minio"
 	"gitee.com/itsos/golibs/v2/utils"
+	"gitee.com/itsos/studynotes/cerrors"
 	"gitee.com/itsos/studynotes/datamodels"
-	"gitee.com/itsos/studynotes/errors"
 	"gitee.com/itsos/studynotes/models/vo"
 	"gitee.com/itsos/studynotes/repositories"
 	"github.com/minio/minio-go/v7"
@@ -66,7 +66,7 @@ type filesService struct {
 func (f filesService) ResizeImg(img []byte, contentType, size string) (newImg []byte, err error) {
 	image, _, err := image.Decode(bytes.NewBuffer(img))
 	if err != nil {
-		err = errors.Error("read_file_err")
+		err = cerrors.Error("read_file_err")
 		return
 	}
 	sizes := strings.Split(size, "x")
@@ -100,7 +100,7 @@ func (f filesService) GetFile(fileName string) ([]byte, string, error) {
 	object, err := minio2.NewMinio().GetObject(ctx, bucketName, fileName, minio.GetObjectOptions{})
 	if err != nil {
 		log.Print(err)
-		return nil, "", errors.Error("read_file_err")
+		return nil, "", cerrors.Error("read_file_err")
 	}
 	buf := bytes.NewBuffer(nil)
 	io.Copy(buf, object)
@@ -109,7 +109,7 @@ func (f filesService) GetFile(fileName string) ([]byte, string, error) {
 
 func (f filesService) GetStorageName(ext string) string {
 	year, month, day := time.Now().Date()
-	return fmt.Sprintf("%d%d%d/%s%s", year, month, day, utils.Rand(16), ext)
+	return fmt.Sprintf("%d%d%d/%s%s", year, month, day, utils.Rand(16, utils.RandMix), ext)
 }
 
 func (f filesService) GetFileListByAid(aid uint) (files []datamodels.Files, err error) {
@@ -120,7 +120,7 @@ func (f filesService) RemoveFile(fileName string) error {
 	err := minio2.NewMinio().RemoveObject(context.Background(), bucketName, fileName, minio.RemoveObjectOptions{})
 	if err != nil {
 		log.Print(err)
-		err = errors.Error("remove_file_err")
+		err = cerrors.Error("remove_file_err")
 	} else {
 		f.file.Delete(fileName)
 	}

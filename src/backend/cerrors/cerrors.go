@@ -8,7 +8,7 @@
    See the Mulan PSL v2 for more details.
 */
 
-package errors
+package cerrors
 
 import (
 	"encoding/json"
@@ -21,7 +21,9 @@ type Errors struct {
 }
 
 var errCodeList = map[string]Errors{
-	"param_err":            {4020001, "参数异常"},
+	"parameter_error":     {4000000, "参数错误[ %s ]"},
+	"unauthorized_access": {4000003, "未授权访问"},
+
 	"article_exists_err":   {4001001, "文章标题已存在"},
 	"article_notfound_err": {4001002, "该文章不存在"},
 	"article_remove_err":   {4001003, "文章移除失败"},
