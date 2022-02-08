@@ -1,143 +1,137 @@
 <template>
+  <div class="login-body">
+    <div class="login-container">
+      <div class="head">
+        <div class="name">
+          <div class="title">登录验证</div>
+        </div>
+      </div>
+      <el-form ref="loginForm" :model="ruleForm" :rules="rules" class="login-form" label-position="top">
+        <el-form-item label="账号" prop="username">
+          <el-input v-model.trim="ruleForm.username" autocomplete="off" type="text"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model.trim="ruleForm.password" autocomplete="off" type="password"></el-input>
+        </el-form-item>
+        <el-form-item style="padding-top: 30px">
+          <el-button style="width: 100%" type="primary" @click="submitForm">立即登录</el-button>
+        </el-form-item>
+        <el-checkbox v-model="login_free" @change="!login_free">一周免登录</el-checkbox>
+      </el-form>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-
-import {defineComponent, inject, onMounted, reactive, ref, toRefs, watch} from 'vue'
-import 'element-plus/theme-chalk/display.css'
+import {defineComponent, inject, reactive, ref, toRefs} from 'vue'
+import {localSet} from "../utils";
 import router from "../routes";
+// @ts-ignore
+import md5 from "js-md5"
 
 export default defineComponent({
+  name: 'Login',
   setup() {
+    const loginForm = ref()
     const $axios: any = inject('$axios')
-    let article = inject("article-id", {id: ref<number>()})
-    article.id = ref(0)
-    let state = reactive({
-      page: 0,
-      size: 10,
-      article: [],
-      rank: [],
-      noMore: false,
-      loading: false,
-      errorMsg: false,
+    const state = reactive({
+      ruleForm: {
+        username: '',
+        password: ''
+      },
+      login_free: true,
+      rules: {
+        username: [
+          {required: 'true', message: '账户不能为空', trigger: 'blur'}
+        ],
+        password: [
+          {required: 'true', message: '密码不能为空', trigger: 'blur'}
+        ]
+      }
     })
-
-    const defaults = () => {
-      document.title = "IT.SOS 技术笔记"
-      state.errorMsg = false
-      state.noMore = false
-      state.page = 0
-      state.article = []
-    }
-
-    const load = () => {
-      if (state.noMore || state.errorMsg) {
-        return
-      }
-      state.loading = true
-      state.page++
-
-      let keyword = router.currentRoute.value.params.keyword;
-      if (keyword) {
-        keyword = decodeURIComponent(keyword.toString())
-      }
-
-      $axios.get('/article/list', {
-        params: {
-          "page": state.page,
-          "size": state.size,
-          "keyword": keyword
+    const submitForm = async () => {
+      loginForm.value.validate((valid: any) => {
+        if (valid) {
+          $axios.post('/auth/login', {
+            account: state.ruleForm.username || '',
+            password: md5(state.ruleForm.password),
+            login_free: true,
+          }).then((res: any) => {
+            localSet('token', res.data.data)
+            router.back()
+          }).catch(()=>{})
+        } else {
+          console.log('error submit!!')
+          return false;
         }
-      }).then((response: any) => {
-        state.loading = false
-        if (response.data.length === 0) {
-          state.noMore = true
-          return
-        }
-        response.data.forEach((v: any) => {
-          state.article.push(v)
-        })
-      }).catch((error: any) => {
-        console.log(error)
-        state.loading = false
-        state.errorMsg = true
       })
     }
-
-    watch(() => router.currentRoute.value.params.keyword, () => {
-      defaults()
-      load()
-      ranks()
-    })
-
-    let ranks = () => {
-      $axios.get('/article/rank').then((response: any) => {
-        state.rank = response.data
-      }).catch((error: any) => {
-        state.loading = false
-        console.log(error)
-      })
+    const resetForm = () => {
+      loginForm.value.resetFields();
     }
-
-    onMounted(() => {
-      defaults()
-      load()
-      ranks()
-    })
-
     return {
       ...toRefs(state),
-      load,
+      loginForm,
+      submitForm,
+      resetForm
     }
   }
 })
 </script>
 
 <style scoped>
-.load {
-  padding: 0px;
-  margin: 0px;
-  text-align: center;
+.login-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #fff;
+  /* background-image: linear-gradient(25deg, #077f7c, #3aa693, #5ecfaa, #7ffac2); */
 }
 
-.title a {
-  text-decoration: none;
-  color: #303133;
-  margin-right: 30px;
+.login-container {
+  width: 420px;
+  height: 455px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0px 21px 41px 0px rgba(0, 0, 0, 0.2);
 }
 
-.title h2 {
-  display: inline;
+.head {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0 20px 0;
 }
 
-.title span {
-  vertical-align: bottom;
+.head img {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
 }
 
-.description {
-  word-break: break-word;
-  padding-top: 30px;
-  color: #606266;
+.head .title {
+  font-size: 28px;
+  color: #777;
+  font-weight: bold;
 }
 
-.link {
-  padding-top: 20px;
+.head .tips {
+  font-size: 12px;
+  color: #999;
 }
 
-.link p {
-  margin: 0;
+.login-form {
+  width: 70%;
+  margin: 0 auto;
+}
+</style>
+<style>
+.el-form--label-top .el-form-item__label {
+  padding: 0;
 }
 
-.tag span {
-  margin-left: 6px;
-
-}
-
-.box {
-  padding-bottom: 30px;
-}
-
-.hidden-xs-only {
-  padding-top: 20px;
+.login-form .el-form-item {
+  margin-bottom: 12px;
 }
 </style>

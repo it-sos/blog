@@ -15,11 +15,13 @@ import (
 	"gitee.com/itsos/golibs/v2/global/consts"
 	"gitee.com/itsos/golibs/v2/global/variable"
 	"gitee.com/itsos/studynotes/config"
+	"github.com/go-playground/validator/v10"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
 	"github.com/kataras/iris/v12/core/router"
 	"github.com/kataras/iris/v12/hero"
 	"github.com/kataras/iris/v12/middleware/logger"
+	"github.com/kataras/iris/v12/middleware/pprof"
 	"github.com/kataras/iris/v12/middleware/recover"
 	"net"
 	"time"
@@ -51,6 +53,27 @@ func New(appName, appOwner string, cfgs ...Configurator) *Bootstrapper {
 	}
 
 	return b
+}
+
+// SetupPprof 设置性能监控
+func (b *Bootstrapper) SetupPprof() {
+	if c.GetActive() == consts.EnvProduct {
+		return
+	}
+	p := pprof.New()
+	b.Any("/debug/pprof", p)
+	b.Any("/debug/pprof/{action:path}", p)
+}
+
+// SetupValidator 参数验证 go get github.com/go-playground/validator/v10
+func (b *Bootstrapper) SetupValidator() {
+	validate := validator.New()
+	// 手机号验证
+	//validate.RegisterValidation("phone", func(fl validator.FieldLevel) bool {
+	//	is, _ := regexp.Match("^1[0-9]{10}$", []byte(fl.Field().String()))
+	//	return is
+	//})
+	b.Validator = validate
 }
 
 // SetupViews loads the templates.

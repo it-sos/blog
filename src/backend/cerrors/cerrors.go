@@ -13,11 +13,20 @@ package cerrors
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 )
 
 type Errors struct {
 	Code    int    `json:"code" example:"4000000"`
 	Message string `json:"message"`
+}
+
+func (n *Errors) SetMessage(message string) {
+	n.Message = message
+}
+
+func (n *Errors) GetMessage() string {
+	return n.Message
 }
 
 var errCodeList = map[string]Errors{
@@ -35,9 +44,19 @@ var errCodeList = map[string]Errors{
 	"read_file_err":        {4004002, "读取文件内容失败"},
 	"remove_file_err":      {4004003, "删除文件操作失败"},
 	"resize_img_err":       {4004004, "重置图片大小失败"},
+
+	"user_account_exits": {4005001, "用户账号已存在"},
+	"user_auth_fail":     {4005002, "账号或密码不正确"},
 }
 
 func Error(key string) error {
 	ret, _ := json.Marshal(errCodeList[key])
+	return errors.New(string(ret))
+}
+
+func Errorf(key string, msg interface{}) error {
+	e := errCodeList[key]
+	e.SetMessage(fmt.Sprintf(e.GetMessage(), msg))
+	ret, _ := json.Marshal(e)
 	return errors.New(string(ret))
 }

@@ -34,6 +34,7 @@ type ArticleController struct {
 // @Param id query integer true "文章id"
 // @Success 200 {string} string ""
 // @Failure 400 {object} cerrors.Errors "error"
+// @Failure 401 {string} string "未授权登录"
 // @Router /admin/article [delete]
 func (c *ArticleController) DeleteArticle() {
 	id, _ := strconv.Atoi(c.Ctx.FormValue("id"))
@@ -49,6 +50,7 @@ func (c *ArticleController) DeleteArticle() {
 // @Param body body vo.ArticleParamsVO true "文章相关内容"
 // @Success 200 {integer} integer "文章id"
 // @Failure 400 {object} cerrors.Errors "error"
+// @Failure 401 {string} string "未授权登录"
 // @Router /admin/article [post]
 func (c *ArticleController) PostArticle() (id uint, err error) {
 	body, _ := c.Ctx.GetBody()
@@ -68,6 +70,7 @@ func (c *ArticleController) PostArticle() (id uint, err error) {
 // @Param id query integer true "文章id"
 // @Success 200 {object} vo.ArticleEditVO "文章详情VO"
 // @Failure 400 {object} cerrors.Errors "error"
+// @Failure 401 {string} string "未授权登录"
 // @Router /admin/article [get]
 func (c *ArticleController) GetArticle() (vo.ArticleEditVO, error) {
 	id, _ := c.Ctx.URLParamInt("id")
@@ -85,6 +88,7 @@ func (c *ArticleController) GetArticle() (vo.ArticleEditVO, error) {
 // @Param size query integer true "每页条数"
 // @Success 200 {object} vo.ArticleListVO "文章列表VO"
 // @Failure 400 {object} cerrors.Errors "error"
+// @Failure 401 {string} string "未授权登录"
 // @Router /admin/articles [get]
 func (c *ArticleController) GetArticles() []vo.ArticleListVO {
 	page, _ := strconv.Atoi(c.Ctx.FormValue("page"))

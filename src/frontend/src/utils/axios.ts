@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {ElMessage} from 'element-plus'
 import {localGet} from './index'
+// @ts-ignore
 import config from '~/config'
 import router from '../routes';
 

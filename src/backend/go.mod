@@ -3,13 +3,14 @@ module gitee.com/itsos/studynotes
 go 1.15
 
 require (
-	gitee.com/itsos/golibs/v2 v2.0.9
+	gitee.com/itsos/golibs/v2 v2.0.10-0.20220208054422-f0f8c755f393
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/andybalholm/brotli v1.0.2 // indirect
 	github.com/flosch/pongo2/v4 v4.0.2 // indirect
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
+	github.com/go-playground/validator/v10 v10.10.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.1.5 // indirect
 	github.com/iris-contrib/swagger/v12 v12.0.1
@@ -30,9 +31,7 @@ require (
 	github.com/tdewolff/minify/v2 v2.9.16 // indirect
 	github.com/tdewolff/parse/v2 v2.5.16 // indirect
 	github.com/yudai/pp v2.0.1+incompatible // indirect
-	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e
-	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22 // indirect
 	golang.org/x/tools v0.1.4 // indirect
 )
 

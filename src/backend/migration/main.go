@@ -31,6 +31,7 @@ func main() {
 		new(datamodels.ArticleContent),
 		new(datamodels.Category),
 		new(datamodels.CategoryRel),
+		new(datamodels.User),
 	}
 	err := mysql.NewMysql().DropTables(tables...)
 	if err != nil {

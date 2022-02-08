@@ -24,7 +24,8 @@ func Configure(b *bootstrap.Bootstrapper) {
 		b.Party("/"),
 		func(app *mvc.Application) {
 			app.Handle(new(controllers.IndexController)).
-				Handle(new(controllers.FilesController))
+				Handle(new(controllers.FilesController)).
+				Handle(new(admin.AuthController))
 		},
 	).Register(time.Now())
 

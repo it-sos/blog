@@ -12,9 +12,12 @@ package services
 
 import (
 	"fmt"
+	"gitee.com/itsos/golibs/v2/utils"
+	"gitee.com/itsos/golibs/v2/utils/crypt"
 	"gitee.com/itsos/golibs/v2/utils/crypt/aes"
 	"gitee.com/itsos/studynotes/cerrors"
 	"gitee.com/itsos/studynotes/config"
+	"gitee.com/itsos/studynotes/repositories"
 	"log"
 	"strconv"
 	"strings"
@@ -26,22 +29,30 @@ type AuthService interface {
 	// IsLogin 获取登录状态
 	IsLogin(token string) bool
 	// Login 登录
-	Login(username string, password string) string
+	Login(account, password string, loginFree bool) (string, error)
 	// Register 注册
-	Register(username, password string)
+	Register(account, password string) error
 	GetUserId(token string) (string, error)
 	GetToken(userId string) string
 }
 
 type authService struct {
+	ru repositories.UserRepository
 }
 
-func (a authService) Login(username string, password string) string {
-	panic("implement me")
+func (a authService) Login(account string, password string, loginFree bool) (token string, err error) {
+	//a.ru.
 }
 
-func (a authService) Register(username, password string) {
-	panic("implement me")
+func (a authService) Register(account, password string) (err error) {
+	if a.ru.ExistAccount(account) {
+		err = cerrors.Error("user_account_exits")
+		return
+	}
+	salt := utils.Rand(32, utils.RandMix)
+	password = crypt.Md5(password + salt)
+	a.ru.Insert(account, password, salt)
+	return err
 }
 
 func (a authService) IsLogin(token string) bool {
@@ -85,4 +96,4 @@ func (u authService) GetToken(userId string) string {
 	return token
 }
 
-var SAuthService AuthService = &authService{}
+var SAuthService AuthService = &authService{ru: repositories.RUser}

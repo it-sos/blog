@@ -34,6 +34,7 @@ import LoginMenu from "./components/LoginMenu.vue"
 export default defineComponent({
   components: {Search, LoginMenu},
   setup() {
+
     provide("article-id", reactive({id: ref<number>()}))
   }
 })
