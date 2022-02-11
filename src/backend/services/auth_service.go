@@ -42,6 +42,7 @@ type authService struct {
 
 func (a authService) Login(account string, password string, loginFree bool) (token string, err error) {
 	//a.ru.
+	return
 }
 
 func (a authService) Register(account, password string) (err error) {

@@ -42,7 +42,7 @@
 <script lang="ts">
 
 import {defineComponent, inject, onMounted, reactive, ref, toRefs, watch} from 'vue'
-import 'element-plus/theme-chalk/display.css'
+// import 'element-plus/theme-chalk/display.css'
 import router from "../routes";
 
 export default defineComponent({

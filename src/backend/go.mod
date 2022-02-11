@@ -10,7 +10,7 @@ require (
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
-	github.com/go-playground/validator/v10 v10.10.0 // indirect
+	github.com/go-playground/validator/v10 v10.10.0
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.1.5 // indirect
 	github.com/iris-contrib/swagger/v12 v12.0.1
