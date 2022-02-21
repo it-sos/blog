@@ -11,21 +11,21 @@
 package routes
 
 import (
-	"gitee.com/itsos/studynotes/web/bootstrap"
+	bootstrap2 "gitee.com/itsos/golibs/v2/framework/iris/bootstrap"
+	"gitee.com/itsos/golibs/v2/framework/iris/middleware/auth"
 	"gitee.com/itsos/studynotes/web/controllers"
 	"gitee.com/itsos/studynotes/web/controllers/admin"
-	"gitee.com/itsos/studynotes/web/middleware/auth"
 	"github.com/kataras/iris/v12/mvc"
 	"time"
 )
 
-func Configure(b *bootstrap.Bootstrapper) {
+func Routes(b *bootstrap2.Bootstrapper) {
 	mvc.Configure(
 		b.Party("/"),
 		func(app *mvc.Application) {
 			app.Handle(new(controllers.IndexController)).
 				Handle(new(controllers.FilesController)).
-				Handle(new(admin.AuthController))
+				Handle(new(controllers.AuthController))
 		},
 	).Register(time.Now())
 

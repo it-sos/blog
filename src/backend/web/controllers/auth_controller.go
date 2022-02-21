@@ -8,7 +8,7 @@
    See the Mulan PSL v2 for more details.
 */
 
-package admin
+package controllers
 
 import (
 	"gitee.com/itsos/studynotes/cerrors"
@@ -30,7 +30,7 @@ type AuthController struct {
 // @Param body body vo.LoginParamsVO true "json参数"
 // @Success 200 {string} string ""
 // @Failure 400 {object} cerrors.Errors "error"
-// @Router /admin/login [Post]
+// @Router /login [Post]
 func (c *AuthController) PostLogin() (token string, err error) {
 	params := new(vo.LoginParamsVO)
 	err = c.Ctx.ReadJSON(params)
@@ -38,6 +38,6 @@ func (c *AuthController) PostLogin() (token string, err error) {
 		err = cerrors.Errorf("parameter_error", err)
 		return
 	}
-	token, err = services.SAuthService.Login(params.Account, params.Password, params.LoginFree)
+	token, err = services.SAuthService.Login(params.Account, params.Password, params.LoginFree == "true")
 	return
 }

@@ -13,28 +13,15 @@ package config
 import (
 	"gitee.com/itsos/golibs/v2/config"
 	"gitee.com/itsos/golibs/v2/utils/reflects"
-	"github.com/spf13/viper"
 	"reflect"
 )
 
 type ConfigurationReadOnly interface {
 	config.ConfigurationReadOnly
-	GetCryptAesToken() string
-	GetDemo() int
 }
 
 type Configuration struct {
 	*config.Configuration
-	CryptAesToken string `yaml:"crypt.aes.token"`
-	Demo          string `yaml:"demo.demo"`
-}
-
-func (c Configuration) GetCryptAesToken() string {
-	return viper.GetString(c.CryptAesToken)
-}
-
-func (c Configuration) GetDemo() int {
-	return viper.GetInt(c.Demo)
 }
 
 func covertConfiguration() *Configuration {

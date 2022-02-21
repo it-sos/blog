@@ -13,5 +13,5 @@ package vo
 type LoginParamsVO struct {
 	Account   string `json:"account" validate:"required"`
 	Password  string `json:"password" validate:"alphanum,len=32"`
-	LoginFree bool   `json:"login_free" validate:"boolean"`
+	LoginFree string `json:"login_free" validate:"required,boolean"`
 }

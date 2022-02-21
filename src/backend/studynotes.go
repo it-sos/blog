@@ -11,10 +11,11 @@
 package studynotes
 
 import (
+	"gitee.com/itsos/golibs/v2/framework/iris/bootstrap"
+	"gitee.com/itsos/golibs/v2/framework/iris/middleware/auth"
+	"gitee.com/itsos/golibs/v2/framework/iris/middleware/cros"
+	"gitee.com/itsos/golibs/v2/framework/iris/middleware/identity"
 	"gitee.com/itsos/studynotes/config"
-	"gitee.com/itsos/studynotes/web/bootstrap"
-	"gitee.com/itsos/studynotes/web/middleware/cros"
-	"gitee.com/itsos/studynotes/web/middleware/identity"
 	"gitee.com/itsos/studynotes/web/routes"
 	"github.com/kataras/iris/v12"
 	"net"
@@ -24,7 +25,7 @@ import (
 func NewApp() *bootstrap.Bootstrapper {
 	app := bootstrap.New("studynotes", "peng.yu@qjfu.cn")
 	app.Bootstrap()
-	app.Configure(identity.Configure, cros.Configure, routes.Configure)
+	app.Configure(cros.Cros, identity.Identity, auth.CheckSign, routes.Routes)
 	return app
 }
 
@@ -32,9 +33,9 @@ func Listen() {
 	NewApp().Listen(":"+config.C.GetPort(), iris.WithOptimizations)
 }
 
-// ListenSock socket 方式
-// socat -d -d TCP-LISTEN:8080,fork,bind=127.0.0.1 UNIX:/tmp/studynotes.sock
-// curl http://localhost:8080
+//ListenSock socket 方式
+//socat -d -d TCP-LISTEN:8080,fork,bind=127.0.0.1 UNIX:/tmp/studynotes.sock
+//curl http://localhost:8080
 func ListenSock() {
 	app := NewApp()
 	socketFile := config.C.GetSock()

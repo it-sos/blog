@@ -11,16 +11,12 @@
 package services
 
 import (
-	"fmt"
+	"gitee.com/itsos/golibs/v2/framework/iris/services"
 	"gitee.com/itsos/golibs/v2/utils"
 	"gitee.com/itsos/golibs/v2/utils/crypt"
-	"gitee.com/itsos/golibs/v2/utils/crypt/aes"
 	"gitee.com/itsos/studynotes/cerrors"
-	"gitee.com/itsos/studynotes/config"
 	"gitee.com/itsos/studynotes/repositories"
-	"log"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -32,8 +28,6 @@ type AuthService interface {
 	Login(account, password string, loginFree bool) (string, error)
 	// Register 注册
 	Register(account, password string) error
-	GetUserId(token string) (string, error)
-	GetToken(userId string) string
 }
 
 type authService struct {
@@ -41,7 +35,25 @@ type authService struct {
 }
 
 func (a authService) Login(account string, password string, loginFree bool) (token string, err error) {
-	//a.ru.
+	if !a.ru.ExistAccount(account) {
+		err = cerrors.Error("user_auth_fail")
+		return
+	}
+
+	u, _ := a.ru.SelectByAccount(account)
+	password = crypt.Md5(password + u.Salt)
+	if u.Password != password {
+		err = cerrors.Error("user_auth_fail")
+		return
+	}
+
+	var lifetime time.Duration = 0
+	// 免登7天，否则4小时
+	if !loginFree {
+		lifetime = time.Hour * 4
+	}
+
+	token = services.GetToken(strconv.Itoa(int(u.Id)), lifetime)
 	return
 }
 
@@ -57,44 +69,8 @@ func (a authService) Register(account, password string) (err error) {
 }
 
 func (a authService) IsLogin(token string) bool {
-	return false
-}
-
-func (u authService) GetUserId(token string) (userId string, err error) {
-	if token == "" {
-		err = cerrors.Error("unauthorized_access")
-		return
-	}
-	deToken, err := aes.JavaDecryptCBC(token, config.C.GetCryptAesToken())
-	if err != nil {
-		log.Panicf("token aes decode fail: %v, data: %v", err, token)
-	}
-	tokenSplit := strings.Split(deToken, "|")
-	if len(tokenSplit) != 2 {
-		log.Panicf("token is error: %v", deToken)
-	}
-	unix, err := strconv.ParseInt(tokenSplit[1], 10, 64)
-	if err != nil {
-		log.Panicf("token unix time parseInt err: %v, data: %v", err, tokenSplit[1])
-	}
-	tts := time.Unix(unix, 0)
-	// token有效时间一周
-	tts = tts.Add(time.Hour * 24 * 7)
-	if time.Now().After(tts) {
-		err = cerrors.Error("unauthorized_access")
-	} else {
-		userId = tokenSplit[0]
-	}
-	return
-}
-
-func (u authService) GetToken(userId string) string {
-	tk := fmt.Sprintf("%s|%d", userId, time.Now().Unix())
-	token, err := aes.JavaEncryptCBC(tk, config.C.GetCryptAesToken())
-	if err != nil {
-		log.Panicf("token aes encode fail: %v, data: %v", err, tk)
-	}
-	return token
+	_, err := services.GetLoginId(token)
+	return err == nil
 }
 
 var SAuthService AuthService = &authService{ru: repositories.RUser}

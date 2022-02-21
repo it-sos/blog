@@ -13,6 +13,7 @@ package repositories
 import (
 	"gitee.com/itsos/golibs/v2/db/mysql"
 	"gitee.com/itsos/studynotes/datamodels"
+	"log"
 )
 
 type UserRepository interface {
@@ -46,7 +47,12 @@ func (u userRepository) Insert(account, password, salt string) uint {
 }
 
 func (u userRepository) DeleteByUid(uid uint) bool {
-	panic("implement me")
+	user := &datamodels.User{Id: uid}
+	i, err := u.db.Delete(user)
+	if err != nil {
+		log.Panicf("delete user fail. error:%v", err)
+	}
+	return i > 0
 }
 
 func (u userRepository) ExistAccount(account string) bool {

@@ -8,21 +8,30 @@
    See the Mulan PSL v2 for more details.
 */
 
-package auth
+package services
 
 import (
-	"gitee.com/itsos/studynotes/services"
-	"github.com/kataras/iris/v12"
+	"gitee.com/itsos/golibs/v2/utils/crypt"
+	"testing"
 )
 
-func Secret(ctx iris.Context) {
-	token := ctx.GetHeader("token")
-	userId, err := services.SAuthService.GetUserId(token)
-	if err != nil {
-		ctx.StatusCode(iris.StatusUnauthorized)
-		ctx.WriteString(err.Error())
-		return
+func Test_authService_Register(t *testing.T) {
+	u := "free"
+	p := crypt.Md5("FREEman110,!@#")
+	if err := SAuthService.Register(u, p); err != nil {
+		t.Error("create account fail.", err)
 	}
-	ctx.Values().Set("userId", userId)
-	ctx.Next()
+
+	token, err := SAuthService.Login(u, p, true)
+	if err != nil {
+		t.Error("login faill.", err)
+	}
+
+	if !SAuthService.IsLogin(token) {
+		t.Error("validate login fail.")
+	}
+
+	//uu, _ := repositories.RUser.SelectByAccount(u)
+	//repositories.RUser.DeleteByUid(uu.Id)
+
 }

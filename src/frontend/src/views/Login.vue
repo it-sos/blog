@@ -52,12 +52,12 @@ export default defineComponent({
     const submitForm = async () => {
       loginForm.value.validate((valid: any) => {
         if (valid) {
-          $axios.post('/auth/login', {
+          $axios.post('/login', {
             account: state.ruleForm.username || '',
             password: md5(state.ruleForm.password),
-            login_free: true,
+            login_free: "true",
           }).then((res: any) => {
-            localSet('token', res.data.data)
+            localSet('token', res.data)
             router.back()
           }).catch(()=>{})
         } else {
