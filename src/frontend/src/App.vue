@@ -30,12 +30,13 @@ import {defineComponent, provide, reactive, ref} from 'vue'
 
 import Search from "./components/Search.vue"
 import LoginMenu from "./components/LoginMenu.vue"
+import store from "./store/store";
 
 export default defineComponent({
   components: {Search, LoginMenu},
   setup() {
-
     provide("article-id", reactive({id: ref<number>()}))
+    return {store}
   }
 })
 
