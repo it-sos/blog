@@ -1,4 +1,7 @@
-import {createStore} from "vuex";
+import {createLogger, createStore} from "vuex";
+
+// @ts-ignore
+const debug = process.env.NODE_ENV !== 'production'
 
 const store = createStore({
     state () {
@@ -10,7 +13,9 @@ const store = createStore({
         increment (state: any) {
             state.count++
         }
-    }
+    },
+    strict: debug,
+    plugins: debug ? [createLogger()] : []
 })
 
 export default store

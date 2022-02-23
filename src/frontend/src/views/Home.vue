@@ -42,15 +42,11 @@
 <script lang="ts">
 
 import {defineComponent, inject, onMounted, reactive, ref, toRefs, watch} from 'vue'
-// import 'element-plus/theme-chalk/display.css'
 import router from "../routes";
-import store from "../store/store";
+// import 'element-plus/theme-chalk/display.css'
 
 export default defineComponent({
   setup() {
-    store.commit('increment')
-    console.log(store.state.count) // -> 1
-
     const $axios: any = inject('$axios')
     let article = inject("article-id", {id: ref<number>()})
     article.id = ref(0)

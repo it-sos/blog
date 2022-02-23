@@ -22,7 +22,7 @@
 <script lang="ts">
 import {defineComponent, inject, ref} from 'vue'
 import {CirclePlus, Edit, Key, Operation} from "@element-plus/icons-vue"
-
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: "LoginMenu",
@@ -30,6 +30,9 @@ export default defineComponent({
     Operation,
   },
   setup() {
+    // const store = useStore()
+    this.$store.commit('increment')
+    console.log(this.$store.state.count)
     let article = inject("article-id", {id: ref<number>()})
     return {
       article,
