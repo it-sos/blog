@@ -5,7 +5,7 @@
     <el-icon style="vertical-align: middle;"></el-icon>
   </span>
     <template #dropdown>
-      <el-dropdown-menu class="login-menu">
+      <el-dropdown-menu class="login-menu" v-if="account">
         <el-dropdown-item :icon="CirclePlus">
           <router-link to="/e/">创建文章</router-link>
         </el-dropdown-item>
@@ -13,16 +13,21 @@
           <router-link :to="'/e/'+article.id">编辑文章</router-link>
         </el-dropdown-item>
         <el-dropdown-item :icon="Key" disabled>内容加密（未激活）</el-dropdown-item>
-        <el-dropdown-item divided>小鹿 [退出]</el-dropdown-item>
+        <el-dropdown-item divided>{{account}} [退出]</el-dropdown-item>
+      </el-dropdown-menu>
+      <el-dropdown-menu class="login-menu" v-else>
+        <el-dropdown-item :icon="Lock">
+          <router-link to="/login">登录</router-link>
+        </el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
 </template>
 
 <script lang="ts">
-import {defineComponent, inject, ref} from 'vue'
-import {CirclePlus, Edit, Key, Operation} from "@element-plus/icons-vue"
-import { useStore } from 'vuex'
+import {computed, defineComponent, inject, ref} from 'vue'
+import {CirclePlus, Edit, Lock, Operation} from "@element-plus/icons-vue"
+import {useStore} from "../store/store";
 
 export default defineComponent({
   name: "LoginMenu",
@@ -30,17 +35,16 @@ export default defineComponent({
     Operation,
   },
   setup() {
-    // const store = useStore()
-    this.$store.commit('increment')
-    console.log(this.$store.state.count)
+    const store = useStore()
     let article = inject("article-id", {id: ref<number>()})
     return {
       article,
-      Key,
+      Lock,
       Edit,
       CirclePlus,
+      account: computed(() => store.getters.getAccount())
     }
-  }
+  },
 })
 </script>
 

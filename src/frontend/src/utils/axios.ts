@@ -48,7 +48,11 @@ axios.interceptors.response.use((res: HttpResult) => {
             return
         }
         if (res.response.hasOwnProperty('data')) {
-            ElMessage.error(res.response.data.message)
+            if (res.response.data.message != null) {
+                ElMessage.error(res.response.data.message)
+            } else {
+                ElMessage.error(res.response.statusText)
+            }
         } else {
             ElMessage.error(res.response.statusText)
         }

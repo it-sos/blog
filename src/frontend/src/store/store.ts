@@ -1,21 +1,40 @@
-import {createLogger, createStore} from "vuex";
+import { InjectionKey } from 'vue'
+import { createStore, useStore as baseUseStore, Store } from 'vuex'
+import {localGet, localRemove, localSet} from "../utils";
 
-// @ts-ignore
-const debug = process.env.NODE_ENV !== 'production'
+export interface State {
+    account: string
+    token: string
+}
 
-const store = createStore({
-    state () {
-        return {
-            count: 0
-        }
+export const key: InjectionKey<Store<State>> = Symbol()
+
+export const store = createStore<State>({
+    state: {
+        account: 'account',
+        token: 'token'
     },
     mutations: {
-        increment (state: any) {
-            state.count++
-        }
+        logout(state: State): void {
+            localRemove(state.account)
+            localRemove(state.token)
+        },
+        login(state: State, payload: State): void {
+            localSet(state.account, payload.account)
+            localSet(state.token, payload.token)
+        },
     },
-    strict: debug,
-    plugins: debug ? [createLogger()] : []
+    getters: {
+        getAccount: (state: State) => (): string => {
+            return localGet(state.account)
+        },
+        getToken: (state: State) => (): string => {
+            return localGet(state.token)
+        },
+    },
 })
 
-export default store
+// 定义自己的 `useStore` 组合式函数
+export function useStore () {
+    return baseUseStore(key)
+}
