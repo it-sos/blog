@@ -8,11 +8,13 @@ import RightClick from './plugins/vue3-right-click-menu-element-plus'
 
 import App from './App.vue'
 import axios from './utils/axios'
+import store from "./store/store";
 
 const app = createApp(App)
 app.use(ElementPlus)
     .use(RightClick)
     .use(router)
+    .use(store)
     .use(VueAxios, axios)
 
 app.provide('$axios', axios)

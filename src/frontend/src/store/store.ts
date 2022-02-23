@@ -1,26 +1,16 @@
-import {reactive} from "vue";
+import {createStore} from "vuex";
 
-const store = {
-    debug: true,
-
-    state: reactive({
-        message: 'Hello!'
-    }),
-
-    setMessageAction(newValue) {
-        if (this.debug) {
-            console.log('setMessageAction triggered with', newValue)
+const store = createStore({
+    state () {
+        return {
+            count: 0
         }
-
-        this.state.message = newValue
     },
-
-    clearMessageAction() {
-        if (this.debug) {
-            console.log('clearMessageAction triggered')
+    mutations: {
+        increment (state: any) {
+            state.count++
         }
-
-        this.state.message = ''
     }
-}
+})
+
 export default store

@@ -66,6 +66,11 @@ export default function createVitePlugins() {
                     var: 'VueRouter',
                     path: `https://unpkg.com/vue-router@4.0.12`,
                 },
+                {
+                    name: 'vuex',
+                    var: 'createStore',
+                    path: `https://unpkg.com/vuex@4.0.0/dist/vuex.global.js`,
+                },
             ]
         }),
     ];
