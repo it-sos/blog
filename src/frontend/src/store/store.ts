@@ -5,6 +5,7 @@ import {localGet, localRemove, localSet} from "../utils";
 export interface State {
     account: string
     token: string
+    articleId: number
 }
 
 export const key: InjectionKey<Store<State>> = Symbol()
@@ -15,7 +16,8 @@ const token = 'token'
 export const store = createStore<State>({
     state: {
         account: '',
-        token: ''
+        token: '',
+        articleId: 0,
     },
     mutations: {
         logout(state: State): void {
@@ -30,6 +32,9 @@ export const store = createStore<State>({
             state.account = payload.account
             state.token = payload.token
         },
+        setArticleId(state: State, articleId: number): void {
+            state.articleId = articleId
+        },
     },
     getters: {
         getAccount: (state: State) => (): string => {
@@ -39,6 +44,9 @@ export const store = createStore<State>({
         getToken: (state: State) => (): string => {
             state.token = localGet(token) || ''
             return state.token
+        },
+        getArticleId: (state: State) => (): number => {
+            return state.articleId
         },
     },
 })

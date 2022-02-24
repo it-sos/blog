@@ -9,8 +9,8 @@
         <el-dropdown-item :icon="CirclePlus">
           <router-link to="/e/">创建文章</router-link>
         </el-dropdown-item>
-        <el-dropdown-item :icon="Edit" v-if="article.id > 0">
-          <router-link :to="'/e/'+article.id">编辑文章</router-link>
+        <el-dropdown-item :icon="Edit" v-if="articleId > 0">
+          <router-link :to="'/e/'+articleId">编辑文章</router-link>
         </el-dropdown-item>
         <el-dropdown-item :icon="Key" disabled>内容加密（未激活）</el-dropdown-item>
         <el-tooltip content="退出登陆" effect="dark" placement="left">
@@ -40,7 +40,6 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
-    let article = inject("article-id", {id: ref<number>()})
     let logout = () => {
       ElMessageBox.confirm('确认退出登陆吗?', '提示', {
         confirmButtonText: '确定',
@@ -55,14 +54,14 @@ export default defineComponent({
           });
     }
     return {
-      article,
       CircleClose,
       Lock,
       Edit,
       Key,
       CirclePlus,
       logout,
-      account: computed(() => store.getters.getAccount())
+      account: computed(() => store.getters.getAccount()),
+      articleId: computed(() => store.getters.getArticleId())
     }
   },
 })

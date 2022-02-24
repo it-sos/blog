@@ -43,10 +43,13 @@
 
 import {defineComponent, inject, onMounted, reactive, ref, toRefs, watch} from 'vue'
 import router from "../routes";
+import {useStore} from "../store/store";
 // import 'element-plus/theme-chalk/display.css'
 
 export default defineComponent({
   setup() {
+    const store = useStore()
+    store.commit('setArticleId', 0)
     const $axios: any = inject('$axios')
     let article = inject("article-id", {id: ref<number>()})
     article.id = ref(0)
