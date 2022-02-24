@@ -100,7 +100,7 @@ func (a articleService) GetArticleList(page int, size int, keyword string) []vo.
 				Id:         v.Id,
 				Title:      v.Title,
 				TitleMatch: v.TitleMatch,
-				Duration:   utils.TimeDuration(v.Utime),
+				Duration:   a.getDuration(v),
 			})
 		}
 	}
@@ -256,7 +256,7 @@ func (a articleService) getArticle(v datamodels.Article) vo.ArticleVO {
 	topics, tags := SCategory.GetTopicAndTagName(v.Id)
 	return vo.ArticleVO{
 		Article:  v,
-		Duration: utils.TimeDuration(v.Utime),
+		Duration: a.getDuration(v),
 		Topics:   topics,
 		Tags:     tags}
 }
@@ -370,4 +370,13 @@ func (a articleService) getListPage(isLogin bool, page int, size int, keyword st
 		article = a.article.SelectMany(a.getAuthorize(isLogin), offset, size)
 	}
 	return article
+}
+
+func (a articleService) getDuration(v datamodels.Article) string {
+	u := utils.TimeDuration(v.Utime)
+	c := utils.TimeDuration(v.Ctime)
+	if u == c {
+		return c
+	}
+	return u + " ◷ " + c + " ◶"
 }

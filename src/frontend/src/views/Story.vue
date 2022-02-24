@@ -20,7 +20,7 @@
           <el-link href="javascript:void(0);" @click="edit(art.id)"
                    v-right-click="rightMenuFunc('article', art.id)"><span
               v-html="art.title_match ? art.title_match : art.title"></span></el-link>
-          <el-tag style="margin-left:0.3rem;" effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
+          <el-tag style="margin-left:0.3rem;" effect="plain" type="warning" size="mini">{{ art.duration }}</el-tag>
         </div>
       </div>
     </el-card>

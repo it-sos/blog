@@ -5,7 +5,7 @@
         <div class="title">
           <el-link :href="'/a/'+encodeURIComponent(art.article.title)"><h2
               v-html="art.article.title_match ? art.article.title_match : art.article.title"></h2></el-link>
-          <el-tag effect="plain" type="danger" size="mini">{{ art.duration }}</el-tag>
+          <el-tag effect="plain" type="warning" size="mini">{{ art.duration }}</el-tag>
         </div>
         <div class="description" v-html="art.article.intro_match ? art.article.intro_match : art.article.intro"></div>
         <el-row class="link">

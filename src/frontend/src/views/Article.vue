@@ -14,7 +14,7 @@
           <div class="box">
             <div class="title">
               <el-link :href="'/a/'+encodeURIComponent(title)"><h2>{{ title }}</h2></el-link>
-              <el-tag effect="plain" type="danger" size="small">{{ duration }}</el-tag>
+              <el-tag effect="plain" type="warning" size="small">{{ duration }}</el-tag>
             </div>
             <div class="description">
               <editor-content :editor="editor"/>
@@ -106,7 +106,7 @@ export default defineComponent({
     onUnmounted(() => {
       if (editor) editor.destroy();
     })
-    $axios.get('/article/content', {params: {title: decodeURIComponent(router.currentRoute.value.params.title.toString())}}).then((response) => {
+    $axios.get('/article/content', {params: {title: decodeURIComponent(router.currentRoute.value.params.title.toString())}}).then((response: any) => {
       let article = response.data
       store.commit('setArticleId', article.article.article.id)
       state.prev_title = "已经是顶部了"
