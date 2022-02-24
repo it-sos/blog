@@ -42,6 +42,7 @@ axios.interceptors.response.use((res: HttpResult) => {
     if (res.hasOwnProperty('response')) {
         // 需要登录授权，跳转登录页
         if (res.response.status == 401) {
+            store.commit("logout")
             router.push({path: '/login'})
             return Promise.reject(res)
         }
