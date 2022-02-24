@@ -69,6 +69,7 @@ import {defineComponent, inject, onUnmounted, reactive, ref, toRefs} from "vue";
 import router from "../routes";
 // import 'element-plus/theme-chalk/display.css'
 import {frontendExtensions} from "../common/tiptap/tiptap-extensions";
+import {useStore} from "../store/store";
 
 
 export default defineComponent({
@@ -92,8 +93,6 @@ export default defineComponent({
       loading: true,
     })
 
-    let article_state = inject("article-id", {id: ref<number>()})
-
     document.title = "详情：" + decodeURIComponent(router.currentRoute.value.params.title.toString())
 
     let editor: any = new Editor({
@@ -102,12 +101,14 @@ export default defineComponent({
       editable: false,
     })
 
+    let store = useStore()
+
     onUnmounted(() => {
       if (editor) editor.destroy();
     })
     $axios.get('/article/content', {params: {title: decodeURIComponent(router.currentRoute.value.params.title.toString())}}).then((response) => {
       let article = response.data
-      article_state.id = article.article.article.id
+      store.commit('setArticleId', article.article.article.id)
       state.prev_title = "已经是顶部了"
       state.next_title = "已经是底部了"
       state.prev_title_link = "javascript:void(0);"

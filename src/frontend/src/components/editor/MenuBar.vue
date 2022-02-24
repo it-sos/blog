@@ -258,7 +258,6 @@ export default defineComponent({
       formData.append("name", name);
       formData.append("id", id.toString());
       $axios.put(`/admin/category/${type}`, formData, {
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         responseType: "json",
       }).then(() => {
         if (type == CATEGORY_TYPE.Tag) {

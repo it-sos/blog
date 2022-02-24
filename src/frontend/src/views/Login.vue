@@ -28,6 +28,7 @@ import {localSet} from "../utils";
 import router from "../routes";
 // @ts-ignore
 import md5 from "js-md5"
+import {useStore} from "../store/store";
 
 export default defineComponent({
   name: 'Login',
@@ -49,6 +50,7 @@ export default defineComponent({
         ]
       }
     })
+    const store = useStore()
     const submitForm = async () => {
       loginForm.value.validate((valid: any) => {
         if (valid) {
@@ -57,7 +59,7 @@ export default defineComponent({
             password: md5(state.ruleForm.password),
             login_free: "true",
           }).then((res: any) => {
-            localSet('token', res.data)
+            store.commit('login', {account: state.ruleForm.username, token: res.data})
             router.back()
           }).catch(()=>{})
         } else {

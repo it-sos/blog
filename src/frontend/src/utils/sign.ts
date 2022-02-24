@@ -1,7 +1,8 @@
+// @ts-ignore
 import md5 from "js-md5"
 import { JSEncrypt } from 'jsencrypt'
 
-export function randomString(e) {
+export function randomString(e: number) {
     e = e || 32;
     var t = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz012345678",
         a = t.length,
@@ -10,7 +11,7 @@ export function randomString(e) {
     return n
 }
 
-export function sign(ts, data, token) {
+export function sign(ts: string, data: any, token: string) {
     let p, r, a, e, n, d, b;
     p = "-----BEGIN PUBLIC KEY-----\n" +
         "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEnH1ObJ90TdO+mdQLAwsBlehH\n" +
