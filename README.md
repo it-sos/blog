@@ -22,3 +22,8 @@
 1. redis存储
 1. minio文件对象存储
 1. 搜索（elasticsearch + canal）
+
+### k8s部署
+```shell 
+cd scripts && sh dockerfile.sh
+```
