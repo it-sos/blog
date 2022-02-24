@@ -50,6 +50,7 @@ export default defineComponent({
         ]
       }
     })
+    const store = useStore()
     const submitForm = async () => {
       loginForm.value.validate((valid: any) => {
         if (valid) {
@@ -58,7 +59,6 @@ export default defineComponent({
             password: md5(state.ruleForm.password),
             login_free: "true",
           }).then((res: any) => {
-            const store = useStore()
             store.commit('login', {account: state.ruleForm.username, token: res.data})
             router.back()
           }).catch(()=>{})

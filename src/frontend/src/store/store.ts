@@ -9,27 +9,36 @@ export interface State {
 
 export const key: InjectionKey<Store<State>> = Symbol()
 
+const account = 'account'
+const token = 'token'
+
 export const store = createStore<State>({
     state: {
-        account: 'account',
-        token: 'token'
+        account: '',
+        token: ''
     },
     mutations: {
         logout(state: State): void {
-            localRemove(state.account)
-            localRemove(state.token)
+            state.account = ""
+            state.token = ""
+            localRemove(account)
+            localRemove(token)
         },
         login(state: State, payload: State): void {
-            localSet(state.account, payload.account)
-            localSet(state.token, payload.token)
+            localSet(account, payload.account)
+            localSet(token, payload.token)
+            state.account = payload.account
+            state.token = payload.token
         },
     },
     getters: {
         getAccount: (state: State) => (): string => {
-            return localGet(state.account)
+            state.account = localGet(account)
+            return state.account
         },
         getToken: (state: State) => (): string => {
-            return localGet(state.token)
+            state.token = localGet(token) || ''
+            return state.token
         },
     },
 })

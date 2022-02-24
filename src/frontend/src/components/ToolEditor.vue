@@ -152,9 +152,6 @@ export default defineComponent({
       }
       let id: number = utils.getArticleId()
       $axios('/admin/article', {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
         method: "post",
         responseType: "json",
         data: {
