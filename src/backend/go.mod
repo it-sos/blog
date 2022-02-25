@@ -9,7 +9,6 @@ require (
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/iris-contrib/swagger/v12 v12.0.1
-	github.com/kataras/golog v0.1.7 // indirect
 	github.com/kataras/iris/v12 v12.2.0-alpha5.0.20220122232131-4899fe95f47d
 	github.com/minio/minio-go/v7 v7.0.14
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646

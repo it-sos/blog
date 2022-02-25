@@ -4,8 +4,10 @@
       <div class="box" v-bind:key="idx" v-for="(art, idx) in article">
         <div class="title">
           <el-link :href="'/a/'+encodeURIComponent(art.article.title)"><h2
-              v-html="art.article.title_match ? art.article.title_match : art.article.title"></h2></el-link>
+              v-html="art.article.title_match ? art.article.title_match : art.article.title"></h2>
+          </el-link>
           <el-tag effect="plain" type="warning" size="mini">{{ art.duration }}</el-tag>
+          <span style="margin-left: 5px;color: #303133" v-if="art.article.is_state===1"><el-icon><Lock/></el-icon></span>
         </div>
         <div class="description" v-html="art.article.intro_match ? art.article.intro_match : art.article.intro"></div>
         <el-row class="link">
@@ -44,9 +46,13 @@
 import {defineComponent, inject, onMounted, reactive, ref, toRefs, watch} from 'vue'
 import router from "../routes";
 import {useStore} from "../store/store";
+import {Lock} from "@element-plus/icons-vue";
 // import 'element-plus/theme-chalk/display.css'
 
 export default defineComponent({
+  components: {
+    Lock
+  },
   setup() {
     const store = useStore()
     store.commit('setArticleId', 0)

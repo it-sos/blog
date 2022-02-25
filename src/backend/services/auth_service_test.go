@@ -17,7 +17,7 @@ import (
 
 func Test_authService_Register(t *testing.T) {
 	u := "free"
-	p := crypt.Md5("FREEman110,!@#")
+	p := crypt.Md5("free123")
 	if err := SAuthService.Register(u, p); err != nil {
 		t.Error("create account fail.", err)
 	}

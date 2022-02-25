@@ -3,6 +3,12 @@
 ### 介绍
 学习笔记 - blog
 
+### 开始
+> goland中运行测试单元，需要设置环境变量指定配置文件所在目录
+```shell
+export DEVBASEPATH=/data1/htdocs/study-notes/src/backend
+```
+
 ### 安装依赖
 #### Mysql 全文索引 elasticsearch + kibana + canal + zookeeper + kafka
 > kibana: https://www.elastic.co/guide/en/kibana/current/deb.html

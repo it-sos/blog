@@ -11,7 +11,7 @@ version=$2
 if [ "$(ps -ef|grep buildkitd|grep -v grep|wc -l)" -lt 1 ]; then
     echo "Do the following:"
     echo "sudo buildkitd --oci-worker=false --containerd-worker=true &"
-    echo "bg"
+    echo "fg"
     echo "maybe input password"
     echo "ctrl + z"
     echo "bg %1"

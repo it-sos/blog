@@ -15,6 +15,5 @@ import (
 )
 
 func TestConfig(t *testing.T) {
-	t.Log(C.GetDemo())
 	t.Log(C.GetSwaggerUrl())
 }
