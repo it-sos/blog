@@ -24,11 +24,10 @@
 
 <script lang="ts">
 import {defineComponent, inject, reactive, ref, toRefs} from 'vue'
-import {localSet} from "../utils";
-import router from "../routes";
 // @ts-ignore
 import md5 from "js-md5"
 import {useStore} from "../store/store";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
   name: 'Login',
@@ -51,6 +50,7 @@ export default defineComponent({
       }
     })
     const store = useStore()
+    const router = useRouter()
     const submitForm = async () => {
       loginForm.value.validate((valid: any) => {
         if (valid) {
@@ -61,7 +61,8 @@ export default defineComponent({
           }).then((res: any) => {
             store.commit('login', {account: state.ruleForm.username, token: res.data})
             router.back()
-          }).catch(()=>{})
+          }).catch(() => {
+          })
         } else {
           console.log('error submit!!')
           return false;

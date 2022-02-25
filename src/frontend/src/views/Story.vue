@@ -42,10 +42,11 @@
 
 import {defineComponent, inject, provide, reactive, ref, toRefs, watch} from 'vue'
 import {ElMessage, ElMessageBox} from "element-plus";
-import router from "../routes";
 import utils from "../common/utils";
 import ToolEditor from "../components/ToolEditor.vue";
-import {Expand, Fold, Delete, CirclePlus} from "@element-plus/icons-vue";
+import {CirclePlus, Delete, Expand, Fold} from "@element-plus/icons-vue";
+import {onBeforeRouteLeave, onBeforeRouteUpdate, useRouter} from 'vue-router';
+import {useStore} from "../store/store";
 
 interface ArticleList {
   id?: number
@@ -64,6 +65,19 @@ export default defineComponent({
   setup() {
     document.title = "editing"
     const $axios: any = inject('$axios')
+    const router = useRouter()
+    const saved = useStore()
+
+    // 与 beforeRouteLeave 相同，无法访问 `this`
+    onBeforeRouteUpdate((to, from) => {
+      if (!saved.getters.getSaved()) {
+        const answer = window.confirm(
+            '你确认要离开吗？将丢失未保存的内容！'
+        )
+        // 取消导航并停留在同一页面上
+        if (!answer) return false
+      }
+    })
 
     const state = reactive({
       keyword: ref(""),

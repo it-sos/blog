@@ -8,16 +8,18 @@
 
 <script lang="ts">
 import {defineComponent, ref, watch} from 'vue'
-import router from "../routes";
+import {useRoute, useRouter} from "vue-router";
 
 export default defineComponent({
   setup() {
     let inputSearch = ref<string>("")
-    watch(() => router.currentRoute.value.params.keyword, () => {
-      if (typeof router.currentRoute.value.params.keyword == "undefined") {
+    const router = useRouter()
+    const route = useRoute()
+    watch(() => route.params.keyword, () => {
+      if (typeof route.params.keyword == "undefined") {
         inputSearch.value = ""
       } else {
-        inputSearch.value = router.currentRoute.value.params.keyword.toString()
+        inputSearch.value = route.params.keyword.toString()
       }
     })
 

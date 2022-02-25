@@ -15,6 +15,7 @@
             <div class="title">
               <el-link :href="'/a/'+encodeURIComponent(title)"><h2>{{ title }}</h2></el-link>
               <el-tag effect="plain" type="warning" size="small">{{ duration }}</el-tag>
+              <span style="margin-left: 5px;color: #303133" v-if="is_state===1"><el-icon><Lock/></el-icon></span>
             </div>
             <div class="description">
               <editor-content :editor="editor"/>
@@ -66,14 +67,16 @@
 
 import {Editor, EditorContent} from '@tiptap/vue-3'
 import {defineComponent, inject, onUnmounted, reactive, ref, toRefs} from "vue";
-import router from "../routes";
 // import 'element-plus/theme-chalk/display.css'
 import {frontendExtensions} from "../common/tiptap/tiptap-extensions";
 import {useStore} from "../store/store";
+import {Lock} from "@element-plus/icons-vue";
+import {useRoute} from 'vue-router';
 
 
 export default defineComponent({
   components: {
+    Lock,
     EditorContent,
   },
   setup() {
@@ -85,6 +88,7 @@ export default defineComponent({
       next_title_link: ref<string>(),
       title: ref<string>(),
       duration: ref<string>(),
+      is_state: ref<number>(),
       article_content: ref<string>(),
       topics: ref<any[]>(),
       tags: ref<any[]>(),
@@ -93,7 +97,10 @@ export default defineComponent({
       loading: true,
     })
 
-    document.title = "详情：" + decodeURIComponent(router.currentRoute.value.params.title.toString())
+    const route = useRoute()
+    let title = decodeURIComponent(route.params.title.toString())
+    document.title = "详情：" + title
+
 
     let editor: any = new Editor({
       injectCSS: true,
@@ -106,7 +113,7 @@ export default defineComponent({
     onUnmounted(() => {
       if (editor) editor.destroy();
     })
-    $axios.get('/article/content', {params: {title: decodeURIComponent(router.currentRoute.value.params.title.toString())}}).then((response: any) => {
+    $axios.get('/article/content', {params: {title: title}}).then((response: any) => {
       let article = response.data
       store.commit('setArticleId', article.article.article.id)
       state.prev_title = "已经是顶部了"
@@ -126,6 +133,7 @@ export default defineComponent({
       state.topics = article.article.topics
       state.tags = article.article.tags
       state.title = article.article.article.title
+      state.is_state = article.article.article.is_state
       state.duration = article.article.duration
       state.topicList = article.topics
       state.tagList = article.tags

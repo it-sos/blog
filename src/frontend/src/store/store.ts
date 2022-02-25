@@ -6,6 +6,7 @@ export interface State {
     account: string
     token: string
     articleId: number
+    saved: boolean
 }
 
 export const key: InjectionKey<Store<State>> = Symbol()
@@ -18,6 +19,7 @@ export const store = createStore<State>({
         account: '',
         token: '',
         articleId: 0,
+        saved: true,
     },
     mutations: {
         logout(state: State): void {
@@ -35,6 +37,9 @@ export const store = createStore<State>({
         setArticleId(state: State, articleId: number): void {
             state.articleId = articleId
         },
+        setSaved(state: State, is: bool): void {
+           state.saved = is
+        }
     },
     getters: {
         getAccount: (state: State) => (): string => {
@@ -48,6 +53,9 @@ export const store = createStore<State>({
         getArticleId: (state: State) => (): number => {
             return state.articleId
         },
+        getSaved: (state: State) => (): boolean => {
+            return state.saved
+        }
     },
 })
 

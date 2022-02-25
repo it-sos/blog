@@ -31,7 +31,7 @@ import {computed, defineComponent, inject, ref} from 'vue'
 import {CircleClose, CirclePlus, Edit, Key, Lock, Operation} from "@element-plus/icons-vue"
 import {useStore} from "../store/store";
 import {ElMessageBox} from "element-plus";
-import router from "../routes";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
   name: "LoginMenu",
@@ -40,6 +40,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
+    const router = useRouter()
     let logout = () => {
       ElMessageBox.confirm('确认退出登陆吗?', '提示', {
         confirmButtonText: '确定',

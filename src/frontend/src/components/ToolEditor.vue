@@ -7,7 +7,7 @@
           <el-tooltip class="item" effect="dark" :content="saveStatus.message" placement="left">
             <el-icon :class="saveStatus.icon" :color="saveStatus.color" style="font-size:26px;">
               <loading v-if="saveStatus.unsaved"/>
-              <circle-check-filled v-if="saveStatus.icon==='success'" />
+              <circle-check-filled v-if="saveStatus.icon==='success'"/>
               <circle-close-filled v-if="saveStatus.icon==='error'"/>
             </el-icon>
           </el-tooltip>
@@ -28,10 +28,12 @@ import {BubbleMenu, Editor, EditorContent} from '@tiptap/vue-3'
 import MenuBar from '@/components/editor/MenuBar.vue'
 import {defineComponent, inject, onMounted, onUnmounted, provide, reactive, ref, toRefs, watch} from 'vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
-import router from '../routes'
 import utils from '../common/utils'
 import {backendExtensions} from "../common/tiptap/tiptap-extensions";
 import {CircleCheckFilled, CircleCloseFilled, Loading} from "@element-plus/icons-vue";
+import {useRoute, useRouter} from "vue-router";
+import {useStore} from "../store/store";
+
 export default defineComponent({
 
   components: {
@@ -46,6 +48,7 @@ export default defineComponent({
   setup(prop, context) {
 
     const $axios: any = inject('$axios')
+    const store = useStore()
 
     const switchStatus = reactive({
       publish: ref(false),
@@ -72,6 +75,7 @@ export default defineComponent({
     });
 
     const stateUnsaved = () => {
+      store.commit('setSaved', false)
       state.saveStatus = {
         icon: "is-loading",
         message: "停止编辑 5s 后将自动保存",
@@ -81,6 +85,7 @@ export default defineComponent({
     };
 
     const stateSaved = () => {
+      store.commit('setSaved', true)
       state.saveStatus = {
         icon: "success",
         message: "已自动保存",
@@ -126,6 +131,9 @@ export default defineComponent({
       // eslint-disable-next-line
       Public = 2,
     }
+
+    const router = useRouter()
+    const route = useRoute()
 
     const save = () => {
       stateUnsaved()
@@ -176,6 +184,7 @@ export default defineComponent({
     }
 
     const loadArticle = () => {
+      stateSaved()
       let id: number = utils.getArticleId()
       if (id > 0) {
         $axios('/admin/article', {
@@ -206,7 +215,7 @@ export default defineComponent({
       loadArticle()
     })
 
-    watch(() => router.currentRoute.value.params.id, () => {
+    watch(() => route.params.id, () => {
       loadArticle()
     })
 
@@ -249,12 +258,12 @@ export default defineComponent({
           editors.commands.updateAttributes('image', {src: `${src}?size=${value}`})
         }
       })
-      .catch(() => {
-        ElMessage({
-          type: 'info',
-          message: '取消',
-        })
-      })
+          .catch(() => {
+            ElMessage({
+              type: 'info',
+              message: '取消',
+            })
+          })
     }
 
     // let selectionUpdate = (props: any) => {
@@ -270,14 +279,12 @@ export default defineComponent({
     })
 
 
-    let tippyOptions = {
-    }
+    let tippyOptions = {}
 
     return {
       tippyOptions,
       ...toRefs(state),
       editor,
-      loadArticle,
       resizeImage,
       save,
     }
@@ -287,19 +294,22 @@ export default defineComponent({
 <style lang="scss">
 .global-drag-handle {
   position: absolute;
-  &::after {
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     width: 1rem;
-     height: 1.25rem;
-     content: '⠿';
-     font-weight: 700;
-     cursor: grab;
-     background:#0D0D0D10;
-     color: #0D0D0D50;
-     border-radius: 0.25rem;
-   }
+
+&
+::after {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1.25rem;
+  content: '⠿';
+  font-weight: 700;
+  cursor: grab;
+  background: #0D0D0D10;
+  color: #0D0D0D50;
+  border-radius: 0.25rem;
+}
+
 }
 </style>
 <style lang="scss">

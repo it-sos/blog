@@ -44,9 +44,9 @@
 <script lang="ts">
 
 import {defineComponent, inject, onMounted, reactive, ref, toRefs, watch} from 'vue'
-import router from "../routes";
 import {useStore} from "../store/store";
 import {Lock} from "@element-plus/icons-vue";
+import {useRoute} from "vue-router";
 // import 'element-plus/theme-chalk/display.css'
 
 export default defineComponent({
@@ -77,6 +77,8 @@ export default defineComponent({
       state.article = []
     }
 
+    const route = useRoute()
+
     const load = () => {
       if (state.noMore || state.errorMsg) {
         return
@@ -84,7 +86,7 @@ export default defineComponent({
       state.loading = true
       state.page++
 
-      let keyword = router.currentRoute.value.params.keyword;
+      let keyword = route.params.keyword;
       if (keyword) {
         keyword = decodeURIComponent(keyword.toString())
       }
@@ -111,7 +113,7 @@ export default defineComponent({
       })
     }
 
-    watch(() => router.currentRoute.value.params.keyword, () => {
+    watch(() => route.params.keyword, () => {
       defaults()
       load()
       ranks()
