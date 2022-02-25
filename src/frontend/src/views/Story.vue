@@ -20,6 +20,7 @@
           <el-link href="javascript:void(0);" @click="edit(art.id)"
                    v-right-click="rightMenuFunc('article', art.id)"><span
               v-html="art.title_match ? art.title_match : art.title"></span></el-link>
+          <span style="margin: 0 5px;color: #303133" v-if="art.is_state === 1"><el-icon><Lock/></el-icon></span>
           <el-tag style="margin-left:0.3rem;" effect="plain" type="warning" size="mini">{{ art.duration }}</el-tag>
         </div>
       </div>
@@ -44,8 +45,8 @@ import {defineComponent, inject, provide, reactive, ref, toRefs, watch} from 'vu
 import {ElMessage, ElMessageBox} from "element-plus";
 import utils from "../common/utils";
 import ToolEditor from "../components/ToolEditor.vue";
-import {CirclePlus, Delete, Expand, Fold} from "@element-plus/icons-vue";
-import {onBeforeRouteLeave, onBeforeRouteUpdate, useRouter} from 'vue-router';
+import {CirclePlus, Delete, Expand, Fold, Lock} from "@element-plus/icons-vue";
+import {onBeforeRouteUpdate, useRouter} from 'vue-router';
 import {useStore} from "../store/store";
 
 interface ArticleList {
@@ -53,6 +54,7 @@ interface ArticleList {
   title: string
   title_match?: string
   duration?: string
+  is_state: number
 }
 
 export default defineComponent({
@@ -60,6 +62,7 @@ export default defineComponent({
     ToolEditor,
     Fold,
     Expand,
+    Lock,
   },
 
   setup() {
@@ -82,7 +85,7 @@ export default defineComponent({
     const state = reactive({
       keyword: ref(""),
       page: ref(0),
-      size: ref(10),
+      size: ref(50),
       noMore: ref(false),
       article: ref<ArticleList[]>([]),
     });

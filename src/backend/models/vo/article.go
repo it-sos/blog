@@ -37,6 +37,7 @@ type (
 		Title      string `json:"title"`       // 标题
 		TitleMatch string `json:"title_match"` // 匹配的title
 		Duration   string `json:"duration"`    // 持续时间
+		IsState    uint8  `json:"is_state"`    // 状态1私有2公开
 	}
 
 	// ArticleParamsVO 后台文章详情

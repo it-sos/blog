@@ -101,6 +101,7 @@ func (a articleService) GetArticleList(page int, size int, keyword string) []vo.
 				Title:      v.Title,
 				TitleMatch: v.TitleMatch,
 				Duration:   a.getDuration(v),
+				IsState:    v.IsState,
 			})
 		}
 	}
