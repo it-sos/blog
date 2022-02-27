@@ -56,12 +56,12 @@ axios.interceptors.response.use((res: HttpResult) => {
             store.commit("logout")
             router.push({path: '/login'})
             return Promise.reject(res)
-        }
-        if (res.response.status == 403) {
+        } else if (res.response.status == 403) {
             // @ts-ignore
-            if (res.response.headers['x-time'] - parseInt(Date.now() / 1000) < -290) {
+            if (parseInt(Date.now() / 1000) - res.response.headers['x-time'] < -290) {
                 store.commit('setTs', res.response.headers['x-time'])
                 location.reload()
+                return Promise.reject(res)
             }
         }
         if (res.response.hasOwnProperty('data')) {
