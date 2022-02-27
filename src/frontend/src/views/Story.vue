@@ -46,7 +46,7 @@ import {ElMessage, ElMessageBox} from "element-plus";
 import utils from "../common/utils";
 import ToolEditor from "../components/ToolEditor.vue";
 import {CirclePlus, Delete, Expand, Fold, Lock} from "@element-plus/icons-vue";
-import {onBeforeRouteUpdate, useRouter} from 'vue-router';
+import {onBeforeRouteLeave, onBeforeRouteUpdate, useRouter} from 'vue-router';
 import {useStore} from "../store/store";
 
 interface ArticleList {
@@ -69,18 +69,20 @@ export default defineComponent({
     document.title = "editing"
     const $axios: any = inject('$axios')
     const router = useRouter()
-    const saved = useStore()
+    const store = useStore()
 
-    // 与 beforeRouteLeave 相同，无法访问 `this`
-    onBeforeRouteUpdate((to, from) => {
-      if (!saved.getters.getSaved()) {
+    const confirmLevel = () => {
+      if (!store.getters.getSaved()) {
         const answer = window.confirm(
             '你确认要离开吗？将丢失未保存的内容！'
         )
         // 取消导航并停留在同一页面上
         if (!answer) return false
       }
-    })
+    }
+
+    onBeforeRouteUpdate((to, from) => confirmLevel())
+    onBeforeRouteLeave ((to, from) => confirmLevel())
 
     const state = reactive({
       keyword: ref(""),
@@ -133,12 +135,13 @@ export default defineComponent({
     }
 
     // 编辑文章并动态同步文章列表
-    const syncArticleList = (type: OPT_TYPE, id: number, title: string) => {
+    const syncArticleList = (type: OPT_TYPE, id: number, title: string, is_state: number) => {
       // 更新
       if (type == OPT_TYPE.Update) {
         state.article = state.article.map((v: ArticleList) => {
           if (v.id == id) {
             v.title = title
+            v.is_state = is_state
           }
           return v
         })
@@ -149,6 +152,7 @@ export default defineComponent({
           id: id,
           title: title,
           duration: '1秒前',
+          is_state: is_state,
         })
       }
     }

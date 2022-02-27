@@ -159,6 +159,7 @@ export default defineComponent({
         return
       }
       let id: number = utils.getArticleId()
+      let is_state = switchStatus.publish ? SWITCH_PUBLISH_STATUS.Public : SWITCH_PUBLISH_STATUS.Private
       $axios('/admin/article', {
         method: "post",
         responseType: "json",
@@ -168,14 +169,14 @@ export default defineComponent({
           "intro": intro,
           "content": content,
           "is_encrypt": switchStatus.encrypt ? SWITCH_ENCRYPT_STATUS.Encrypt : SWITCH_ENCRYPT_STATUS.Plaintext,
-          "is_state": switchStatus.publish ? SWITCH_PUBLISH_STATUS.Public : SWITCH_PUBLISH_STATUS.Private,
+          "is_state": is_state,
         }
       }).then((response: any) => {
         if (id == 0) {
           router.push('/e/' + response.data)
-          context.emit("syncArticleList", 'add', response.data, title)
+          context.emit("syncArticleList", 'add', response.data, title, is_state)
         } else {
-          context.emit("syncArticleList", 'update', response.data, title)
+          context.emit("syncArticleList", 'update', response.data, title, is_state)
         }
         stateSaved()
       }).catch((error: any) => {
