@@ -1,18 +1,20 @@
 import { InjectionKey } from 'vue'
 import { createStore, useStore as baseUseStore, Store } from 'vuex'
-import {localGet, localRemove, localSet} from "../utils";
+import {localGet, localRemove, localSessionGet, localSessionSet, localSet} from "../utils";
 
 export interface State {
     account: string
     token: string
     articleId: number
     saved: boolean
+    ts: number
 }
 
 export const key: InjectionKey<Store<State>> = Symbol()
 
 const account = 'account'
 const token = 'token'
+const session_key_ts = 'ts'
 
 export const store = createStore<State>({
     state: {
@@ -20,6 +22,7 @@ export const store = createStore<State>({
         token: '',
         articleId: 0,
         saved: true,
+        ts: 0,
     },
     mutations: {
         logout(state: State): void {
@@ -37,7 +40,11 @@ export const store = createStore<State>({
         setArticleId(state: State, articleId: number): void {
             state.articleId = articleId
         },
-        setSaved(state: State, is: bool): void {
+        setTs(state: State, ts: number): void {
+            localSessionSet(session_key_ts, ts)
+            state.ts = ts
+        },
+        setSaved(state: State, is: boolean): void {
            state.saved = is
         }
     },
@@ -52,6 +59,10 @@ export const store = createStore<State>({
         },
         getArticleId: (state: State) => (): number => {
             return state.articleId
+        },
+        getTs: (state: State) => (): number => {
+            state.ts = localSessionGet(session_key_ts)
+            return state.ts
         },
         getSaved: (state: State) => (): boolean => {
             return state.saved

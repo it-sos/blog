@@ -21,8 +21,13 @@ axios.defaults.headers['token'] = ""
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 axios.interceptors.request.use((config: any) => {
-    // @ts-ignore
-    config.headers.ts = parseInt(Date.now() / 1000)
+    let ts = store.getters.getTs()
+    if (ts > 0) {
+        config.headers.ts = ts
+    } else {
+        // @ts-ignore
+        config.headers.ts = parseInt(Date.now() / 1000)
+    }
     config.headers.token = store.getters.getToken()
     let mixedData = {}
     Object.assign(mixedData, config.params, config.data);
@@ -47,6 +52,13 @@ axios.interceptors.response.use((res: HttpResult) => {
             store.commit("logout")
             router.push({path: '/login'})
             return Promise.reject(res)
+        }
+        if (res.response.status == 403) {
+            // @ts-ignore
+            if (res.response.headers['x-time'] - parseInt(Date.now() / 1000) < -240) {
+                store.commit('setTs', res.response.headers['x-time'])
+                location.reload()
+            }
         }
         if (res.response.hasOwnProperty('data')) {
             if (res.response.data.message != null) {

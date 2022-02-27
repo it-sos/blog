@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: blog-frontend
-        image: docker.io/itsos/blog-frontend:v1.0.13
+        image: docker.io/itsos/blog-frontend:v1.0.14
         ports:
         - containerPort: 80
 ---
