@@ -44,6 +44,10 @@ axios.interceptors.request.use((config: any) => {
 // 请求拦截器，内部根据返回值，重新组装，统一管理。
 // @ts-ignore
 axios.interceptors.response.use((res: HttpResult) => {
+    // 表示均从服务端获取时间戳
+    if (store.getters.getTs() > 0) {
+        store.commit('setTs', res.response.headers['x-time'])
+    }
     return res
 }, res => {
     if (res.hasOwnProperty('response')) {
@@ -55,7 +59,7 @@ axios.interceptors.response.use((res: HttpResult) => {
         }
         if (res.response.status == 403) {
             // @ts-ignore
-            if (res.response.headers['x-time'] - parseInt(Date.now() / 1000) < -240) {
+            if (res.response.headers['x-time'] - parseInt(Date.now() / 1000) < -290) {
                 store.commit('setTs', res.response.headers['x-time'])
                 location.reload()
             }
