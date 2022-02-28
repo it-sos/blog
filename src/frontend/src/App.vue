@@ -4,7 +4,7 @@
       <el-header>
         <el-row type="flex" class="row-bg" justify="space-between" align="middle">
           <el-col :span="6">
-            <router-link :to="{path:'/',query: {t: new Date()}}">
+            <router-link to="/">
               <el-image style="width: 105px; height: 30px; border-radius: 4px;" src="/logo.png" fit="fill"></el-image>
             </router-link>
           </el-col>
@@ -17,9 +17,7 @@
         </el-row>
       </el-header>
       <el-container>
-        <keep-alive>
-          <router-view></router-view>
-        </keep-alive>
+        <router-view></router-view>
       </el-container>
       <el-footer style="text-align: center;font-size: 12px; padding:30px 0 60px 0;">Copyright &copy; IT.SOS 技术笔记</el-footer>
     </el-container>
@@ -28,7 +26,7 @@
 
 <script lang="ts">
 
-import {defineComponent, provide, reactive, ref} from 'vue'
+import {defineComponent} from 'vue'
 
 import Search from "./components/Search.vue"
 import LoginMenu from "./components/LoginMenu.vue"

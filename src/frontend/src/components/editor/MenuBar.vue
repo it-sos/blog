@@ -3,7 +3,10 @@
       v-model="fileUpload.show"
       width="30%"
       title="文件管理">
-    <upload @insertDoc="file" />
+    <upload
+      @insertDoc="file"
+      :headers="headers"
+      :before-upload="beforeUpload" />
   </el-dialog>
   <div>
     <right-menu @trigger="rightMenuTrigger"/>
@@ -70,8 +73,11 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import MenuItem from './MenuItem.vue'
 import {defineComponent, inject, provide, reactive, ref, toRefs} from 'vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
+// @ts-ignore
 import utils from "@/common/utils";
 import Upload from "@/components/editor/Upload.vue";
+import {store} from "../../store/store";
+import {sign} from "../../utils/sign";
 
 // eslint-disable-next-line
 const enum CATEGORY_TYPE {
@@ -637,8 +643,30 @@ export default defineComponent({
         action: () => prop.editor.chain().focus().redo().run(),
       },
     ]
-
+    let headers = ref<any>({
+      token: "",
+      ts: 0,
+      nonce: "",
+      sign: ""
+    })
+    let beforeUpload = (file: any): boolean => {
+      let ts = store.getters.getTs()
+      if (ts > 0) {
+      } else {
+        // @ts-ignore
+        ts = parseInt(Date.now() / 1000)
+      }
+      let token = store.getters.getToken()
+      let s = sign(ts, {}, token)
+      headers.value.token = token
+      headers.value.ts = ts
+      headers.value.nonce = s[0]
+      headers.value.sign = s[1]
+      return true
+    }
     return {
+      beforeUpload,
+      headers,
       file,
       save,
       items,

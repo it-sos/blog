@@ -28,9 +28,20 @@ axios.interceptors.request.use((config: any) => {
         // @ts-ignore
         config.headers.ts = parseInt(Date.now() / 1000)
     }
+    var data = {};
+    if (config.data != null) {
+        if (config.data instanceof FormData) {
+           config.data.forEach((v: any, k: any) => {
+               // @ts-ignore
+               data[k] = v
+           })
+        } else {
+            data = config.data
+        }
+    }
     config.headers.token = store.getters.getToken()
     let mixedData = {}
-    Object.assign(mixedData, config.params, config.data);
+    Object.assign(mixedData, config.params, data);
     let s = sign(config.headers.ts, mixedData, config.headers.token)
     config.headers.nonce = s[0]
     config.headers.sign = s[1]
