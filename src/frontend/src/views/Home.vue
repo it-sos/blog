@@ -47,7 +47,7 @@ import {defineComponent, inject, onMounted, reactive, ref, toRefs, watch} from '
 import {useStore} from "../store/store";
 import {Lock} from "@element-plus/icons-vue";
 import {useRoute} from "vue-router";
-// import 'element-plus/theme-chalk/display.css'
+import 'element-plus/theme-chalk/display.css'
 
 export default defineComponent({
   components: {
