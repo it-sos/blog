@@ -22,6 +22,7 @@ import (
 	"gitee.com/itsos/studynotes/datamodels"
 	"gitee.com/itsos/studynotes/models/vo"
 	"gitee.com/itsos/studynotes/repositories"
+	"github.com/kataras/golog"
 	"golang.org/x/net/context"
 	"golang.org/x/net/html"
 	"io/ioutil"
@@ -77,6 +78,8 @@ type ArticleService interface {
 	GetArticleAndContent(id uint) (art vo.ArticleEditVO, err error)
 	// GetArticleList 获取文章列表 [后台]
 	GetArticleList(page int, size int, keyword string) []vo.ArticleListVO
+	// EsSync 同步es
+	EsSync(id uint)
 }
 
 var SArticle ArticleService = &articleService{
@@ -88,6 +91,27 @@ type articleService struct {
 	article     repositories.ArticleRepository
 	content     repositories.ArticleContentRepository
 	accessTimes caches.AccessTimes
+}
+
+func (a articleService) EsSync(id uint) {
+	v, has := a.article.GetInfoById(id)
+	if !has {
+		golog.Errorf("article not found: [id=%v]", id)
+		return
+	}
+	content, _ := a.content.Select(&datamodels.ArticleContent{
+		Aid: v.Id,
+	})
+	esData := EsData{}
+	esData.Id = v.Id
+	esData.Title = v.Title
+	esData.Intro = v.Intro
+	esData.IsState = v.IsState
+	esData.Utime = v.Utime
+	esData.Ctime = v.Ctime
+	esData.IsDel = v.IsDel
+	esData.Data = content.Data
+	EsSync(esData, nil)
 }
 
 // GetArticleList 获取文章列表 [后台]
@@ -172,6 +196,7 @@ func (a articleService) SaveArticle(vo vo.ArticleParamsVO) (id uint, err error) 
 		vo.Id = a.article.InsertTrans(&article, vo.Content)
 	}
 	id = vo.Id
+	a.EsSync(id)
 	return
 }
 
@@ -181,6 +206,7 @@ func (a articleService) DeleteArticle(id uint) (err error) {
 	if !a.article.SoftDelete(id) {
 		err = cerrors.Error("article_remove_err")
 	}
+	a.EsSync(id)
 	return
 }
 
