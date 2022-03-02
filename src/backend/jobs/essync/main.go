@@ -10,6 +10,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -23,6 +24,8 @@ type EsData struct {
 	Utime   time.Time `json:"utime"`
 	Ctime   time.Time `json:"ctime"`
 }
+
+var wg sync.WaitGroup
 
 func main() {
 	db := mysql.NewMysql()
@@ -44,8 +47,11 @@ func main() {
 		esData.Ctime = v.Ctime
 		esData.IsDel = v.IsDel
 		esData.Data = content.Data
-		esSync(esData)
+		wg.Add(1)
+		go esSync(esData)
 	}
+	wg.Wait()
+	golog.Info("Done")
 }
 
 var r map[string]interface{}
@@ -94,6 +100,7 @@ func esSync(esData EsData) {
 		log.Fatalf("Error getting response: %s", err)
 	}
 	defer res.Body.Close()
+	defer wg.Done()
 
 	if res.IsError() {
 		var e map[string]interface{}
