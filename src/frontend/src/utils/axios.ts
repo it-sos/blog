@@ -4,9 +4,7 @@ import {ElMessage} from 'element-plus'
 import config from '~/config'
 import {sign} from './sign'
 import {store} from "../store/store";
-import {useRouter} from "vue-router";
-
-const router = useRouter()
+import router from "../routes";
 
 // 这边由于后端没有区分测试和正式，姑且都写成一个接口。
 axios.defaults.baseURL = config[import.meta.env.MODE].baseUrl
