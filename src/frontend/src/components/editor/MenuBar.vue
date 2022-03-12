@@ -457,18 +457,23 @@ export default defineComponent({
     let fileUpload = reactive({show: ref<boolean>(false)})
 
     let file = (name: string, file: string, url: string) => {
-      // console.log(name, file, url)
       if (file.search(/jpg|jpeg|gif|png|bmp/i) > -1) {
         prop.editor.chain().focus().setImage({src: url, title: name, alt: name}).run()
       } else {
-        prop.editor.chain().focus().insertContent(`<a href="${url}" target="_blank">${name}</a>`).run()
+        prop.editor.commands.insertContent({
+          type: 'paragraph',
+          content: [
+            {
+              marks: [{
+                type: 'link',
+                attrs: {href: url, target: '_blank'},
+              }],
+              type: 'text',
+              text: name,
+            }
+          ]
+        })
       }
-      // prop.editor
-      //     .chain()
-      //     .focus()
-      //     .extendMarkRange('link')
-      //     .setLink({ href: url })
-      //     .run()
     }
 
     const items = [

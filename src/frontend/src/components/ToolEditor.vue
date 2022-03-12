@@ -142,7 +142,7 @@ export default defineComponent({
         stateSaveFail("请设置h2开头的标题名称，可通过点击【H】图标进行设置！", 'warning')
         return
       }
-      if (json.content[0].hasOwnProperty("content") == false) {
+      if (!json.content[0].hasOwnProperty("content")) {
         stateSaveFail("标题不能为空！", 'warning')
         return
       }

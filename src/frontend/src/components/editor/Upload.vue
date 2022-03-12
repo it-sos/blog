@@ -12,14 +12,11 @@
     </template>
     <template #file="{ file }">
       <ul class="el-upload-list el-upload-list--text">
-        <li class="el-upload-list__item is-success">
-          <a class="el-upload-list__item-name" @click="insertDoc(file.file, file.name)"><i class="el-icon-document"></i>
-            {{ file.name }} </a>
-          <label class="el-upload-list__item-status-label">
-            <i class="el-icon-upload-success el-icon-circle-check"></i>
-          </label>
-          <i class="el-icon-close" @click="removeFile(file.file)"></i>
-          <i class="el-icon-close-tip">press delete to remove</i>
+        <li class="el-upload-list__item" style="display: flex; justify-content: space-between;">
+          <a class="el-upload-list__item-name" title="点击插入文档" @click="insertDoc(file.file, file.name)">
+            <el-icon><Document/></el-icon> {{ file.name }}
+          </a>
+          <span style="cursor:pointer;" title="删除附件" @click="removeFile(file.file)" ><el-icon><Delete/></el-icon></span>
         </li>
       </ul>
     </template>
@@ -29,6 +26,8 @@
 import {defineComponent, inject, onMounted, ref} from "vue";
 import utils from "@/common/utils";
 import {ElMessage} from "element-plus";
+import 'element-plus/theme-chalk/display.css'
+import {Delete, Document} from "@element-plus/icons-vue";
 
 
 interface FileList {
@@ -43,6 +42,10 @@ interface FileListVO {
 }
 
 export default defineComponent({
+  components: {
+    Delete,
+    Document
+  },
   setup(prop, context) {
     const $axios: any = inject('$axios')
     let id: number = utils.getArticleId()

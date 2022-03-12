@@ -24,6 +24,12 @@ cros:
     - "header1"
     - "header2"
 
+# 验签排除
+signature:
+  exclude:
+    - /files/\w+\.\w+
+    - /admin/files
+
 # 日志
 logfile:
 

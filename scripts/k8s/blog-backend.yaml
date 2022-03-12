@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: blog-backend
-        image: docker.io/itsos/blog-backend:v1.0.14
+        image: docker.io/itsos/blog-backend:v1.0.15
         ports:
         - containerPort: 8090
         volumeMounts:
