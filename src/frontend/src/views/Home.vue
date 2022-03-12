@@ -36,6 +36,7 @@
       </template>
       <div v-bind:key="idx" v-for="(r, idx) in rank" class="text item">
         <el-link :href="'/a/'+encodeURIComponent(r.title)">{{ r.title }}（{{ r.access_times }}）</el-link>
+        <span style="margin-left: 5px;color: #303133;vertical-align: middle" v-if="r.is_lock"><el-icon><Lock/></el-icon></span>
       </div>
     </el-card>
   </el-aside>

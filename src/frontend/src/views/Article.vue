@@ -43,6 +43,7 @@
                 art.title + ' （' + art.access_times + '）'
               }}
             </el-link>
+            <span style="margin-left: 5px;color: #303133;vertical-align: middle" v-if="art.is_lock"><el-icon><Lock/></el-icon></span>
           </div>
         </el-card>
         <el-card class="box-card" v-bind:key="idx" v-for="(tag, idx) in tagList">
@@ -56,6 +57,7 @@
                 art.title + ' （' + art.access_times + '）'
               }}
             </el-link>
+            <span style="margin-left: 5px;color: #303133;vertical-align: middle" v-if="art.is_lock"><el-icon><Lock/></el-icon></span>
           </div>
         </el-card>
       </el-aside>

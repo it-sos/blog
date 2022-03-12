@@ -62,6 +62,7 @@ type (
 	ArticleAccessTimesVO struct {
 		Title       string `json:"title"`        // 文章标题
 		AccessTimes int    `json:"access_times"` // 访问次数
+		IsLock      bool   `json:"is_lock"`      // 是否所锁
 	}
 
 	// TopicVO 专题下文章列表及访问次数

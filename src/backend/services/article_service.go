@@ -306,6 +306,7 @@ func (a articleService) getArticleList(isLogin bool, ids []string) []vo.ArticleA
 			for _, v := range article {
 				articleVO = append(articleVO, vo.ArticleAccessTimesVO{
 					Title:       v.Title,
+					IsLock:      v.IsState == repositories.IsStatePrivate,
 					AccessTimes: a.accessTimes.Id(v.Id).Get()})
 			}
 		}
