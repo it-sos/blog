@@ -1,6 +1,7 @@
 import { InjectionKey } from 'vue'
 import { createStore, useStore as baseUseStore, Store } from 'vuex'
 import {localGet, localRemove, localSessionGet, localSessionSet, localSet} from "../utils";
+import loading from "./session/loading";
 
 export interface State {
     account: string
@@ -68,6 +69,9 @@ export const store = createStore<State>({
             return state.saved
         }
     },
+    modules: {
+        loading: loading
+    }
 })
 
 // 定义自己的 `useStore` 组合式函数

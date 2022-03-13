@@ -21,7 +21,7 @@
         <!-- 分割线 -->
         <el-divider></el-divider>
       </div>
-      <p class="load" v-if="loading">加载中...</p>
+      <p class="load" v-if="loading">{{loadingMsg}}</p>
       <el-empty v-if="noMore" description="木有了"></el-empty>
       <el-result v-if="errorMsg" icon="error" title="错误提示" subTitle="内部错误，稍后再试试">
       </el-result>
@@ -58,8 +58,6 @@ export default defineComponent({
     const store = useStore()
     store.commit('setArticleId', 0)
     const $axios: any = inject('$axios')
-    let article = inject("article-id", {id: ref<number>()})
-    article.id = ref(0)
     let state = reactive({
       page: 0,
       size: 10,
@@ -68,6 +66,7 @@ export default defineComponent({
       noMore: false,
       loading: false,
       errorMsg: false,
+      loadingMsg: '加载中...',
     })
 
     const defaults = () => {
@@ -81,13 +80,20 @@ export default defineComponent({
     const route = useRoute()
 
     const load = () => {
+
+      if (store.getters['loading/getIsFirstLoading']) {
+        state.loadingMsg = '首次加载，DNS重建，时间较长请耐心等待...'
+      } else {
+        state.loadingMsg = '加载中...'
+      }
+
       if (state.noMore || state.errorMsg) {
         return
       }
       state.loading = true
       state.page++
 
-      let keyword = route.params.keyword;
+      let keyword = route.params.keyword
       if (keyword) {
         keyword = decodeURIComponent(keyword.toString())
       }
@@ -100,6 +106,9 @@ export default defineComponent({
         }
       }).then((response: any) => {
         state.loading = false
+        if (store.getters['loading/getIsFirstLoading']) {
+          store.commit('loading/setFirstLoading')
+        }
         if (response.data.length === 0) {
           state.noMore = true
           return
