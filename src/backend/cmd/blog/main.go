@@ -11,9 +11,9 @@
 package main
 
 import (
-	"gitee.com/itsos/studynotes"
+	"gitee.com/itsos/blog"
 )
 
 func main() {
-	studynotes.ListenSock()
+	blog.Listen()
 }

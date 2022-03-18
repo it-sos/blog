@@ -14,8 +14,8 @@ import (
 	"gitee.com/itsos/golibs/v2/framework/iris/services"
 	"gitee.com/itsos/golibs/v2/utils"
 	"gitee.com/itsos/golibs/v2/utils/crypt"
-	"gitee.com/itsos/studynotes/cerrors"
-	"gitee.com/itsos/studynotes/repositories"
+	"gitee.com/itsos/blog/cerrors"
+	"gitee.com/itsos/blog/repositories"
 	"strconv"
 	"time"
 )

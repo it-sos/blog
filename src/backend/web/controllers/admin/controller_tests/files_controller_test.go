@@ -2,7 +2,7 @@ package controller_tests
 
 import (
 	"encoding/base64"
-	"gitee.com/itsos/studynotes"
+	"gitee.com/itsos/blog"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/httptest"
 	"os"
@@ -10,7 +10,7 @@ import (
 )
 
 func TestFilesController_Files(t *testing.T) {
-	e := httptest.New(t, studynotes.NewApp().Application)
+	e := httptest.New(t, blog.NewApp().Application)
 	png := "/tmp/john.png"
 	pngData := "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFElEQVQImWMQFRX9Lyoq+p8BxgAAJ04E+dJh/q8AAAAASUVORK5CYII="
 

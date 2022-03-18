@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"gitee.com/itsos/golibs/v2/db/mysql"
-	"gitee.com/itsos/studynotes/datamodels"
+	"gitee.com/itsos/blog/datamodels"
 	"testing"
 )
 

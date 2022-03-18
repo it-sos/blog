@@ -11,7 +11,7 @@
 package repositories
 
 import (
-	"gitee.com/itsos/studynotes/datamodels"
+	"gitee.com/itsos/blog/datamodels"
 	"testing"
 )
 

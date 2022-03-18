@@ -12,7 +12,7 @@ package main
 
 import (
 	"gitee.com/itsos/golibs/v2/db/mysql"
-	"gitee.com/itsos/studynotes/datamodels"
+	"gitee.com/itsos/blog/datamodels"
 	"github.com/spf13/viper"
 	"log"
 	"os"

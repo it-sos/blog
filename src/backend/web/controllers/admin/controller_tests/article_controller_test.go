@@ -12,7 +12,7 @@ package controller_tests
 
 import (
 	"gitee.com/itsos/golibs/v2/db/mysql"
-	"gitee.com/itsos/studynotes"
+	"gitee.com/itsos/blog"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/httptest"
 	"testing"
@@ -20,7 +20,7 @@ import (
 
 // 增删改查 - 单元测试
 func TestArticleController_Article(t *testing.T) {
-	e := httptest.New(t, studynotes.NewApp().Application)
+	e := httptest.New(t, blog.NewApp().Application)
 	t.Run("创建文章", func(t *testing.T) {
 		r := e.POST("/admin/article").
 			WithHeader("Accept", "application/json").

@@ -11,9 +11,9 @@
 package controllers
 
 import (
-	"gitee.com/itsos/studynotes/cerrors"
-	"gitee.com/itsos/studynotes/models/vo"
-	"gitee.com/itsos/studynotes/services"
+	"gitee.com/itsos/blog/cerrors"
+	"gitee.com/itsos/blog/models/vo"
+	"gitee.com/itsos/blog/services"
 	"github.com/kataras/iris/v12"
 )
 

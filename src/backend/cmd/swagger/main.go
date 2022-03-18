@@ -13,8 +13,8 @@ package main
 import (
 	"fmt"
 	"gitee.com/itsos/golibs/v2/global/consts"
-	C "gitee.com/itsos/studynotes/config"
-	_ "gitee.com/itsos/studynotes/docs"
+	C "gitee.com/itsos/blog/config"
+	_ "gitee.com/itsos/blog/docs"
 	"github.com/iris-contrib/swagger/v12"
 	"github.com/iris-contrib/swagger/v12/swaggerFiles"
 	"github.com/kataras/iris/v12"

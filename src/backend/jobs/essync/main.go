@@ -2,8 +2,8 @@ package main
 
 import (
 	"gitee.com/itsos/golibs/v2/db/mysql"
-	"gitee.com/itsos/studynotes/datamodels"
-	"gitee.com/itsos/studynotes/services"
+	"gitee.com/itsos/blog/datamodels"
+	"gitee.com/itsos/blog/services"
 	"github.com/kataras/golog"
 	"sync"
 )

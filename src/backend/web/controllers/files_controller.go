@@ -12,7 +12,7 @@ package controllers
 
 import (
 	"gitee.com/itsos/golibs/v2/utils/array"
-	"gitee.com/itsos/studynotes/services"
+	"gitee.com/itsos/blog/services"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
 	"strings"

@@ -13,8 +13,8 @@ package routes
 import (
 	bootstrap2 "gitee.com/itsos/golibs/v2/framework/iris/bootstrap"
 	"gitee.com/itsos/golibs/v2/framework/iris/middleware/auth"
-	"gitee.com/itsos/studynotes/web/controllers"
-	"gitee.com/itsos/studynotes/web/controllers/admin"
+	"gitee.com/itsos/blog/web/controllers"
+	"gitee.com/itsos/blog/web/controllers/admin"
 	"github.com/kataras/iris/v12/mvc"
 	"time"
 )

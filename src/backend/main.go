@@ -15,4 +15,4 @@
 // @description 鹏sir笔记接口\n环境信息：\n生产：https://product.com\n测试：http://test.com:8090\n开发：http://localhost:8090
 // @host localhost:8090
 
-package studynotes
+package blog

@@ -10,7 +10,7 @@ scheme: http
 port: 8090
 
 # socket 方式，结合nginx转发
-sock: /tmp/studynotes.sock
+sock: /tmp/blog.sock
 
 # swagger wiki 服务端口
 swagger:

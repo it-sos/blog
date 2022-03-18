@@ -47,3 +47,7 @@ func Test_userRepository_Account(t *testing.T) {
 		mysql.NewMysql().Exec("truncate table user")
 	})
 }
+
+func BenchmarkUserRepository_DeleteByUid(b *testing.B) {
+	
+}

@@ -1,4 +1,4 @@
-module gitee.com/itsos/studynotes
+module gitee.com/itsos/blog
 
 go 1.15
 

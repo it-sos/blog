@@ -11,7 +11,7 @@
 package controllers
 
 import (
-	"gitee.com/itsos/studynotes/services"
+	"gitee.com/itsos/blog/services"
 	"github.com/kataras/iris/v12"
 	"strconv"
 	"time"

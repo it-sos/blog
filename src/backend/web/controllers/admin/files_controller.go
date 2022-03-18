@@ -11,9 +11,9 @@
 package admin
 
 import (
-	"gitee.com/itsos/studynotes/datamodels"
-	"gitee.com/itsos/studynotes/models/vo"
-	"gitee.com/itsos/studynotes/services"
+	"gitee.com/itsos/blog/datamodels"
+	"gitee.com/itsos/blog/models/vo"
+	"gitee.com/itsos/blog/services"
 	"github.com/kataras/iris/v12"
 	"strconv"
 	"time"

@@ -12,8 +12,8 @@ package services
 
 import (
 	"gitee.com/itsos/golibs/v2/db/mysql"
-	"gitee.com/itsos/studynotes/models/vo"
-	"gitee.com/itsos/studynotes/repositories"
+	"gitee.com/itsos/blog/models/vo"
+	"gitee.com/itsos/blog/repositories"
 	"testing"
 )
 

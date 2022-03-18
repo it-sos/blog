@@ -11,10 +11,10 @@
 package services
 
 import (
-	"gitee.com/itsos/studynotes/caches"
-	"gitee.com/itsos/studynotes/cerrors"
-	"gitee.com/itsos/studynotes/datamodels"
-	"gitee.com/itsos/studynotes/repositories"
+	"gitee.com/itsos/blog/caches"
+	"gitee.com/itsos/blog/cerrors"
+	"gitee.com/itsos/blog/datamodels"
+	"gitee.com/itsos/blog/repositories"
 	"strconv"
 )
 

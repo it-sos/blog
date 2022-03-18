@@ -8,22 +8,22 @@
    See the Mulan PSL v2 for more details.
 */
 
-package studynotes
+package blog
 
 import (
 	"gitee.com/itsos/golibs/v2/framework/iris/bootstrap"
 	"gitee.com/itsos/golibs/v2/framework/iris/middleware/auth"
 	"gitee.com/itsos/golibs/v2/framework/iris/middleware/cros"
 	"gitee.com/itsos/golibs/v2/framework/iris/middleware/identity"
-	"gitee.com/itsos/studynotes/config"
-	"gitee.com/itsos/studynotes/web/routes"
+	"gitee.com/itsos/blog/config"
+	"gitee.com/itsos/blog/web/routes"
 	"github.com/kataras/iris/v12"
 	"net"
 	"os"
 )
 
 func NewApp() *bootstrap.Bootstrapper {
-	app := bootstrap.New("studynotes", "peng.yu@qjfu.cn")
+	app := bootstrap.New("blog", "peng.yu@qjfu.cn")
 	app.Bootstrap()
 	app.Configure(cros.Cros, identity.Identity, auth.CheckSign, routes.Routes)
 	return app
@@ -34,7 +34,7 @@ func Listen() {
 }
 
 //ListenSock socket 方式
-//socat -d -d TCP-LISTEN:8080,fork,bind=127.0.0.1 UNIX:/tmp/studynotes.sock
+//socat -d -d TCP-LISTEN:8080,fork,bind=127.0.0.1 UNIX:/tmp/blog.sock
 //curl http://localhost:8080
 func ListenSock() {
 	app := NewApp()

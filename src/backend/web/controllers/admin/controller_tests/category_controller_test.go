@@ -12,7 +12,7 @@ package controller_tests
 
 import (
 	"gitee.com/itsos/golibs/v2/db/mysql"
-	"gitee.com/itsos/studynotes"
+	"gitee.com/itsos/blog"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/httptest"
 	"testing"
@@ -20,7 +20,7 @@ import (
 
 func TestCategoryController_CategoryTopic(t *testing.T) {
 
-	e := httptest.New(t, studynotes.NewApp().Application)
+	e := httptest.New(t, blog.NewApp().Application)
 
 	t.Run("新增专题", func(t *testing.T) {
 		r := e.POST("/admin/category/topic").
@@ -107,7 +107,7 @@ func TestCategoryController_CategoryTopic(t *testing.T) {
 
 func TestCategoryController_CategoryTag(t *testing.T) {
 
-	e := httptest.New(t, studynotes.NewApp().Application)
+	e := httptest.New(t, blog.NewApp().Application)
 
 	t.Run("新增标签", func(t *testing.T) {
 		r := e.POST("/admin/category/tag").
