@@ -41,7 +41,7 @@ cd scripts && sh dockerfile.sh
 ![登录界面](https://gitee.com/itsos/blog/raw/master/pics/site/登录界面.jpg)
 ##### 5、详情页文章编辑入口
 ![首页搜索](https://gitee.com/itsos/blog/raw/master/pics/site/编辑入口.jpg)
-##### 6、文章新建入口
+##### 6、文章创建入口
 ![首页搜索](https://gitee.com/itsos/blog/raw/master/pics/site/新建文章入口.jpg)
 ##### 7、后台编辑专题与标签
 ![详情页编辑入口](https://gitee.com/itsos/blog/raw/master/pics/site/设置专题与标签.jpg)
