@@ -23,9 +23,14 @@
 1. MinIO 文件对象存储
 1. Elasticsearch 搜索
 
-### 部署到K8S应用服务
+### 部署到K8S集群
 ```shell 
-cd scripts && sh dockerfile.sh
+cd scripts && sh k8s_deploy.sh
+```
+
+### 传统部署单机
+```shell 
+cd scripts && sh native_deploy.sh
 ```
 
 ### 界面功能展示
