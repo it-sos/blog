@@ -1,9 +1,12 @@
-### 部署脚本
+### K8S部署方式，根据指引部署即可
+```shell
+sh k8s_deploy.sh 
+```
+
+### 传统部署脚本，根据指引部署即可
 ```shell
 # 运行命令可参见选项
-./run.sh
-# 第一次部署执行，根据提示操作
-./run.sh deploy_full
+sh native_deploy.sh 
 ```
 
 ### supervisor 管理指令
@@ -24,8 +27,8 @@ supervisorctl update
 
 ### nginx go sock 方式配置
 ```shell
-upstream studynotes {
-    server unix:/tmp/studynotes.sock;
+upstream blog {
+    server unix:/tmp/blog.sock;
     keepalive 300;
 }
 
@@ -35,7 +38,7 @@ location / {
 
 location ^~ /api {
     rewrite /api/(.+)$ /$1 break;
-    proxy_pass http://studynotes;
+    proxy_pass http://blog;
     proxy_redirect     off;
     proxy_set_header   Host             $host;
     proxy_set_header   X-Real-IP        $remote_addr;
@@ -52,8 +55,3 @@ location ^~ /api {
 }
 ```
 
-### 镜像构建
-```shell
-sudo buildkitd --oci-worker=false --containerd-worker=true &
-sh dockerfile.sh 
-```

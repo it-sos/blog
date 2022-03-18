@@ -3,7 +3,7 @@ module gitee.com/itsos/blog
 go 1.15
 
 require (
-	gitee.com/itsos/golibs/v2 v2.0.10-0.20220208054422-f0f8c755f393
+	gitee.com/itsos/golibs/v2 v2.0.11-alpha.0.20220312092813-005c224cb9df
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
 	github.com/go-openapi/spec v0.20.3 // indirect

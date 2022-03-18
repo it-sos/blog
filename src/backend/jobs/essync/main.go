@@ -1,9 +1,9 @@
 package main
 
 import (
-	"gitee.com/itsos/golibs/v2/db/mysql"
 	"gitee.com/itsos/blog/datamodels"
 	"gitee.com/itsos/blog/services"
+	"gitee.com/itsos/golibs/v2/db/mysql"
 	"github.com/kataras/golog"
 	"sync"
 )
@@ -13,7 +13,7 @@ var wg sync.WaitGroup
 func main() {
 	db := mysql.NewMysql()
 	article := make([]datamodels.Article, 0)
-	err := db.Where("is_del=?", 1).Desc("utime").Find(&article)
+	err := db.Desc("utime").Find(&article)
 	if err != nil {
 		panic(err)
 	}
