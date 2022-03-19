@@ -2,6 +2,7 @@ import { InjectionKey } from 'vue'
 import { createStore, useStore as baseUseStore, Store } from 'vuex'
 import {localGet, localRemove, localSessionGet, localSessionSet, localSet} from "../utils";
 import loading from "./session/loading";
+import article from "./articlelist/article";
 
 export interface State {
     account: string
@@ -9,6 +10,7 @@ export interface State {
     articleId: number
     saved: boolean
     ts: number
+    isBackend: boolean
 }
 
 export const key: InjectionKey<Store<State>> = Symbol()
@@ -24,6 +26,7 @@ export const store = createStore<State>({
         articleId: 0,
         saved: true,
         ts: 0,
+        isBackend: false,
     },
     mutations: {
         logout(state: State): void {
@@ -47,6 +50,9 @@ export const store = createStore<State>({
         },
         setSaved(state: State, is: boolean): void {
            state.saved = is
+        },
+        setIsBackend(state: State, is: boolean): void {
+            state.isBackend = is
         }
     },
     getters: {
@@ -67,10 +73,14 @@ export const store = createStore<State>({
         },
         getSaved: (state: State) => (): boolean => {
             return state.saved
+        },
+        getIsBackend: (state: State) => (): boolean => {
+            return state.isBackend
         }
     },
     modules: {
-        loading: loading
+        loading: loading,
+        article: article
     }
 })
 

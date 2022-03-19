@@ -111,6 +111,7 @@ export default defineComponent({
     })
 
     let store = useStore()
+    store.commit('setIsBackend', false)
 
     onUnmounted(() => {
       if (editor) editor.destroy();

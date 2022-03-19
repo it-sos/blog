@@ -3,7 +3,7 @@
     <div v-if="state.show" class="contextMenu" @mouseleave="hideMenu" @mouseenter="showMenu" :style="positionCss">
       <el-dropdown @command="handleCommand">
         <el-dropdown-menu>
-          <el-dropdown-item :key="index" v-for="(m, index) in state.menu[state.active]" :command="m.command" :icon="m.icon">{{m.title}}</el-dropdown-item>
+          <el-dropdown-item :key="index" v-for="(m, index) in menu[state.active]" :command="m.command" :icon="m.icon">{{m.title}}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -12,7 +12,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, reactive, ref} from 'vue'
+import {defineComponent, inject, reactive, ref, toRaw} from 'vue'
 import {Delete} from "@element-plus/icons-vue"
 
 export default defineComponent({
@@ -32,6 +32,7 @@ export default defineComponent({
         ]})
     })
     state = inject('right-click-menu',  state)
+    const menu = toRaw(state.menu)
 
     let timer: any = null;
     const hideMenu = () => {
@@ -50,6 +51,7 @@ export default defineComponent({
 
     return {
       Delete,
+      menu,
       state,
       showMenu,
       hideMenu,

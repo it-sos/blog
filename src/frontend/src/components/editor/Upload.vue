@@ -1,6 +1,5 @@
 <template>
   <el-upload
-      class="upload-demo"
       :action="action"
       :file-list="fileList"
       :on-success="handleSuccess">
@@ -24,6 +23,7 @@
 </template>
 <script lang="ts">
 import {defineComponent, inject, onMounted, ref} from "vue";
+// @ts-ignored
 import utils from "@/common/utils";
 import {ElMessage} from "element-plus";
 import 'element-plus/theme-chalk/display.css'

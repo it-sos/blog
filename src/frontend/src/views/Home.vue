@@ -57,11 +57,12 @@ export default defineComponent({
   setup() {
     const store = useStore()
     store.commit('setArticleId', 0)
+    store.commit('setIsBackend', false)
     const $axios: any = inject('$axios')
     let state = reactive({
       page: 0,
       size: 10,
-      article: [],
+      article: ref<any[]>([]),
       rank: [],
       noMore: false,
       loading: false,

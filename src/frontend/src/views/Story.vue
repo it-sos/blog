@@ -41,21 +41,12 @@
 </template>
 <script lang="ts">
 
-import {defineComponent, inject, provide, reactive, ref, toRefs, watch} from 'vue'
-import {ElMessage, ElMessageBox} from "element-plus";
-import utils from "../common/utils";
+import {computed, defineComponent, inject, provide, reactive, ref, toRefs, watch} from 'vue'
+import {ElMessage} from "element-plus";
 import ToolEditor from "../components/ToolEditor.vue";
 import {CirclePlus, Delete, Expand, Fold, Lock} from "@element-plus/icons-vue";
 import {onBeforeRouteLeave, onBeforeRouteUpdate, useRouter} from 'vue-router';
 import {useStore} from "../store/store";
-
-interface ArticleList {
-  id?: number
-  title: string
-  title_match?: string
-  duration?: string
-  is_state: number
-}
 
 export default defineComponent({
   components: {
@@ -70,6 +61,7 @@ export default defineComponent({
     const $axios: any = inject('$axios')
     const router = useRouter()
     const store = useStore()
+    store.commit('setIsBackend', true)
 
     const confirmLevel = () => {
       if (!store.getters.getSaved()) {
@@ -82,14 +74,13 @@ export default defineComponent({
     }
 
     onBeforeRouteUpdate((to, from) => confirmLevel())
-    onBeforeRouteLeave ((to, from) => confirmLevel())
+    onBeforeRouteLeave((to, from) => confirmLevel())
 
     const state = reactive({
       keyword: ref(""),
       page: ref(0),
       size: ref(50),
       noMore: ref(false),
-      article: ref<ArticleList[]>([]),
     });
 
     let timer: any = null
@@ -108,7 +99,7 @@ export default defineComponent({
         params: {page: state.page, size: state.size, keyword: state.keyword},
       }).then((response: any) => {
         response.data.forEach((v: ArticleList) => {
-          state.article.push(v)
+          store.commit('article/append', v)
         })
         if (response.data.length < state.size) {
           state.noMore = true
@@ -122,7 +113,7 @@ export default defineComponent({
     const articleListRest = () => {
       state.page = 0
       state.noMore = false
-      state.article = []
+      store.commit('article/reset')
       load()
     }
 
@@ -138,56 +129,17 @@ export default defineComponent({
     const syncArticleList = (type: OPT_TYPE, id: number, title: string, is_state: number) => {
       // 更新
       if (type == OPT_TYPE.Update) {
-        state.article = state.article.map((v: ArticleList) => {
-          if (v.id == id) {
-            v.title = title
-            v.is_state = is_state
-          }
-          return v
-        })
+        store.commit('article/update', {id: id, title: title, is_state: is_state})
       }
       // 新增
       else if (type == OPT_TYPE.Add) {
-        state.article.unshift({
-          id: id,
-          title: title,
-          duration: '1秒前',
-          is_state: is_state,
-        })
+        store.commit('article/add', {id: id, title: title, is_state: is_state})
       }
     }
 
     // 删除操作
     const deleteConfirm = (id: number) => {
-      ElMessageBox.confirm('此操作将永久删除该文章, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      }).then(() => {
-        $axios.delete('/admin/article', {
-          responseType: "json",
-          params: {id: id},
-        }).then(() => {
-          state.article = state.article.filter((v: any) => {
-            return id != v.id
-          })
-          ElMessage({
-            type: 'success',
-            message: '删除成功!',
-          });
-
-          if (utils.getArticleId() == id) {
-            router.push('/e/')
-          }
-        }).catch((error: any) => {
-          ElMessage.warning(error.response.data.message)
-        })
-      }).catch(() => {
-        ElMessage({
-          type: 'info',
-          message: '已取消删除',
-        });
-      });
+      store.commit('article/remove', {id: id})
     };
 
     let rightMenu = reactive({
@@ -251,6 +203,7 @@ export default defineComponent({
       rightMenu,
       rightMenuFunc,
       rightMenuTrigger,
+      article: computed(() => store.getters["article/list"]),
     }
   }
 })
@@ -266,18 +219,17 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
 
-span {
-  font-size: 12px;
-}
-
+  span {
+    font-size: 12px;
+  }
 }
 
 .el-tabs--border-card > .el-tabs__content {
 
-.el-card {
-  border: none;
-  box-shadow: none;
-}
+  .el-card {
+    border: none;
+    box-shadow: none;
+  }
 
 }
 

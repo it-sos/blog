@@ -9,8 +9,11 @@
         <el-dropdown-item :icon="CirclePlus">
           <router-link to="/e/">创建文章</router-link>
         </el-dropdown-item>
-        <el-dropdown-item :icon="Edit" v-if="articleId > 0">
+        <el-dropdown-item :icon="Edit" v-if="articleId > 0 && !isBackend">
           <router-link :to="'/e/'+articleId">编辑文章</router-link>
+        </el-dropdown-item>
+        <el-dropdown-item :icon="Delete" v-if="articleId > 0 && isBackend">
+          <span @click="delConfirm(articleId)">删除文章</span>
         </el-dropdown-item>
         <el-dropdown-item :icon="Key" disabled>内容加密（未激活）</el-dropdown-item>
         <el-tooltip content="退出登陆" effect="dark" placement="left">
@@ -28,7 +31,7 @@
 <!--<el-icon><circle-close-filled /></el-icon>-->
 <script lang="ts">
 import {computed, defineComponent} from 'vue'
-import {CircleClose, CirclePlus, Edit, Key, Lock, Operation} from "@element-plus/icons-vue"
+import {CircleClose, CirclePlus, Delete, Edit, Key, Lock, Operation} from "@element-plus/icons-vue"
 import {useStore} from "../store/store";
 import {ElMessageBox} from "element-plus";
 import {useRouter} from "vue-router";
@@ -54,15 +57,23 @@ export default defineComponent({
           .catch(() => {
           });
     }
+
+    let delConfirm = (id: number) => {
+      store.commit('article/remove', {id: id})
+    }
+
     return {
       CircleClose,
       Lock,
       Edit,
+      Delete,
       Key,
       CirclePlus,
       logout,
+      delConfirm,
       account: computed(() => store.getters.getAccount()),
-      articleId: computed(() => store.getters.getArticleId())
+      articleId: computed(() => store.getters.getArticleId()),
+      isBackend: computed(() => store.getters.getIsBackend()),
     }
   },
 })

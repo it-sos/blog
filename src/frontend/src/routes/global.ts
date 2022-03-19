@@ -1,7 +1,7 @@
 import {store} from "../store/store";
 
 export default (router: any) => {
-    router.beforeEach((to, from) => {
+    router.beforeEach((to: any, from: any) => {
         // 而不是去检查每条路由记录
         // to.matched.some(record => record.meta.requiresAuth)
         if (to.meta.requiresAuth && store.getters.getToken() == '') {

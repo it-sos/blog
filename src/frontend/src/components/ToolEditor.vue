@@ -106,6 +106,7 @@ export default defineComponent({
         duration: duration,
         showClose: true,
         message: message,
+        // @ts-ignored
         type: type,
       });
     };
@@ -172,6 +173,7 @@ export default defineComponent({
           "is_state": is_state,
         }
       }).then((response: any) => {
+        store.commit("setArticleId", id || response.data)
         if (id == 0) {
           router.push('/e/' + response.data)
           context.emit("syncArticleList", 'add', response.data, title, is_state)
@@ -195,6 +197,7 @@ export default defineComponent({
             "id": id,
           }
         }).then((response: any) => {
+          store.commit("setArticleId", id)
           editor.commands.setContent(`<h2>${response.data.title}</h2>\n${response.data.content}`)
           switchStatus.publish = response.data.is_state == SWITCH_PUBLISH_STATUS.Public
           switchStatus.encrypt = response.data.is_encrypt == SWITCH_ENCRYPT_STATUS.Encrypt

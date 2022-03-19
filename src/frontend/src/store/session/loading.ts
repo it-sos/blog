@@ -1,4 +1,4 @@
-import {localGet, localSessionGet, localSessionSet} from "../../utils";
+import {localSessionGet, localSessionSet} from "../../utils";
 
 export interface State {
     status: number
@@ -18,7 +18,7 @@ export default {
         }
     },
     getters: {
-        getIsFirstLoading (state: State) : boolean {
+        getIsFirstLoading(state: State): boolean {
             state.status = localSessionGet(session_is_first_loading) || 0
             return state.status == 0
         }
