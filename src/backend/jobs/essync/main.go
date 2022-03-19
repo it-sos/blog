@@ -19,8 +19,8 @@ func main() {
 	}
 
 	content := datamodels.ArticleContent{}
-
 	esData := services.EsData{}
+
 	for _, v := range article {
 		db.Where("aid=?", v.Id).Find(&content)
 		esData.Id = v.Id

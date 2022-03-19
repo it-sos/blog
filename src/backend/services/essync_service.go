@@ -64,8 +64,6 @@ type EsData struct {
 	Ctime   time.Time `json:"ctime"`
 }
 
-var r map[string]interface{}
-
 func EsSync(esData EsData, wg *sync.WaitGroup) (err error) {
 	ej, _ := json.Marshal(esData)
 	es := es.NewEs()
@@ -97,6 +95,7 @@ func EsSync(esData EsData, wg *sync.WaitGroup) (err error) {
 		return
 	}
 
+	var r map[string]interface{}
 	if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
 		golog.Errorf("Error parsing the response body: %s", err)
 		return
