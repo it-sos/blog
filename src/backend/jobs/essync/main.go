@@ -5,6 +5,7 @@ import (
 	"gitee.com/itsos/blog/services"
 	"gitee.com/itsos/golibs/v2/db/mysql"
 	"github.com/kataras/golog"
+	"log"
 	"sync"
 )
 
@@ -15,14 +16,16 @@ func main() {
 	article := make([]datamodels.Article, 0)
 	err := db.Desc("utime").Find(&article)
 	if err != nil {
-		panic(err)
+		log.Panicln(err)
 	}
 
-	content := datamodels.ArticleContent{}
-	esData := services.EsData{}
-
 	for _, v := range article {
-		db.Where("aid=?", v.Id).Find(&content)
+		content := datamodels.ArticleContent{}
+		_, err = db.Where("aid=?", v.Id).Get(&content)
+		if err != nil {
+			log.Panicln(err)
+		}
+		esData := services.EsData{}
 		esData.Id = v.Id
 		esData.Title = v.Title
 		esData.Intro = v.Intro

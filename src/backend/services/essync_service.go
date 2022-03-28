@@ -75,10 +75,10 @@ func EsSync(esData EsData, wg *sync.WaitGroup) (err error) {
 		golog.Errorf("Error getting response: %s", err)
 		return
 	}
-	defer res.Body.Close()
 	if wg != nil {
 		defer wg.Done()
 	}
+	defer res.Body.Close()
 
 	if res.IsError() {
 		var e map[string]interface{}
@@ -101,7 +101,9 @@ func EsSync(esData EsData, wg *sync.WaitGroup) (err error) {
 		return
 	}
 	if len(r) > 0 {
-		//golog.Info(r)
+		golog.Info(r)
+	} else {
+		golog.Error(esData.Id)
 	}
 	return
 }
