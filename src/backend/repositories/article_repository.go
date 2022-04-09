@@ -11,10 +11,11 @@
 package repositories
 
 import (
-	"gitee.com/itsos/golibs/v2/db/mysql"
-	"gitee.com/itsos/blog/datamodels"
 	"strings"
 	"time"
+
+	"gitee.com/itsos/blog/datamodels"
+	"gitee.com/itsos/golibs/v2/db/mysql"
 )
 
 const (
@@ -73,7 +74,7 @@ func (ur *articleRepository) SoftDelete(id uint) bool {
 
 func (ur *articleRepository) GetInfoById(id uint) (datamodels.Article, bool) {
 	article := new(datamodels.Article)
-	has, err := ur.db.ID(id).Where("is_del=?", NotDeleted).Get(article)
+	has, err := ur.db.ID(id).Get(article)
 	if err != nil {
 		panic(err)
 	}

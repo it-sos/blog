@@ -61,6 +61,7 @@ build() {
   unlinkProject
   mkdir -p $basedir/run
   cd $basedir/../src/backend/cmd/$PROJECT_NAME && \
+      go get -v ./... && \
       CGO_ENABLED=0 GOOS=$1 go build -v -o $PROJECT && cd -
 }
 

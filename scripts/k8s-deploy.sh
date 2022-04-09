@@ -9,6 +9,7 @@ version=$2
 
 # 检查buildkitd是否启用
 if [ "$(ps -ef|grep buildkitd|grep -v grep|wc -l)" -lt 1 ]; then
+    echo "software: https://github.com/moby/buildkit"
     echo "Do the following:"
     echo "sudo buildkitd --oci-worker=false --containerd-worker=true &"
     echo "fg"
@@ -39,8 +40,13 @@ run() {
     run backend
   ;;
   "backend")
+    #sudo ctr -n buildkit i check|grep docker.io/library/alpine:latest > /dev/null
+    #if [ "$?" -gt "0" ];then
+    #    sudo ctr -n buildkit i pull --all-platforms docker.io/library/alpine:latest
+    #fi
     # 如果只是配置变更执行这个：
-    # kubectl create configmap blog-backend-config --from-file=./config/config.yaml
+    kubectl delete configmap blog-backend-config
+    kubectl create configmap blog-backend-config --from-file=./config/config.yaml
     # kubectl edit configmap blog-backend-config
 
     run build_linux
@@ -58,6 +64,10 @@ run() {
     kubectl apply -f k8s/blog-backend.yaml
   ;;
   "frontend")
+    #sudo ctr -n buildkit i check|grep docker.io/library/nginx:stable-alpine > /dev/null
+    #if [ "$?" ! -eq "0" ];then
+    #    sudo ctr -n buildkit i pull --all-platforms docker.io/library/nginx:stable-alpine
+    #fi
     mkdir -p $basedir/run/frontend
     rm -rf $basedir/run/frontend/* $basedir/../src/frontend/dist/*
     cd $basedir/../src/frontend/ && yarn install && yarn build && cp -r dist/* $basedir/run/frontend && cd -

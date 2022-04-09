@@ -1,12 +1,13 @@
 package main
 
 import (
+	"log"
+	"sync"
+
 	"gitee.com/itsos/blog/datamodels"
 	"gitee.com/itsos/blog/services"
 	"gitee.com/itsos/golibs/v2/db/mysql"
 	"github.com/kataras/golog"
-	"log"
-	"sync"
 )
 
 var wg sync.WaitGroup
