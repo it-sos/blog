@@ -7,7 +7,7 @@ timezone: Asia/Shanghai
 # 域名端口方式，可单独提供服务
 domain: localhost
 scheme: http
-port: 8090
+port: 8091
 
 # socket 方式，结合nginx转发
 sock: /tmp/blog.sock
@@ -63,7 +63,7 @@ mysql:
     password: mysql123
     host: 127.0.0.1
     port: 3306
-    database: demo
+    database: blog_dev
     charset: utf8mb4
 
 # choose redis / redis_cluster

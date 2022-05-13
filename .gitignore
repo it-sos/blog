@@ -2,6 +2,7 @@
 node_modules/
 /static/dist
 /cmd/studynotes/studynotes
+/pkg/
 
 
 # local env files

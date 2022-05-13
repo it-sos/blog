@@ -12,6 +12,7 @@ package caches
 
 import (
 	"fmt"
+
 	"gitee.com/itsos/golibs/v2/db/redis"
 	"golang.org/x/net/context"
 )
@@ -52,7 +53,7 @@ const root = "access_times_page"
 var ctx = context.Background()
 
 func (a *accessTimes) Id(k uint) AccessTimesCmd {
-	return &accessTimesCmd{fmt.Sprintf(prefixTimes, k), redis.NewRedisCluster()}
+	return &accessTimesCmd{fmt.Sprintf(prefixTimes, k), a.db}
 }
 
 func (a *accessTimes) Rank(num int) []string {

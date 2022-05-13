@@ -14,4 +14,4 @@ ENV TZ Asia/Shanghai
 WORKDIR /data
 COPY run/backend /data
 EXPOSE 9080
-ENTRYPOINT ["./studynotes", "-c", "/data/config"]
+ENTRYPOINT ["./blog", "-c", "/data/config"]
