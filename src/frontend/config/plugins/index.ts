@@ -1,11 +1,11 @@
-import { Plugin } from 'vite';
 import legacy from '@vitejs/plugin-legacy';
-import vue from '@vitejs/plugin-vue'
-import importToCDN, {autoComplete} from 'vite-plugin-cdn-import'
+import vue from '@vitejs/plugin-vue';
+import * as path from 'path';
+import { Plugin } from 'vite';
+import importToCDN from 'vite-plugin-cdn-import';
 import { viteVConsole } from 'vite-plugin-vconsole';
 import { VITE_APP_VISUALIZER } from '../index';
 import configVisualizerConfig from './visualizer';
-import * as path from 'path'
 export default function createVitePlugins() {
     const vitePlugins: (Plugin | Plugin[])[] = [
         vue(),
@@ -48,11 +48,27 @@ export default function createVitePlugins() {
             modernPolyfills: ['es.promise.finally']
         }),
         importToCDN({
-            modules:[
+            modules: [
                 //https://unpkg.com/vue@3.2.29/dist/vue.global.js
-                autoComplete('vue'),
-                autoComplete('axios'),
-                autoComplete('crypto-js'),
+                // autoComplete('vue'),
+                // autoComplete('axios'),
+                // autoComplete('crypto-js'),
+                {
+                    name: 'vue',
+                    var: 'Vue',
+                    path: `https://unpkg.com/vue@3.2.26/dist/vue.global.prod.js`,
+                },
+                {
+                    name: 'axios',
+                    var: 'axios',
+                    path: `https://unpkg.com/axios@0.27.2/dist/axios.min.js`,
+                },
+                {
+                    name: 'crypto-js',
+                    var: 'CryptoJs',
+                    path: `https://unpkg.com/crypto-js@4.1.1/crypto-js.js`,
+                },
+
                 // autoComplete('@vueuse/shared'),
                 // autoComplete('@vueuse/core'),
                 {

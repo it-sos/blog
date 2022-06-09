@@ -11,21 +11,21 @@
 package blog
 
 import (
-	"gitee.com/itsos/golibs/v2/framework/iris/bootstrap"
-	"gitee.com/itsos/golibs/v2/framework/iris/middleware/auth"
-	"gitee.com/itsos/golibs/v2/framework/iris/middleware/cros"
-	"gitee.com/itsos/golibs/v2/framework/iris/middleware/identity"
-	"gitee.com/itsos/blog/config"
-	"gitee.com/itsos/blog/web/routes"
-	"github.com/kataras/iris/v12"
 	"net"
 	"os"
+
+	"gitee.com/itsos/blog/config"
+	"gitee.com/itsos/blog/web/routes"
+	"gitee.com/itsos/golibs/v2/framework/iris/bootstrap"
+	"gitee.com/itsos/golibs/v2/framework/iris/middleware/auth"
+	"gitee.com/itsos/golibs/v2/framework/iris/middleware/identity"
+	"github.com/kataras/iris/v12"
 )
 
 func NewApp() *bootstrap.Bootstrapper {
 	app := bootstrap.New("blog", "peng.yu@qjfu.cn")
 	app.Bootstrap()
-	app.Configure(cros.Cros, identity.Identity, auth.CheckSign, routes.Routes)
+	app.Configure(identity.Identity, auth.CheckSign, routes.Routes)
 	return app
 }
 

@@ -11,17 +11,18 @@
 package routes
 
 import (
-	bootstrap2 "gitee.com/itsos/golibs/v2/framework/iris/bootstrap"
-	"gitee.com/itsos/golibs/v2/framework/iris/middleware/auth"
+	"time"
+
 	"gitee.com/itsos/blog/web/controllers"
 	"gitee.com/itsos/blog/web/controllers/admin"
+	bootstrap2 "gitee.com/itsos/golibs/v2/framework/iris/bootstrap"
+	"gitee.com/itsos/golibs/v2/framework/iris/middleware/auth"
 	"github.com/kataras/iris/v12/mvc"
-	"time"
 )
 
 func Routes(b *bootstrap2.Bootstrapper) {
 	mvc.Configure(
-		b.Party("/"),
+		b.Party("/api"),
 		func(app *mvc.Application) {
 			app.Handle(new(controllers.IndexController)).
 				Handle(new(controllers.FilesController)).
@@ -30,7 +31,7 @@ func Routes(b *bootstrap2.Bootstrapper) {
 	).Register(time.Now())
 
 	mvc.Configure(
-		b.Party("/admin", auth.Secret),
+		b.Party("/api/admin", auth.Secret),
 		func(app *mvc.Application) {
 			app.Handle(new(admin.ArticleController)).
 				Handle(new(admin.FilesController)).

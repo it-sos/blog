@@ -5,7 +5,7 @@ const proxy: Record<string, string | ProxyOptions> = {
     '/api': {
         target: 'http://localhost:8091',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/api/, '\/api'),
     },
 };
 export default proxy;
