@@ -1,5 +1,4 @@
 import router from "../routes";
-import axios from "axios";
 
 export default {
    getArticleId: () => {
@@ -10,6 +9,7 @@ export default {
    },
    getUrl: (media: string) => {
       media = media.replace("/", "_")
-      return `${axios.defaults.baseURL}/files/${media}`
+      // return `${axios.defaults.baseURL}/files/${media}`
+      return `/api/files/${media}`
    }
 }
