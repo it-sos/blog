@@ -131,5 +131,3 @@ require (
 )
 
 replace github.com/it-sos/golibs/v2 => ../../../golibs
-
-replace github.com/kataras/iris/v12 => ../../../iris
