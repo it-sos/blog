@@ -11,9 +11,9 @@
 package services
 
 import (
-	"gitee.com/itsos/golibs/v2/db/mysql"
-	"gitee.com/itsos/blog/models/vo"
-	"gitee.com/itsos/blog/repositories"
+	"github.com/it-sos/blog/models/vo"
+	"github.com/it-sos/blog/repositories"
+	"github.com/it-sos/golibs/v2/db/mysql"
 	"testing"
 )
 

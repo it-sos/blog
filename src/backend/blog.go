@@ -12,19 +12,37 @@ package blog
 
 import (
 	"net"
+	"net/http"
 	"os"
 
-	"gitee.com/itsos/blog/config"
-	"gitee.com/itsos/blog/web/routes"
-	"gitee.com/itsos/golibs/v2/framework/iris/bootstrap"
-	"gitee.com/itsos/golibs/v2/framework/iris/middleware/auth"
-	"gitee.com/itsos/golibs/v2/framework/iris/middleware/identity"
+	"github.com/it-sos/blog/config"
+	"github.com/it-sos/blog/web/routes"
+	"github.com/it-sos/blog/web/views"
+	"github.com/it-sos/golibs/v2/framework/iris/bootstrap"
+	"github.com/it-sos/golibs/v2/framework/iris/middleware/auth"
+	"github.com/it-sos/golibs/v2/framework/iris/middleware/identity"
 	"github.com/kataras/iris/v12"
 )
 
 func NewApp() *bootstrap.Bootstrapper {
 	app := bootstrap.New("blog", "peng.yu@qjfu.cn")
+
 	app.Bootstrap()
+
+	fsys := iris.PrefixDir("/", http.FS(views.Static))
+	app.HandleDir("/", fsys, iris.DirOptions{
+		IndexName: "index.html",
+		SPA:       true,
+	})
+	app.HandleDir("/a/", fsys, iris.DirOptions{
+		IndexName: "index.html",
+		SPA:       true,
+	})
+	app.HandleDir("/e/", fsys, iris.DirOptions{
+		IndexName: "index.html",
+		SPA:       true,
+	})
+
 	app.Configure(identity.Identity, auth.CheckSign, routes.Routes)
 	return app
 }
@@ -33,9 +51,9 @@ func Listen() {
 	NewApp().Listen(":"+config.C.GetPort(), iris.WithOptimizations)
 }
 
-//ListenSock socket 方式
-//socat -d -d TCP-LISTEN:8080,fork,bind=127.0.0.1 UNIX:/tmp/blog.sock
-//curl http://localhost:8080
+// ListenSock socket 方式
+// socat -d -d TCP-LISTEN:8080,fork,bind=127.0.0.1 UNIX:/tmp/blog.sock
+// curl http://localhost:8080
 func ListenSock() {
 	app := NewApp()
 	socketFile := config.C.GetSock()

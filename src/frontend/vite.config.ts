@@ -1,15 +1,15 @@
-import {defineConfig} from 'vite'
-import createVitePlugins from "./config/plugins";
-import {VITE_APP_BASE, VITE_APP_OPEN, VITE_APP_PORT} from "./config";
-import proxy from "./config/setupProxy";
+import { defineConfig } from 'vite';
+import { VITE_APP_BASE, VITE_APP_OPEN, VITE_APP_PORT } from "./config";
 import build from "./config/build";
+import createVitePlugins from "./config/plugins";
+import proxy from "./config/setupProxy";
 // @ts-ignore
-import path from 'path'
+import path from 'path';
 import cssOption from "./config/style";
 
 // https://vitejs.dev/config/
 // https://cn.vitejs.dev/config/#conditional-config
-export default defineConfig(({command, mode}) => {
+export default defineConfig(({ command, mode }) => {
     return {
         base: VITE_APP_BASE,
         // optimizeDeps: {

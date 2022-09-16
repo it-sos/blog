@@ -11,7 +11,7 @@
 package repositories
 
 import (
-	"gitee.com/itsos/golibs/v2/db/mysql"
+	"github.com/it-sos/golibs/v2/db/mysql"
 	"testing"
 )
 
@@ -49,5 +49,5 @@ func Test_userRepository_Account(t *testing.T) {
 }
 
 func BenchmarkUserRepository_DeleteByUid(b *testing.B) {
-	
+
 }

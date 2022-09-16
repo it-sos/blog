@@ -2,7 +2,7 @@ package controller_tests
 
 import (
 	"encoding/base64"
-	"gitee.com/itsos/blog"
+	"github.com/it-sos/blog"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/httptest"
 	"os"

@@ -10,7 +10,7 @@
 
 package vo
 
-import "gitee.com/itsos/blog/datamodels"
+import "github.com/it-sos/blog/datamodels"
 
 type (
 	// FileVO 文件vo

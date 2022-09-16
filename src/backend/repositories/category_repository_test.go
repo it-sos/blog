@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"gitee.com/itsos/golibs/v2/db/mysql"
-	"gitee.com/itsos/blog/datamodels"
+	"github.com/it-sos/blog/datamodels"
+	"github.com/it-sos/golibs/v2/db/mysql"
 	"testing"
 )
 

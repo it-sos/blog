@@ -36,23 +36,23 @@ cd scripts && sh native_deploy.sh
 ### 界面功能展示
 #### 前台页面
 ##### 1、首页展示
-![首页展示](https://gitee.com/itsos/blog/raw/master/pics/site/首页展示.jpg)
+![首页展示](https://github.com/it-sos/blog/raw/master/pics/site/首页展示.jpg)
 ##### 2、首页搜索
-![首页搜索](https://gitee.com/itsos/blog/raw/master/pics/site/首页搜素.jpg)
+![首页搜索](https://github.com/it-sos/blog/raw/master/pics/site/首页搜素.jpg)
 ##### 3、详情页面展示
-![详情页面展示](https://gitee.com/itsos/blog/raw/master/pics/site/详情页面展示.jpg)
+![详情页面展示](https://github.com/it-sos/blog/raw/master/pics/site/详情页面展示.jpg)
 ##### 4、登录入口与登录界面
-![登录入口](https://gitee.com/itsos/blog/raw/master/pics/site/登录入口.jpg)
-![登录界面](https://gitee.com/itsos/blog/raw/master/pics/site/登录界面.jpg)
+![登录入口](https://github.com/it-sos/blog/raw/master/pics/site/登录入口.jpg)
+![登录界面](https://github.com/it-sos/blog/raw/master/pics/site/登录界面.jpg)
 ##### 5、详情页文章编辑入口
-![首页搜索](https://gitee.com/itsos/blog/raw/master/pics/site/编辑入口.jpg)
+![首页搜索](https://github.com/it-sos/blog/raw/master/pics/site/编辑入口.jpg)
 ##### 6、文章创建入口
-![首页搜索](https://gitee.com/itsos/blog/raw/master/pics/site/新建文章入口.jpg)
+![首页搜索](https://github.com/it-sos/blog/raw/master/pics/site/新建文章入口.jpg)
 ##### 7、后台编辑专题与标签
-![详情页编辑入口](https://gitee.com/itsos/blog/raw/master/pics/site/设置专题与标签.jpg)
+![详情页编辑入口](https://github.com/it-sos/blog/raw/master/pics/site/设置专题与标签.jpg)
 ##### 8、后台编辑文件与图片管理
-![详情页编辑入口](https://gitee.com/itsos/blog/raw/master/pics/site/文章文件管理.jpg)
+![详情页编辑入口](https://github.com/it-sos/blog/raw/master/pics/site/文章文件管理.jpg)
 ##### 9、后台文章搜索
-![详情页编辑入口](https://gitee.com/itsos/blog/raw/master/pics/site/后台搜索文章.jpg)
+![详情页编辑入口](https://github.com/it-sos/blog/raw/master/pics/site/后台搜索文章.jpg)
 ##### 10、后台文章编辑、删除与新建
-![详情页编辑入口](https://gitee.com/itsos/blog/raw/master/pics/site/后台文章新建与删除.jpg)
+![详情页编辑入口](https://github.com/it-sos/blog/raw/master/pics/site/后台文章新建与删除.jpg)

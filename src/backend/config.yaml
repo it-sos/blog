@@ -16,6 +16,9 @@ sock: /tmp/blog.sock
 swagger:
   port: 9099
 
+# framework.bootstrap 设置静态目录
+is_setup_view: true
+
 # 跨域
 cros:
   allow_origin:
@@ -29,6 +32,7 @@ signature:
   exclude:
     - /files/\w+\.\w+
     - /admin/files
+    - /
 
 # 日志
 logfile:
@@ -60,7 +64,7 @@ crypt:
 mysql:
   master:
     user: root
-    password: mysql123
+    password: BITget&*(789
     host: 127.0.0.1
     port: 3306
     database: blog_dev
@@ -73,7 +77,7 @@ redis:
   host: 127.0.0.1
   port: 6379
   username:
-  password:
+  password: BITget&*(789
   db: 12
 
 # redis 集群配置

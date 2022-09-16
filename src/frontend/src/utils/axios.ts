@@ -1,10 +1,10 @@
-import axios from 'axios'
-import {ElMessage} from 'element-plus'
+import axios from 'axios';
+import { ElMessage } from 'element-plus';
 // @ts-ignore
-import config from '~/config'
-import {sign} from './sign'
-import {store} from "../store/store";
+import config from '~/config';
 import router from "../routes";
+import { store } from "../store/store";
+import { sign } from './sign';
 
 // 这边由于后端没有区分测试和正式，姑且都写成一个接口。
 axios.defaults.baseURL = config[import.meta.env.MODE].baseUrl
@@ -29,10 +29,10 @@ axios.interceptors.request.use((config: any) => {
     var data = {};
     if (config.data != null) {
         if (config.data instanceof FormData) {
-           config.data.forEach((v: any, k: any) => {
-               // @ts-ignore
-               data[k] = v
-           })
+            config.data.forEach((v: any, k: any) => {
+                // @ts-ignore
+                data[k] = v
+            })
         } else {
             data = config.data
         }
@@ -63,7 +63,7 @@ axios.interceptors.response.use((res: HttpResult) => {
         // 需要登录授权，跳转登录页
         if (res.response.status == 401) {
             store.commit("logout")
-            router.push({path: '/login'})
+            router.push({ path: '/login' })
             return Promise.reject(res)
         } else if (res.response.status == 403) {
             // @ts-ignore

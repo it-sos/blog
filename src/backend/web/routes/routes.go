@@ -13,13 +13,14 @@ package routes
 import (
 	"time"
 
-	"gitee.com/itsos/blog/web/controllers"
-	"gitee.com/itsos/blog/web/controllers/admin"
-	bootstrap2 "gitee.com/itsos/golibs/v2/framework/iris/bootstrap"
-	"gitee.com/itsos/golibs/v2/framework/iris/middleware/auth"
+	"github.com/it-sos/blog/web/controllers"
+	"github.com/it-sos/blog/web/controllers/admin"
+	bootstrap2 "github.com/it-sos/golibs/v2/framework/iris/bootstrap"
+	"github.com/it-sos/golibs/v2/framework/iris/middleware/auth"
 	"github.com/kataras/iris/v12/mvc"
 )
 
+// Routes 路由
 func Routes(b *bootstrap2.Bootstrapper) {
 	mvc.Configure(
 		b.Party("/api"),

@@ -8,12 +8,12 @@
    See the Mulan PSL v2 for more details.
 */
 
-package main
+package caches
 
 import (
-	"github.com/it-sos/blog"
+	"testing"
 )
 
-func main() {
-	blog.Listen()
+func TestCCategory(t *testing.T) {
+	t.Log(CCategory.Id(1).Get())
 }

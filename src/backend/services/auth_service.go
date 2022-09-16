@@ -11,11 +11,11 @@
 package services
 
 import (
-	"gitee.com/itsos/golibs/v2/framework/iris/services"
-	"gitee.com/itsos/golibs/v2/utils"
-	"gitee.com/itsos/golibs/v2/utils/crypt"
-	"gitee.com/itsos/blog/cerrors"
-	"gitee.com/itsos/blog/repositories"
+	"github.com/it-sos/blog/cerrors"
+	"github.com/it-sos/blog/repositories"
+	"github.com/it-sos/golibs/v2/framework/iris/services"
+	"github.com/it-sos/golibs/v2/utils"
+	"github.com/it-sos/golibs/v2/utils/crypt"
 	"strconv"
 	"time"
 )

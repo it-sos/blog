@@ -1,8 +1,14 @@
 export default {
-    "development": {
-        baseUrl: '/api' // 测试接口域名
+    development: {
+        // 开发接口
+        baseUrl: '/api'
     },
-    "production": {
+    beta: {
+        // 测试接口域名
+        baseUrl: '/api'
+    },
+    release: {
+        // 正式接口域名
         baseUrl: '//itsos.ltd/api' // 正式接口域名
     }
 }

@@ -13,7 +13,7 @@ package caches
 import (
 	"fmt"
 
-	"gitee.com/itsos/golibs/v2/db/redis"
+	"github.com/it-sos/golibs/v2/db/redis"
 	"golang.org/x/net/context"
 )
 

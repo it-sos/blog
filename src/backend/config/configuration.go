@@ -11,8 +11,8 @@
 package config
 
 import (
-	"gitee.com/itsos/golibs/v2/config"
-	"gitee.com/itsos/golibs/v2/utils/reflects"
+	"github.com/it-sos/golibs/v2/config"
+	"github.com/it-sos/golibs/v2/utils/reflects"
 	"reflect"
 )
 

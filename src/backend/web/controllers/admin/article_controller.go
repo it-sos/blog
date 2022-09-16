@@ -13,8 +13,8 @@ package admin
 import (
 	"bytes"
 	"encoding/json"
-	"gitee.com/itsos/blog/models/vo"
-	"gitee.com/itsos/blog/services"
+	"github.com/it-sos/blog/models/vo"
+	"github.com/it-sos/blog/services"
 	"github.com/kataras/iris/v12"
 	"strconv"
 	"time"

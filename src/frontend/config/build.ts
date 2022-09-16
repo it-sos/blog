@@ -8,7 +8,7 @@ const build: BuildOptions = {
             drop_debugger: VITE_APP_DEBUGGER,
         },
     },
-    outDir: 'dist', // 指定输出路径目录
+    outDir: '/Users/yupeng/project/blog/src/backend/web/static/', // 指定输出路径目录
     assetsDir: 'assets', // 指定打包生成静态资源的存放路径目录
     sourcemap: VITE_APP_SOURCEMAP, // 构建后是否生成 source map文件
 };

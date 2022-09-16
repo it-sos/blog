@@ -11,7 +11,7 @@
 package main
 
 import (
-	"gitee.com/itsos/blog"
+	"github.com/it-sos/blog"
 )
 
 func main() {

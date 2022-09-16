@@ -11,13 +11,14 @@
 package services
 
 import (
-	"gitee.com/itsos/golibs/v2/utils/crypt"
 	"testing"
+
+	"github.com/it-sos/golibs/v2/utils/crypt"
 )
 
 func Test_authService_Register(t *testing.T) {
-	u := "learning1"
-	p := crypt.Md5("MRJ1j,1111")
+	u := "admin"
+	p := crypt.Md5("123456")
 	if err := SAuthService.Register(u, p); err != nil {
 		t.Error("create account fail.", err)
 	}

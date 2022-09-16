@@ -12,7 +12,7 @@ package services
 
 import (
 	"encoding/json"
-	"gitee.com/itsos/golibs/v2/db/es"
+	"github.com/it-sos/golibs/v2/db/es"
 	"github.com/kataras/golog"
 	"strconv"
 	"strings"

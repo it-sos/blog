@@ -11,10 +11,10 @@
 package services
 
 import (
-	"gitee.com/itsos/blog/caches"
-	"gitee.com/itsos/blog/cerrors"
-	"gitee.com/itsos/blog/datamodels"
-	"gitee.com/itsos/blog/repositories"
+	"github.com/it-sos/blog/caches"
+	"github.com/it-sos/blog/cerrors"
+	"github.com/it-sos/blog/datamodels"
+	"github.com/it-sos/blog/repositories"
 	"strconv"
 )
 

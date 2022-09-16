@@ -11,8 +11,8 @@
 package controllers
 
 import (
-	"gitee.com/itsos/golibs/v2/utils/array"
-	"gitee.com/itsos/blog/services"
+	"github.com/it-sos/blog/services"
+	"github.com/it-sos/golibs/v2/utils/array"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
 	"strings"

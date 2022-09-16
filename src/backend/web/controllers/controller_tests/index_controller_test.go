@@ -1,7 +1,7 @@
 package index_controller_test
 
 import (
-	"gitee.com/itsos/blog"
+	"github.com/it-sos/blog"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/httptest"
 	"testing"

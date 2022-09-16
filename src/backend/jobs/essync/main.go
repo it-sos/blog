@@ -4,9 +4,9 @@ import (
 	"log"
 	"sync"
 
-	"gitee.com/itsos/blog/datamodels"
-	"gitee.com/itsos/blog/services"
-	"gitee.com/itsos/golibs/v2/db/mysql"
+	"github.com/it-sos/blog/datamodels"
+	"github.com/it-sos/blog/services"
+	"github.com/it-sos/golibs/v2/db/mysql"
 	"github.com/kataras/golog"
 )
 

@@ -11,7 +11,7 @@
 package services
 
 import (
-	"gitee.com/itsos/golibs/v2/db/mysql"
+	"github.com/it-sos/golibs/v2/db/mysql"
 	"testing"
 )
 

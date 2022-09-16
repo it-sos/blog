@@ -11,8 +11,8 @@
 package controller_tests
 
 import (
-	"gitee.com/itsos/golibs/v2/db/mysql"
-	"gitee.com/itsos/blog"
+	"github.com/it-sos/blog"
+	"github.com/it-sos/golibs/v2/db/mysql"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/httptest"
 	"testing"
