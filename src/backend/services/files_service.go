@@ -14,14 +14,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/it-sos/blog/cerrors"
-	"github.com/it-sos/blog/datamodels"
-	"github.com/it-sos/blog/models/vo"
-	"github.com/it-sos/blog/repositories"
-	minio2 "github.com/it-sos/golibs/v2/db/minio"
-	"github.com/it-sos/golibs/v2/utils"
-	"github.com/minio/minio-go/v7"
-	"github.com/nfnt/resize"
 	"image"
 	"image/gif"
 	"image/jpeg"
@@ -34,6 +26,15 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/it-sos/blog/cerrors"
+	"github.com/it-sos/blog/datamodels"
+	"github.com/it-sos/blog/models/vo"
+	"github.com/it-sos/blog/repositories"
+	minio2 "github.com/it-sos/golibs/db/minio"
+	"github.com/it-sos/golibs/utils/random"
+	"github.com/minio/minio-go/v7"
+	"github.com/nfnt/resize"
 )
 
 const (
@@ -109,7 +110,7 @@ func (f filesService) GetFile(fileName string) ([]byte, string, error) {
 
 func (f filesService) GetStorageName(ext string) string {
 	year, month, day := time.Now().Date()
-	return fmt.Sprintf("%d%d%d/%s%s", year, month, day, utils.Rand(16, utils.RandMix), ext)
+	return fmt.Sprintf("%d%d%d/%s%s", year, month, day, random.Rand(16, random.RandMix), ext)
 }
 
 func (f filesService) GetFileListByAid(aid uint) (files []datamodels.Files, err error) {

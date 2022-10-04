@@ -11,10 +11,11 @@
 package services
 
 import (
+	"testing"
+
 	"github.com/it-sos/blog/models/vo"
 	"github.com/it-sos/blog/repositories"
-	"github.com/it-sos/golibs/v2/db/mysql"
-	"testing"
+	"github.com/it-sos/golibs/db/mysql"
 )
 
 func Test_articleService_GetArticleAndContent(t *testing.T) {

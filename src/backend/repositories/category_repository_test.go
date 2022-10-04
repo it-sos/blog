@@ -1,9 +1,10 @@
 package repositories
 
 import (
-	"github.com/it-sos/blog/datamodels"
-	"github.com/it-sos/golibs/v2/db/mysql"
 	"testing"
+
+	"github.com/it-sos/blog/datamodels"
+	"github.com/it-sos/golibs/db/mysql"
 )
 
 func Test_categoryRepository_Delete(t *testing.T) {

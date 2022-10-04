@@ -11,8 +11,9 @@
 package services
 
 import (
-	"github.com/it-sos/golibs/v2/db/mysql"
 	"testing"
+
+	"github.com/it-sos/golibs/db/mysql"
 )
 
 func Test_categoryService_BindTag(t *testing.T) {

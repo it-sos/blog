@@ -11,11 +11,12 @@
 package controller_tests
 
 import (
+	"testing"
+
 	"github.com/it-sos/blog"
-	"github.com/it-sos/golibs/v2/db/mysql"
+	"github.com/it-sos/golibs/db/mysql"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/httptest"
-	"testing"
 )
 
 func TestCategoryController_CategoryTopic(t *testing.T) {

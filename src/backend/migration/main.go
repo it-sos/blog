@@ -11,11 +11,12 @@
 package main
 
 import (
-	"github.com/it-sos/blog/datamodels"
-	"github.com/it-sos/golibs/v2/db/mysql"
-	"github.com/spf13/viper"
 	"log"
 	"os"
+
+	"github.com/it-sos/blog/datamodels"
+	"github.com/it-sos/golibs/db/mysql"
+	"github.com/spf13/viper"
 )
 
 func main() {

@@ -12,9 +12,10 @@ package caches
 
 import (
 	"fmt"
-	"github.com/it-sos/golibs/v2/db/redis"
-	"golang.org/x/net/context"
 	"strconv"
+
+	"github.com/it-sos/golibs/db/redis"
+	"golang.org/x/net/context"
 )
 
 type CategoryRel interface {

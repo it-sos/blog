@@ -13,7 +13,7 @@ package services
 import (
 	"testing"
 
-	"github.com/it-sos/golibs/v2/utils/crypt"
+	"github.com/it-sos/golibs/utils/crypt"
 )
 
 func Test_authService_Register(t *testing.T) {

@@ -12,7 +12,7 @@ package repositories
 
 import (
 	"github.com/it-sos/blog/datamodels"
-	"github.com/it-sos/golibs/v2/db/mysql"
+	"github.com/it-sos/golibs/db/mysql"
 )
 
 type FilesRepository interface {

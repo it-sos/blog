@@ -18,9 +18,9 @@ import (
 	"github.com/it-sos/blog/config"
 	"github.com/it-sos/blog/web/routes"
 	"github.com/it-sos/blog/web/views"
-	"github.com/it-sos/golibs/v2/framework/iris/bootstrap"
-	"github.com/it-sos/golibs/v2/framework/iris/middleware/auth"
-	"github.com/it-sos/golibs/v2/framework/iris/middleware/identity"
+	"github.com/it-sos/golibs/framework/iris/bootstrap"
+	"github.com/it-sos/golibs/framework/iris/middleware/auth"
+	"github.com/it-sos/golibs/framework/iris/middleware/identity"
 	"github.com/kataras/iris/v12"
 )
 
@@ -29,7 +29,7 @@ func NewApp() *bootstrap.Bootstrapper {
 
 	app.Bootstrap()
 
-	fsys := iris.PrefixDir("/", http.FS(views.Static))
+	fsys := iris.PrefixDir("/static/", http.FS(views.Static))
 	app.HandleDir("/", fsys, iris.DirOptions{
 		IndexName: "index.html",
 		SPA:       true,

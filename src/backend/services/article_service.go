@@ -24,9 +24,9 @@ import (
 	"github.com/it-sos/blog/datamodels"
 	"github.com/it-sos/blog/models/vo"
 	"github.com/it-sos/blog/repositories"
-	"github.com/it-sos/golibs/v2/db/es"
-	"github.com/it-sos/golibs/v2/utils"
-	"github.com/it-sos/golibs/v2/utils/validate"
+	"github.com/it-sos/golibs/db/es"
+	"github.com/it-sos/golibs/utils/date"
+	"github.com/it-sos/golibs/utils/validate"
 	"github.com/kataras/golog"
 	"golang.org/x/net/context"
 	"golang.org/x/net/html"
@@ -402,8 +402,8 @@ func (a articleService) getListPage(isLogin bool, page int, size int, keyword st
 }
 
 func (a articleService) getDuration(v datamodels.Article) string {
-	u := utils.TimeDuration(v.Utime)
-	c := utils.TimeDuration(v.Ctime)
+	u := date.TimeDuration(v.Utime)
+	c := date.TimeDuration(v.Ctime)
 	if u == c {
 		return c
 	}

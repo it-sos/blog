@@ -11,8 +11,9 @@
 package repositories
 
 import (
-	"github.com/it-sos/golibs/v2/db/mysql"
 	"testing"
+
+	"github.com/it-sos/golibs/db/mysql"
 )
 
 func Test_userRepository_Account(t *testing.T) {

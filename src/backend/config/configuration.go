@@ -11,9 +11,10 @@
 package config
 
 import (
-	"github.com/it-sos/golibs/v2/config"
-	"github.com/it-sos/golibs/v2/utils/reflects"
 	"reflect"
+
+	"github.com/it-sos/golibs/config"
+	"github.com/it-sos/golibs/utils/reflects"
 )
 
 type ConfigurationReadOnly interface {

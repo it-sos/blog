@@ -15,8 +15,8 @@ import (
 
 	"github.com/it-sos/blog/web/controllers"
 	"github.com/it-sos/blog/web/controllers/admin"
-	bootstrap2 "github.com/it-sos/golibs/v2/framework/iris/bootstrap"
-	"github.com/it-sos/golibs/v2/framework/iris/middleware/auth"
+	bootstrap2 "github.com/it-sos/golibs/framework/iris/bootstrap"
+	"github.com/it-sos/golibs/framework/iris/middleware/auth"
 	"github.com/kataras/iris/v12/mvc"
 )
 

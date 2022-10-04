@@ -12,11 +12,12 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/iris-contrib/swagger/v12"
 	"github.com/iris-contrib/swagger/v12/swaggerFiles"
 	C "github.com/it-sos/blog/config"
 	_ "github.com/it-sos/blog/docs"
-	"github.com/it-sos/golibs/v2/global/consts"
+	"github.com/it-sos/golibs/global/consts"
 	"github.com/kataras/iris/v12"
 )
 

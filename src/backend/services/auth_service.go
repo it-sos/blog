@@ -11,13 +11,14 @@
 package services
 
 import (
-	"github.com/it-sos/blog/cerrors"
-	"github.com/it-sos/blog/repositories"
-	"github.com/it-sos/golibs/v2/framework/iris/services"
-	"github.com/it-sos/golibs/v2/utils"
-	"github.com/it-sos/golibs/v2/utils/crypt"
 	"strconv"
 	"time"
+
+	"github.com/it-sos/blog/cerrors"
+	"github.com/it-sos/blog/repositories"
+	"github.com/it-sos/golibs/framework/iris/services"
+	"github.com/it-sos/golibs/utils/crypt"
+	"github.com/it-sos/golibs/utils/random"
 )
 
 // AuthService 认证模块
@@ -62,7 +63,7 @@ func (a authService) Register(account, password string) (err error) {
 		err = cerrors.Error("user_account_exits")
 		return
 	}
-	salt := utils.Rand(32, utils.RandMix)
+	salt := random.Rand(32, random.RandMix)
 	password = crypt.Md5(password + salt)
 	a.ru.Insert(account, password, salt)
 	return err

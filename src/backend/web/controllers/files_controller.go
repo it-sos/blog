@@ -11,12 +11,13 @@
 package controllers
 
 import (
-	"github.com/it-sos/blog/services"
-	"github.com/it-sos/golibs/v2/utils/array"
-	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/mvc"
 	"strings"
 	"time"
+
+	"github.com/it-sos/blog/services"
+	"github.com/it-sos/golibs/utils/array"
+	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/mvc"
 )
 
 type FilesController struct {

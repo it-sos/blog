@@ -12,12 +12,13 @@ package services
 
 import (
 	"encoding/json"
-	"github.com/it-sos/golibs/v2/db/es"
-	"github.com/kataras/golog"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/it-sos/golibs/db/es"
+	"github.com/kataras/golog"
 )
 
 // "id": {
