@@ -2,5 +2,5 @@ package views
 
 import "embed"
 
-//go:embed assets/* shared/*.html index.html logo.png favicon.gif
+//go:embed static/assets/* shared/*.html static/index.html static/logo.png static/favicon.gif
 var Static embed.FS

@@ -13,3 +13,6 @@ go run migration/main.go
 # 创建初始化用户和密码 admin / 123456
 go test -timeout 30s -run ^Test_authService_Register$ github.com/it-sos/blog/services
 
+
+# 安装 rizla
+go install github.com/kataras/rizla
