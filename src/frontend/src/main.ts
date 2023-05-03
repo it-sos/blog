@@ -4,7 +4,6 @@ import { createApp } from 'vue'
 import VueAxios from 'vue-axios'
 import RightClick from './plugins/vue3-right-click-menu-element-plus'
 import router from './routes'
-// @ts-ignore
 import { key, store } from './store/store'
 
 import App from './App.vue'

@@ -29,54 +29,39 @@
   </el-dropdown>
 </template>
 <!--<el-icon><circle-close-filled /></el-icon>-->
-<script lang="ts">
-import {computed, defineComponent} from 'vue'
-import {CircleClose, CirclePlus, Delete, Edit, Key, Lock, Operation} from "@element-plus/icons-vue"
-import {useStore} from "../store/store";
-import {ElMessageBox} from "element-plus";
-import {useRouter} from "vue-router";
+<script lang="ts" setup>
 
-export default defineComponent({
-  name: "LoginMenu",
-  components: {
-    Operation,
-  },
-  setup() {
-    const store = useStore()
-    const router = useRouter()
-    let logout = () => {
-      ElMessageBox.confirm('确认退出登陆吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+import { CircleClose, CirclePlus, Delete, Edit, Key, Lock, Operation } from "@element-plus/icons-vue";
+import { ElMessageBox } from "element-plus";
+import { computed } from 'vue';
+import { useRouter } from "vue-router";
+import { useStore } from "../store/store";
+
+const store = useStore()
+const router = useRouter()
+
+let logout = () => {
+  ElMessageBox.confirm('确认退出登陆吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+      .then(() => {
+        store.commit('logout')
+        router.push({path: '/login'})
       })
-          .then(() => {
-            store.commit('logout')
-            router.push({path: '/login'})
-          })
-          .catch(() => {
-          });
-    }
+      .catch(() => {
+      });
+}
 
-    let delConfirm = (id: number) => {
-      store.commit('article/remove', {id: id})
-    }
+let delConfirm = (id: number) => {
+  store.commit('article/remove', {id: id})
+}
 
-    return {
-      CircleClose,
-      Lock,
-      Edit,
-      Delete,
-      Key,
-      CirclePlus,
-      logout,
-      delConfirm,
-      account: computed(() => store.getters.getAccount()),
-      articleId: computed(() => store.getters.getArticleId()),
-      isBackend: computed(() => store.getters.getIsBackend()),
-    }
-  },
-})
+let account = computed(() => store.getters.getAccount())
+let articleId = computed(() => store.getters.getArticleId())
+let isBackend = computed(() => store.getters.getIsBackend())
+
 </script>
 
 <style scoped>

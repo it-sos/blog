@@ -3,7 +3,7 @@ import { ProxyOptions } from 'vite';
 const proxy: Record<string, string | ProxyOptions> = {
     // 选项写法
     '/api': {
-        target: 'http://localhost:8091',
+        target: 'http://localhost:8092',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '\/api'),
     },

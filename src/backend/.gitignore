@@ -1,2 +1,3 @@
 cmd/blog/blog
 web/views/static/
+config.yaml

@@ -1,0 +1,120 @@
+# 环境 dev / test / uat / pre / prod
+active: dev
+
+# 时区
+timezone: Asia/Shanghai
+
+# 域名端口方式，可单独提供服务
+domain: localhost
+scheme: http
+port: 8091
+
+# socket 方式，结合nginx转发
+sock: /tmp/blog.sock
+
+# swagger wiki 服务端口
+swagger:
+  port: 9099
+
+# framework.bootstrap 设置静态目录
+is_setup_view: true
+
+# 跨域
+cros:
+  allow_origin:
+    - "*"
+  allow_headers:
+    - "header1"
+    - "header2"
+
+# proxy 
+http:
+  proxy: http://127.0.0.1:8889
+
+# chat
+chat:
+  api_key:
+  api_url:
+  bot_desc: 你是一个AI助手，我需要你模拟一名温柔贴心的女朋友来回答我的问题。
+  model: gpt-3.5-turbo-0301
+  max_tokens: 512
+  temperature: 0.9
+  top_p: 1
+  frequency_penalty: 0.0
+  presence_penalty: 0.6
+
+# 验签排除
+signature:
+  exclude:
+    - /files/\w+\.\w+
+    - /admin/files
+    - /
+
+# 日志
+logfile:
+
+# 秘钥
+crypt:
+  aes:
+    # token生成专用
+    token: 846acca7d02f6ba83460f0b626f37469
+  rsa:
+    priv: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIICXAIBAAKBgQDEnH1ObJ90TdO+mdQLAwsBlehHE8/Cgl6AO/ojo5FB8t0AkN+g
+      cjkkdmD5j8QnEBWxdsZjqGRJkVcwp23lkOMtA88NqUQ4CncuGYe1um/Xm1xW5Pwa
+      JOq+FbjHBoNFI01uKYpVJG+k3MaTT6f84J5vYWMdX+lAQZjNvN8ooPW0JwIDAQAB
+      AoGBAKNWlsuGdlo7JgSc64pSdtxUW+pgzSN9B2FlcoQVKWIuj+gec4pqGoruRdZO
+      19jUBhGu6VZ12Qs9UcA7+JLVccTINA4yad/8MH0yJNQGpyYkRy6bok2BhWVXJT6k
+      A68yPwRvc7yHGxL51oTgwwBh5C8h1lIB/zZdbmrT0hocmiiRAkEA8Xj4sAPAiUvd
+      7K835X3pDsDtCbCrDxsYPvvqPxPpczCaSU/tN6cB0byj8WB9/izdKPbP61gGB1Vv
+      TOEpBCKykwJBANBwluKWmpcDE8CxOtUDxsrpGB/OeugYTpjbn5BO7ZkLRuRHxzzv
+      LseMzfW81ydolfG35oncdzVSjgnX9duHEJ0CQHC/Ex7cIaH5kn1YsrisuYzx97t2
+      iehbtk5yQUWCfpYSM3fXoeNCT08mzUV+0FVFjV37H8m7J9V0xqsW1pffu5ECQAaF
+      HxMjZt6GaB3E7XQwVA2Q0QJdsRaFfB/n7svSzDfXVHZbkG3lhW8UhnTDXW+MI/SV
+      rg5t6QSv+mVwbe5aATkCQDvSw/18QzyPYXicZPTNCHvcxu/F+QGI947CqbmapuRP
+      tQFp6mG5jCqgnV+2r34NBQnC77NKZXTciBce/ItQQwE=
+      -----END RSA PRIVATE KEY-----
+
+
+mysql:
+  master:
+    user: root
+    password: mysql123
+    host: 127.0.0.1
+    port: 3306
+    database: blog_dev
+    charset: utf8mb4
+
+# choose redis / redis_cluster
+redis_use: redis_cluster
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  username:
+  password: mysql123
+  db: 12
+
+# redis 集群配置
+redis_cluster:
+  username:
+  password:
+  hosts:
+    - "127.0.0.1:7001"
+    - "127.0.0.1:7002"
+    - "127.0.0.1:7003"
+    - "127.0.0.1:7004"
+    - "127.0.0.1:7005"
+    - "127.0.0.1:7006"
+
+# es配置
+es:
+  - http://localhost:9200
+
+# minio
+minio:
+  endpoint: "127.0.0.1:9000"
+  access_key_id: "testtest"
+  secret_access_key: "testtest"
+  use_ssl: false

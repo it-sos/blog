@@ -1,6 +1,6 @@
-import {ElMessage, ElMessageBox} from "element-plus";
-import utils from "../../common/utils";
 import axios from "axios";
+import { ElMessage, ElMessageBox } from "element-plus";
+import utils from "../../common/utils";
 import router from "../../routes";
 
 interface State {
@@ -32,7 +32,7 @@ export default {
             }).then(() => {
                 axios.delete('/admin/article', {
                     responseType: "json",
-                    params: {id: data.id},
+                    params: { id: data.id },
                 }).then(() => {
                     state.data = state.data.filter((v: any) => {
                         return data.id != v.id

@@ -23,7 +23,7 @@ import (
 func TestArticleController_Article(t *testing.T) {
 	e := httptest.New(t, blog.NewApp().Application)
 	t.Run("创建文章", func(t *testing.T) {
-		r := e.POST("/admin/article").
+		r := e.POST("/api/admin/article").
 			WithHeader("Accept", "application/json").
 			WithJSON(map[string]interface{}{
 				"id":         0,
@@ -38,7 +38,7 @@ func TestArticleController_Article(t *testing.T) {
 	})
 
 	t.Run("修改文章", func(t *testing.T) {
-		r := e.POST("/admin/article").
+		r := e.POST("/api/admin/article").
 			WithHeader("Accept", "application/json").
 			WithJSON(map[string]interface{}{
 				"id":         1,
@@ -53,17 +53,17 @@ func TestArticleController_Article(t *testing.T) {
 	})
 
 	t.Run("获取文章", func(t *testing.T) {
-		r := e.GET("/admin/article").WithQuery("id", 1).Expect().Status(iris.StatusOK)
+		r := e.GET("/api/admin/article").WithQuery("id", 1).Expect().Status(iris.StatusOK)
 		t.Log(r.JSON().Object().ValueEqual("title", "修改文章"))
 	})
 
 	t.Run("删除文章", func(t *testing.T) {
-		r := e.DELETE("/admin/article").WithQuery("id", 1).Expect().Status(iris.StatusOK)
+		r := e.DELETE("/api/admin/article").WithQuery("id", 1).Expect().Status(iris.StatusOK)
 		t.Log(r.Body())
 	})
 
 	t.Run("获取文章", func(t *testing.T) {
-		r := e.GET("/admin/article").
+		r := e.GET("/api/admin/article").
 			WithQuery("id", 1).
 			WithHeader("accept", "application/json").
 			Expect().Status(iris.StatusBadRequest)

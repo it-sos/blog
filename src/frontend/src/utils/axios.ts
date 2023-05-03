@@ -3,7 +3,6 @@ import { ElMessage } from 'element-plus';
 // @ts-ignore
 import config from '~/config';
 import router from "../routes";
-import { store } from "../store/store";
 import { sign } from './sign';
 
 // 这边由于后端没有区分测试和正式，姑且都写成一个接口。

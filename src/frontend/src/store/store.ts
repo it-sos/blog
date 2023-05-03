@@ -1,8 +1,8 @@
-import { InjectionKey } from 'vue'
-import { createStore, useStore as baseUseStore, Store } from 'vuex'
-import {localGet, localRemove, localSessionGet, localSessionSet, localSet} from "../utils";
-import loading from "./session/loading";
+import { InjectionKey } from 'vue';
+import { Store, useStore as baseUseStore, createStore } from 'vuex';
+import { localGet, localRemove, localSessionGet, localSessionSet, localSet } from "../utils";
 import article from "./articlelist/article";
+import loading from "./session/loading";
 
 export interface State {
     account: string
@@ -11,6 +11,7 @@ export interface State {
     saved: boolean
     ts: number
     isBackend: boolean
+    isAiSearch: boolean
 }
 
 export const key: InjectionKey<Store<State>> = Symbol()
@@ -27,6 +28,7 @@ export const store = createStore<State>({
         saved: true,
         ts: 0,
         isBackend: false,
+        isAiSearch: false,
     },
     mutations: {
         logout(state: State): void {
@@ -49,10 +51,13 @@ export const store = createStore<State>({
             state.ts = ts
         },
         setSaved(state: State, is: boolean): void {
-           state.saved = is
+            state.saved = is
         },
         setIsBackend(state: State, is: boolean): void {
             state.isBackend = is
+        },
+        setIsAiSearch(state: State, is: boolean): void {
+            state.isAiSearch = is
         }
     },
     getters: {
@@ -76,6 +81,9 @@ export const store = createStore<State>({
         },
         getIsBackend: (state: State) => (): boolean => {
             return state.isBackend
+        },
+        getIsAiSearch: (state: State) => (): boolean => {
+            return state.isAiSearch
         }
     },
     modules: {
@@ -85,6 +93,6 @@ export const store = createStore<State>({
 })
 
 // 定义自己的 `useStore` 组合式函数
-export function useStore () {
+export const useStore = () => {
     return baseUseStore(key)
 }

@@ -16,4 +16,13 @@ import (
 
 func TestConfig(t *testing.T) {
 	t.Log(C.GetSwaggerUrl())
+	t.Log(C.GetProxy())
+	t.Log(C.GetChatAPIKey())
+	t.Log(C.GetChatApiUrl())
+	t.Log(C.GetChatBotDesc())
+	t.Log(C.GetChatFrequencyPenalty())
+	t.Log(C.GetChatMaxTokens())
+	t.Log(C.GetChatModel())
+	t.Log(C.GetChatPresencePenalty())
+	t.Log(C.GetChatTemperature())
 }

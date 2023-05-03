@@ -2,11 +2,12 @@ package controller_tests
 
 import (
 	"encoding/base64"
+	"os"
+	"testing"
+
 	"github.com/it-sos/blog"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/httptest"
-	"os"
-	"testing"
 )
 
 func TestFilesController_Files(t *testing.T) {
@@ -28,7 +29,7 @@ func TestFilesController_Files(t *testing.T) {
 			return
 		}
 
-		r := e.POST("/admin/files").
+		r := e.POST("/api/admin/files").
 			WithMultipart().
 			WithFile("file", png).
 			WithForm(map[string]interface{}{

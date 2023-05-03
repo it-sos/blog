@@ -24,15 +24,15 @@
 </template>
 
 <script lang="ts">
-import {BubbleMenu, Editor, EditorContent} from '@tiptap/vue-3'
 import MenuBar from '@/components/editor/MenuBar.vue'
-import {defineComponent, inject, onMounted, onUnmounted, provide, reactive, ref, toRefs, watch} from 'vue'
-import {ElMessage, ElMessageBox} from 'element-plus'
+import { CircleCheckFilled, CircleCloseFilled, Loading } from "@element-plus/icons-vue"
+import { BubbleMenu, Editor, EditorContent } from '@tiptap/vue-3'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { defineComponent, inject, onMounted, onUnmounted, provide, reactive, ref, toRefs, watch } from 'vue'
+import { useRoute, useRouter } from "vue-router"
+import { backendExtensions } from "../common/tiptap/tiptap-extensions"
 import utils from '../common/utils'
-import {backendExtensions} from "../common/tiptap/tiptap-extensions";
-import {CircleCheckFilled, CircleCloseFilled, Loading} from "@element-plus/icons-vue";
-import {useRoute, useRouter} from "vue-router";
-import {useStore} from "../store/store";
+import { useStore } from "../store/store"
 
 export default defineComponent({
 
@@ -111,27 +111,7 @@ export default defineComponent({
       });
     };
 
-    // 文章加密状态
-    // eslint-disable-next-line
-    const enum SWITCH_ENCRYPT_STATUS {
-      // 密文
-      // eslint-disable-next-line
-      Encrypt = 1,
-      // 明文
-      // eslint-disable-next-line
-      Plaintext = 2,
-    }
 
-    // 文章发布状态
-    // eslint-disable-next-line
-    const enum SWITCH_PUBLISH_STATUS {
-      // 私有
-      // eslint-disable-next-line
-      Private = 1,
-      // 公开
-      // eslint-disable-next-line
-      Public = 2,
-    }
 
     const router = useRouter()
     const route = useRoute()

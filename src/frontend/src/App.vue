@@ -28,33 +28,42 @@
       <el-container>
         <router-view></router-view>
       </el-container>
-      <el-footer
-        style="text-align: center; font-size: 12px; padding: 30px 0 60px 0"
-        >Copyright &copy; IT.SOS 技术笔记 ICP证:
-        <a style="text-decoration:none;color:#e6a23c;" href="https://beian.miit.gov.cn/" target="_blank"
-          >京ICP备17025733号-8</a
-        >
-      </el-footer>
     </el-container>
+    <el-footer
+      style="text-align: center; font-size: 12px;">Copyright &copy; IT.SOS 技术笔记 ICP证:
+      <a style="text-decoration:none;color:#e6a23c;" href="https://beian.miit.gov.cn/" target="_blank"
+        >京ICP备17025733号-8</a
+      >
+    </el-footer>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 
-import Search from "./components/Search.vue";
 import LoginMenu from "./components/LoginMenu.vue";
+import Search from "./components/Search.vue";
 
-export default defineComponent({
-  components: { Search, LoginMenu },
-  setup() {},
-});
 </script>
-<style>
+<style lang="scss">
 /* 屏幕小于768px */
 @media screen and (max-width: 768px) {
   .el-input-group__append {
     display: none;
   }
+}
+.common-layout {
+  min-height: 100vh;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  section {
+    header {
+      padding-top:10px;
+    }
+  }
+}
+body {
+  margin:0;
+  padding:0;
 }
 </style>

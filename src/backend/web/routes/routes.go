@@ -36,6 +36,7 @@ func Routes(b *bootstrap2.Bootstrapper) {
 		func(app *mvc.Application) {
 			app.Handle(new(admin.ArticleController)).
 				Handle(new(admin.FilesController)).
+				Handle(new(admin.ChatController)).
 				Handle(new(admin.CategoryController))
 		},
 	).Register(time.Now())

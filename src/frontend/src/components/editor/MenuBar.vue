@@ -69,15 +69,15 @@
 </template>
 
 <script lang="ts">
-import '@fortawesome/fontawesome-free/css/all.css'
-import MenuItem from './MenuItem.vue'
-import {defineComponent, inject, provide, reactive, ref, toRefs} from 'vue'
-import {ElMessage, ElMessageBox} from 'element-plus'
+import '@fortawesome/fontawesome-free/css/all.css';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { defineComponent, inject, provide, reactive, ref, toRefs } from 'vue';
+import MenuItem from './MenuItem.vue';
 // @ts-ignore
 import utils from "@/common/utils";
 import Upload from "@/components/editor/Upload.vue";
-import {store} from "../../store/store";
-import {sign} from "../../utils/sign";
+import { store } from "../../store/store";
+import { sign } from "../../utils/sign";
 
 // eslint-disable-next-line
 const enum CATEGORY_TYPE {

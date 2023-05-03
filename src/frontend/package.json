@@ -51,7 +51,9 @@
     "path": "^0.12.7",
     "rollup-plugin-visualizer": "^5.5.2",
     "sass": "^1.45.0",
-    "typescript": "^4.4.4",
+    "typescript": "^4.9.5",
+    "unplugin-auto-import": "^0.15.3",
+    "unplugin-vue-components": "^0.24.1",
     "vite": "^2.7.0",
     "vite-plugin-vconsole": "^1.1.1",
     "vue-tsc": "^0.28.10"
