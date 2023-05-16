@@ -44,11 +44,11 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onMounted, reactive, ref, toRefs, watch} from 'vue'
-import {useStore} from "../store/store";
-import {Lock} from "@element-plus/icons-vue";
-import {useRoute} from "vue-router";
-import 'element-plus/theme-chalk/display.css'
+import { Lock } from "@element-plus/icons-vue";
+import 'element-plus/theme-chalk/display.css';
+import { defineComponent, inject, onMounted, reactive, ref, toRefs, watch } from 'vue';
+import { useRoute } from "vue-router";
+import { useStore } from "../store/store";
 
 export default defineComponent({
   components: {
@@ -124,12 +124,6 @@ export default defineComponent({
       })
     }
 
-    watch(() => route.params.keyword, () => {
-      defaults()
-      load()
-      ranks()
-    })
-
     let ranks = () => {
       $axios.get('/article/rank').then((response: any) => {
         state.rank = response.data
@@ -138,6 +132,12 @@ export default defineComponent({
         console.log(error)
       })
     }
+
+    watch(() => route.params.keyword, () => {
+      defaults()
+      load()
+      ranks()
+    })
 
     onMounted(() => {
       defaults()

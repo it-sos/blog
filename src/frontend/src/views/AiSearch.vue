@@ -28,13 +28,14 @@
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import { ElMessage } from 'element-plus';
 import 'element-plus/theme-chalk/display.css';
+import MarkdownIt from 'markdown-it';
 import { frontendExtensions } from "../common/tiptap/tiptap-extensions";
 
+let router = useRouter()
 let store = useStore()
 store.commit('setIsBackend', false)
 
 const route = useRoute()
-let title = decodeURIComponent(route.params.keyword.toString())
 let loading = ref<boolean>(true)
 
 let editor: any = new Editor({
@@ -42,7 +43,6 @@ let editor: any = new Editor({
   extensions: frontendExtensions,
   editable: false,
 })
-const router = useRouter()
 
 // 返回
 let back = () => {
@@ -63,31 +63,51 @@ let saveEdit = () => {
     save(true)
   }
 }
+let titleEncode = (txt: string) => { return decodeURIComponent(txt) }
+let title = ref<string>(titleEncode(route.params.keyword.toString()))
+let searchAi = () => {
+  let data = new FormData()
+  data.append("keyword", title.value)
+  loading.value = true
+  axios('/admin/chat/completion', {
+    method: "post",
+    responseType: "json",
+    data: data
+  }).then((response: any) => {
+    store.commit('setArticleId', 0)
+    const md = new MarkdownIt()
+    let html = md.render(response.data)
+    editor.commands.setContent(html)
+    loading.value = false
+  }).catch((error: any) => {
+    console.error(error)
+    // ElMessage({
+    //   duration: 500,
+    //   showClose: true,
+    //   message: error.response.data.message,
+    //   type: "error",
+    // });
+  })
+}
 
-let data = new FormData()
-data.append("keyword", title)
-axios('/admin/chat/completion', {
-  method: "post",
-  responseType: "json",
-  data: data
-}).then((response: any) => {
-  editor.commands.setContent(response.data)
-  loading.value = false 
-}).catch((error: any) => {
-    ElMessage({
-      duration: 500,
-      showClose: true,
-      message: error.response.data.message,
-      type: "error",
-    });
+watch(() => route.params.keyword, () => {
+  if (route.params.keyword != null) {
+    title.value = titleEncode(route.params.keyword.toString())
+    searchAi()
+  }
 })
+
+onMounted(() => {
+  searchAi()
+})
+
 
 let save = (is_edit: boolean) => {
   axios('/admin/article', {
     method: "post",
     responseType: "json",
     data: {
-      "title": title,
+      "title": title.value,
       "intro": "",
       "content": editor.getHTML(),
       "is_encrypt": SWITCH_ENCRYPT_STATUS.Plaintext,

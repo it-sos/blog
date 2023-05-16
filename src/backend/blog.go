@@ -38,6 +38,10 @@ func NewApp() *bootstrap.Bootstrapper {
 		IndexName: "index.html",
 		SPA:       true,
 	})
+	app.HandleDir("/ai/", fsys, iris.DirOptions{
+		IndexName: "index.html",
+		SPA:       true,
+	})
 	app.HandleDir("/e/", fsys, iris.DirOptions{
 		IndexName: "index.html",
 		SPA:       true,

@@ -74,17 +74,16 @@ func (c *chatService) Completion(askMessage []string) (replyMessage string, err 
 	var ctx = context.Background()
 
 	client := gogpt.NewClientWithConfig(gptConfig)
-	// if request.Messages[0].Role != "system" {
-	// 	newMessage := append([]gogpt.ChatCompletionMessage{
-	// 		{Role: "system", Content: config.C.GetChatBotDesc()},
-	// 	}, request.Messages...)
-	// 	request.Messages = newMessage
-	// 	golog.Info(request.Messages)
-	// }
+	newMessage := append([]gogpt.ChatCompletionMessage{
+		{Role: "system", Content: config.C.GetChatBotDesc()},
+		{Role: "user", Content: askMessage[0]},
+	}, request.Messages...)
+	request.Messages = newMessage
+	golog.Info(request.Messages)
 
 	var model = config.C.GetChatModel()
 
-	if false && types.Contains(chatModels, config.C.GetChatModel()) {
+	if types.Contains(chatModels, config.C.GetChatModel()) {
 		request.Model = model
 		var resp gogpt.ChatCompletionResponse
 		resp, err = client.CreateChatCompletion(ctx, request)
@@ -115,7 +114,6 @@ func (c *chatService) Completion(askMessage []string) (replyMessage string, err 
 		if err != nil {
 			return
 		}
-		// golog.Infof("not in choices: %v", resp)
 		replyMessage = strings.ReplaceAll(resp.Choices[0].Message.Content, "\n", "<br/>")
 	}
 	return
