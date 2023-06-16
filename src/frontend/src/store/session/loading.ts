@@ -1,4 +1,4 @@
-import {localSessionGet, localSessionSet} from "../../utils";
+import { localSessionGet, localSessionSet } from "../../utils";
 
 export interface State {
     status: number

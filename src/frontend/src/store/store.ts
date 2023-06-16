@@ -2,6 +2,7 @@ import { InjectionKey } from 'vue';
 import { Store, useStore as baseUseStore, createStore } from 'vuex';
 import { localGet, localRemove, localSessionGet, localSessionSet, localSet } from "../utils";
 import article from "./articlelist/article";
+import msg from "./chat/msg";
 import loading from "./session/loading";
 
 export interface State {
@@ -88,7 +89,8 @@ export const store = createStore<State>({
     },
     modules: {
         loading: loading,
-        article: article
+        article: article,
+        chat: msg
     }
 })
 

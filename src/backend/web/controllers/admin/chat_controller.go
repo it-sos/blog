@@ -25,11 +25,11 @@ type ChatController struct {
 // @Failure 400 {object} cerrors.Errors "error"
 // @Router /admin/chat/completion [post]
 func (c *ChatController) PostChatCompletion() (message string, err error) {
-	keyword := c.Ctx.FormValue("keyword")
-	if keyword == "" || len(keyword) == 0 {
+	keyword := c.Ctx.FormValues()["keyword"]
+	if len(keyword) == 0 {
 		err = cerrors.Error("search_keyword_err")
 		return
 	}
-	message, err = services.SChatService.Completion([]string{keyword})
+	message, err = services.SChatService.Completion(keyword)
 	return
 }

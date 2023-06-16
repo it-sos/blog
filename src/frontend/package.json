@@ -5,7 +5,9 @@
     "dev": "vite --mode development",
     "build:beta": "vite build --mode beta",
     "build:release": "vite build --mode release",
-    "preview": "vite preview --port 4173"
+    "preview": "vite preview --port 4173",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^0.2.4",
@@ -62,6 +64,7 @@
     "unplugin-vue-components": "^0.24.1",
     "vite": "^2.7.0",
     "vite-plugin-vconsole": "^1.1.1",
+    "vitest": "^0.31.1",
     "vue-tsc": "^0.28.10"
   }
 }

@@ -72,11 +72,16 @@ func (c *chatService) Completion(askMessage []string) (replyMessage string, err 
 		gptConfig.BaseURL = config.C.GetChatApiUrl()
 	}
 	var ctx = context.Background()
+	prompt := ""
+	for _, msg := range askMessage {
+		prompt += msg + "/n"
+	}
+	prompt = strings.Trim(prompt, "/n")
 
 	client := gogpt.NewClientWithConfig(gptConfig)
 	newMessage := append([]gogpt.ChatCompletionMessage{
 		{Role: "system", Content: config.C.GetChatBotDesc()},
-		{Role: "user", Content: askMessage[0]},
+		{Role: "user", Content: prompt},
 	}, request.Messages...)
 	request.Messages = newMessage
 	golog.Info(request.Messages)
@@ -93,12 +98,6 @@ func (c *chatService) Completion(askMessage []string) (replyMessage string, err 
 		replyMessage = resp.Choices[0].Message.Content
 		golog.Infof("in model choices: %v", resp.Choices)
 	} else {
-		prompt := ""
-		for _, msg := range askMessage {
-			prompt += msg + "/n"
-		}
-		prompt = strings.Trim(prompt, "/n")
-
 		golog.Infof("request prompt is %s", prompt)
 		req := gogpt.ChatCompletionRequest{
 			Model:            config.C.GetChatModel(),

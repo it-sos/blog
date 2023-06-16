@@ -41,6 +41,7 @@ declare global {
   const localSessionSet: typeof import('./src/utils/index')['localSessionSet']
   const localSet: typeof import('./src/utils/index')['localSet']
   const markRaw: typeof import('vue')['markRaw']
+  const msg: typeof import('./src/store/chat/msg')['default']
   const nextTick: typeof import('vue')['nextTick']
   const onActivated: typeof import('vue')['onActivated']
   const onBeforeMount: typeof import('vue')['onBeforeMount']
@@ -138,6 +139,7 @@ declare module 'vue' {
     readonly localSessionSet: UnwrapRef<typeof import('./src/utils/index')['localSessionSet']>
     readonly localSet: UnwrapRef<typeof import('./src/utils/index')['localSet']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
+    readonly msg: UnwrapRef<typeof import('./src/store/chat/msg')['default']>
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
     readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>
     readonly onBeforeMount: UnwrapRef<typeof import('vue')['onBeforeMount']>

@@ -41,12 +41,12 @@
 </template>
 <script lang="ts">
 
-import {computed, defineComponent, inject, provide, reactive, ref, toRefs, watch} from 'vue'
-import {ElMessage} from "element-plus";
+import { CirclePlus, Delete, Expand, Fold, Lock } from "@element-plus/icons-vue";
+import { ElMessage } from "element-plus";
+import { computed, defineComponent, inject, provide, reactive, ref, toRefs, watch } from 'vue';
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import ToolEditor from "../components/ToolEditor.vue";
-import {CirclePlus, Delete, Expand, Fold, Lock} from "@element-plus/icons-vue";
-import {onBeforeRouteLeave, onBeforeRouteUpdate, useRouter} from 'vue-router';
-import {useStore} from "../store/store";
+import { useStore } from "../store/store";
 
 export default defineComponent({
   components: {

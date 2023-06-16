@@ -111,7 +111,7 @@ export default function createVitePlugins() {
         }),
         viteVConsole({
             entry: path.resolve('src/main.ts'),
-            localEnabled: true,
+            localEnabled: false,
             enabled: false,
             config: {
                 maxLogNumber: 1000,

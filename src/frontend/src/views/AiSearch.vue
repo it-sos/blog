@@ -1,35 +1,60 @@
 <template>
-  <el-skeleton :rows="10" :loading="loading" animated>
-    <template #default>
-      <el-container>
-        <el-main>
-          <div class="box">
-            <div class="title">
-              <!-- <el-link :href="'/a/'+encodeURIComponent(title)"><h2>{{ title }}</h2></el-link> -->
-              <el-link><h2>{{ title }}</h2></el-link>
-            </div>
-            <div class="description">
+  <el-container>
+    <el-main>
+      <el-row
+        type="flex"
+        justify="space-between"
+        align="middle"
+      >
+        <el-col :span="6">
+        </el-col>
+        <el-col :span="6" align="center">
+          <el-alert v-for="(msg, msgIndex) in chatList" v-bind:key="msgIndex" :title="msg" type="info" @close="removeMessage(msgIndex)" />
+          <el-input
+            v-model="chatMsg"
+            placeholder="请输入内容"
+            @keydown.enter="chatMessage()" 
+            class="input-with-select"
+            style="margin-top:30px;
+          ">
+            <template #append>
+              <el-button :icon="Position" @click="chatMessage()" />
+            </template>
+          </el-input>
+        </el-col>
+        <el-col :span="6" align="left">
+        </el-col>
+      </el-row>
+      <div class="box">
+        <div class="title">
+          <!-- <el-link :href="'/a/'+encodeURIComponent(title)"><h2>{{ title }}</h2></el-link> -->
+          <el-link><h2>{{ title }}</h2></el-link>
+        </div>
+        <div class="description">
+          <el-skeleton :rows="10" :loading="loading" animated>
+            <template #default>
               <editor-content :editor="editor"/>
-            </div>
-            <div style="padding-top: 60px;text-align: center;">
-              <el-button style="width: 100px;" size="small" @click="back" type="info">返回</el-button>
-              <el-button style="width: 100px;" size="small" @click="onlySave" type="primary">保存</el-button>
-              <el-button style="width: 100px;" size="small" @click="saveEdit" type="warning">保存&编辑</el-button>
-            </div>
-          </div>
-        </el-main>
-      </el-container>
-    </template>
-  </el-skeleton>
+            </template>
+          </el-skeleton>
+        </div>
+        <div style="padding-top: 60px;text-align: center;">
+          <el-button style="width: 100px;" size="small" @click="back" type="info">返回</el-button>
+          <el-button style="width: 100px;" size="small" @click="onlySave" type="primary">保存</el-button>
+          <el-button style="width: 100px;" size="small" @click="saveEdit" type="warning">保存&编辑</el-button>
+        </div>
+      </div>
+    </el-main>
+  </el-container>
 </template>
 
 <script lang="ts" setup>
-
+import { Position } from '@element-plus/icons-vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import { ElMessage } from 'element-plus';
 import 'element-plus/theme-chalk/display.css';
 import MarkdownIt from 'markdown-it';
 import { frontendExtensions } from "../common/tiptap/tiptap-extensions";
+const chatMsg = ref<string>("")
 
 let router = useRouter()
 let store = useStore()
@@ -42,7 +67,29 @@ let editor: any = new Editor({
   injectCSS: true,
   extensions: frontendExtensions,
   editable: false,
+  content: 'test'
 })
+
+let chatList = computed(() => store.getters['chat/list'])
+
+let chatMessage = () => {
+  if (chatMsg.value != '') {
+    // ElMessage({
+    //   duration: 1000,
+    //   showClose: false,
+    //   message: '请输入内容',
+    //   type: "error",
+    // });
+    // return;
+    store.commit('chat/send', chatMsg.value)
+    chatMsg.value = ''
+  }
+  searchAi()
+}
+
+let removeMessage = (msgIndex: number) => {
+  store.commit('chat/remove', msgIndex)
+}
 
 // 返回
 let back = () => {
@@ -65,9 +112,13 @@ let saveEdit = () => {
 }
 let titleEncode = (txt: string) => { return decodeURIComponent(txt) }
 let title = ref<string>(titleEncode(route.params.keyword.toString()))
+chatMsg.value = title.value
+
 let searchAi = () => {
   let data = new FormData()
-  data.append("keyword", title.value)
+  for (let i in chatList.value) {
+    data.append('keyword', chatList.value[i])
+  }
   loading.value = true
   axios('/admin/chat/completion', {
     method: "post",
@@ -93,12 +144,17 @@ let searchAi = () => {
 watch(() => route.params.keyword, () => {
   if (route.params.keyword != null) {
     title.value = titleEncode(route.params.keyword.toString())
-    searchAi()
+    chatMsg.value = title.value
+    chatMessage()
   }
 })
 
 onMounted(() => {
-  searchAi()
+  chatMessage()
+})
+
+onUnmounted(() => {
+  store.commit('chat/reset')
 })
 
 
@@ -138,6 +194,12 @@ let save = (is_edit: boolean) => {
 </script>
 
 <style scoped>
+.el-alert {
+  margin: 20px 0 0;
+}
+.el-alert:first-child {
+  margin: 0;
+}
 .nav {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   padding: 15px 20px 20px 20px;
