@@ -9,7 +9,7 @@
         <el-col :span="6">
         </el-col>
         <el-col :span="6" align="center">
-          <el-alert v-for="(msg, msgIndex) in chatList" v-bind:key="msgIndex" :title="msg" type="info" @close="removeMessage(msgIndex)" />
+          <el-alert v-for="(msg, msgIndex) in chatList" v-bind:key="msg+msgIndex" :title="msg" type="info" @close="removeMessage(msgIndex)" />
           <el-input
             v-model="chatMsg"
             placeholder="请输入内容"
@@ -115,6 +115,7 @@ let title = ref<string>(titleEncode(route.params.keyword.toString()))
 chatMsg.value = title.value
 
 let searchAi = () => {
+  console.log(chatList.value)
   let data = new FormData()
   for (let i in chatList.value) {
     data.append('keyword', chatList.value[i])
