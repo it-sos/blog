@@ -12,7 +12,7 @@ export default {
             state.data.push(data)
         },
         remove(state: State, index: number) {
-            state.data.splice(index, 1);
+            state.data.splice(index, 0);
         },
         reset(state: State) {
             state.data = []
